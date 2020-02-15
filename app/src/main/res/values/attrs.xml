@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Dice">
+        <attr name="number" format="integer" />
+        <attr name="locked" format="boolean" />
+    </declare-styleable>
+</resources>

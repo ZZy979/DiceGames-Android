@@ -1,0 +1,165 @@
+package com.zzy.dicegames.gamefragment;
+
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.zzy.dicegames.R;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Balut计分板Fragment，嵌套于一个{@link BalutFragment}
+ *
+ * @author 赵正阳
+ */
+public class BalutScoreBoardFragment extends Fragment {
+	/** 每个得分项可选择的次数 */
+	private static final int TIMES_PER_ITEM = 4;
+
+	/** 所属的游戏Fragment */
+	private BalutFragment mGameFragment;
+
+	/** 得分项按钮 */
+	private List<Button> mScoreButtons = new ArrayList<>();
+
+	/** 得分标签 */
+	private List<List<TextView>> mScoreTextViews = new ArrayList<>();
+
+	/** 游戏总分 */
+	private int mGameTotal = 0;
+
+	/** 游戏总分标签 */
+	private TextView mGameTotalTextView;
+
+	/** 已选择得分项的个数 */
+	private int mSelected = 0;
+
+	/** 每个得分项已选择的次数 */
+	private List<Integer> mItemSelected = new ArrayList<>();
+
+	/** 选择一个得分项时执行的动作 */
+	private View.OnClickListener mChooseAction = v -> choose(mScoreButtons.indexOf(v));
+
+	/** 游戏结束时执行的动作 */
+	private Runnable mGameOverAction;
+
+	public BalutScoreBoardFragment() {}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		mGameFragment = (BalutFragment) getParentFragment();
+		View rootView = inflater.inflate(R.layout.fragment_balut_score_board, container, false);
+		initViews(rootView);
+		return rootView;
+	}
+
+	/** 获取得分按钮和标签 */
+	private void initViews(View rootView) {
+		mScoreButtons.add(rootView.findViewById(R.id.btn4));
+		mScoreButtons.add(rootView.findViewById(R.id.btn5));
+		mScoreButtons.add(rootView.findViewById(R.id.btn6));
+		mScoreButtons.add(rootView.findViewById(R.id.btnStraight));
+		mScoreButtons.add(rootView.findViewById(R.id.btnFullHouse));
+		mScoreButtons.add(rootView.findViewById(R.id.btnChoice));
+		mScoreButtons.add(rootView.findViewById(R.id.btnBalut));
+		for (Button scoreButton : mScoreButtons)
+			scoreButton.setOnClickListener(mChooseAction);
+
+		mScoreTextViews.add(Arrays.asList(
+				rootView.findViewById(R.id.tv41),
+				rootView.findViewById(R.id.tv42),
+				rootView.findViewById(R.id.tv43),
+				rootView.findViewById(R.id.tv44)
+		));
+		mScoreTextViews.add(Arrays.asList(
+				rootView.findViewById(R.id.tv51),
+				rootView.findViewById(R.id.tv52),
+				rootView.findViewById(R.id.tv53),
+				rootView.findViewById(R.id.tv54)
+		));
+		mScoreTextViews.add(Arrays.asList(
+				rootView.findViewById(R.id.tv61),
+				rootView.findViewById(R.id.tv62),
+				rootView.findViewById(R.id.tv63),
+				rootView.findViewById(R.id.tv64)
+		));
+		mScoreTextViews.add(Arrays.asList(
+				rootView.findViewById(R.id.tvStraight1),
+				rootView.findViewById(R.id.tvStraight2),
+				rootView.findViewById(R.id.tvStraight3),
+				rootView.findViewById(R.id.tvStraight4)
+		));
+		mScoreTextViews.add(Arrays.asList(
+				rootView.findViewById(R.id.tvFullHouse1),
+				rootView.findViewById(R.id.tvFullHouse2),
+				rootView.findViewById(R.id.tvFullHouse3),
+				rootView.findViewById(R.id.tvFullHouse4)
+		));
+		mScoreTextViews.add(Arrays.asList(
+				rootView.findViewById(R.id.tvChoice1),
+				rootView.findViewById(R.id.tvChoice2),
+				rootView.findViewById(R.id.tvChoice3),
+				rootView.findViewById(R.id.tvChoice4)
+		));
+		mScoreTextViews.add(Arrays.asList(
+				rootView.findViewById(R.id.tvBalut1),
+				rootView.findViewById(R.id.tvBalut2),
+				rootView.findViewById(R.id.tvBalut3),
+				rootView.findViewById(R.id.tvBalut4)
+		));
+
+		mGameTotalTextView = rootView.findViewById(R.id.tvGameTotal);
+
+		for (int i = 0; i < mGameFragment.getCategoryCount(); ++i)
+			mItemSelected.add(0);
+	}
+
+	/** 选择第{@code index}项，更新得分并激活"Roll"按钮 */
+	private void choose(int index) {
+		int score = Integer.parseInt(mScoreTextViews.get(index).get(mItemSelected.get(index)).getText().toString());
+		mGameTotal += score;
+		mGameTotalTextView.setText(String.valueOf(mGameTotal));
+
+		mScoreTextViews.get(index).get(mItemSelected.get(index)).setTextColor(Color.RED);
+		mItemSelected.set(index, mItemSelected.get(index) + 1);
+		if (mItemSelected.get(index) == TIMES_PER_ITEM) {
+			mScoreButtons.get(index).setEnabled(false);
+			++mSelected;
+		}
+
+		if (mSelected == mGameFragment.getCategoryCount())
+			new AlertDialog.Builder(getContext())
+					.setTitle(getContext().getString(R.string.gameOver))
+					.setMessage(String.format("%s: %d", getContext().getString(R.string.score), mGameTotal))
+					.setPositiveButton(R.string.ok, (dialog, which) -> {
+						if (mGameOverAction != null)
+							mGameOverAction.run();
+					})
+					.show();
+		else
+			mGameFragment.activateRollButton();
+	}
+
+	public void setGameOverAction(Runnable gameOverAction) {
+		mGameOverAction = gameOverAction;
+	}
+
+	/** 根据骰子点数更新分数 */
+	public void updateScores(int[] diceNumbers) {
+		Arrays.sort(diceNumbers);
+		for (int i = 0; i < mScoreButtons.size(); ++i)
+			if (mScoreButtons.get(i).isEnabled())
+				mScoreTextViews.get(i).get(mItemSelected.get(i)).setText(
+						String.valueOf(mGameFragment.calcScore(diceNumbers, i)));
+	}
+
+}

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DiceGames</string>
+    <string name="zzy">Zhao Zhengyang</string>
+    <string name="cmdList">cmd list</string>
+
+    <string name="fiveYahtzee">5-dice Yahtzee</string>
+    <string name="sixYahtzee">6-dice Yahtzee</string>
+    <string name="balut">Balut</string>
+    <string name="liarDice">Liar dice</string>
+    <string name="rollADice">Roll-a-dice</string>
+
+    <string name="newGame">New Game</string>
+    <string name="gameType">Game Type</string>
+    <string name="cmd">\?\?\?</string>
+    <string name="selectGameType">Please select game type</string>
+    <string name="quitPrompt">Click again to exit</string>
+
+    <string name="roll">Roll</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="activate">Activate</string>
+
+    <string name="diceWindow">Dice Window</string>
+    <string name="activateRollButton">Activate \"Roll\" Button</string>
+    <string name="diceCount">Number of Dices</string>
+    <string name="rollTimes">Roll Times</string>
+    <string name="diceNumbers">Numbers Shown on Dices</string>
+    <string name="wrongDiceNumber">Dice number must be between 1 and 6</string>
+    <string name="wrongFormat">Wrong format</string>
+
+    <string name="s1">1</string>
+    <string name="s2">2</string>
+    <string name="s3">3</string>
+    <string name="s4">4</string>
+    <string name="s5">5</string>
+    <string name="s6">6</string>
+    <string name="s1p">1 pair</string>
+    <string name="s2p">2 pairs</string>
+    <string name="s3p">3 pairs</string>
+    <string name="s3e">3 of a kind</string>
+    <string name="s4e">4 of a kind</string>
+    <string name="s5e">5 of a kind</string>
+    <string name="straight">Straight</string>
+    <string name="smallStraight">Sml. Straight</string>
+    <string name="largeStraight">Lge. Straight</string>
+    <string name="fullStraight">Full Straight</string>
+    <string name="fullHouse">Full House</string>
+    <string name="hut">Hut</string>
+    <string name="house">House</string>
+    <string name="tower">Tower</string>
+    <string name="chance">Chance</string>
+    <string name="choice">Choice</string>
+    <string name="yahtzee">Yahtzee</string>
+    <string name="score">Score</string>
+    <string name="total">Total</string>
+    <string name="bonus">Bonus</string>
+    <string name="gameTotal">Game Total</string>
+
+    <string name="gameOver">Game Over</string>
+</resources>

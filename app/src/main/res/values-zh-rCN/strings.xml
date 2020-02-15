@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">骰子游戏</string>
+    <string name="zzy">赵正阳</string>
+    <string name="cmdList">命令列表</string>
+
+    <string name="fiveYahtzee">5骰Yahtzee</string>
+    <string name="sixYahtzee">6骰Yahtzee</string>
+    <string name="balut">Balut</string>
+    <string name="liarDice">大话骰子</string>
+    <string name="rollADice">掷骰子</string>
+
+    <string name="newGame">新游戏</string>
+    <string name="gameType">游戏类型</string>
+    <string name="cmd">？？？</string>
+    <string name="selectGameType">请选择游戏类型</string>
+    <string name="quitPrompt">再按一次退出骰子游戏</string>
+
+    <string name="roll">换</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="activate">激活</string>
+
+    <string name="diceWindow">骰子窗口</string>
+    <string name="activateRollButton">激活\"Roll\"按钮</string>
+    <string name="diceCount">骰子个数</string>
+    <string name="rollTimes">掷骰子次数</string>
+    <string name="diceNumbers">骰子点数</string>
+    <string name="wrongDiceNumber">点数必须在1~6之间</string>
+    <string name="wrongFormat">格式错误</string>
+
+    <string name="s1">1</string>
+    <string name="s2">2</string>
+    <string name="s3">3</string>
+    <string name="s4">4</string>
+    <string name="s5">5</string>
+    <string name="s6">6</string>
+    <string name="s1p">1对</string>
+    <string name="s2p">2对</string>
+    <string name="s3p">3对</string>
+    <string name="s3e">3个同点</string>
+    <string name="s4e">4个同点</string>
+    <string name="s5e">5个同点</string>
+    <string name="straight">连顺</string>
+    <string name="smallStraight">小顺</string>
+    <string name="largeStraight">大顺</string>
+    <string name="fullStraight">全连顺</string>
+    <string name="fullHouse">葫芦</string>
+    <string name="hut">小屋</string>
+    <string name="house">房子</string>
+    <string name="tower">高楼</string>
+    <string name="chance">点数全加</string>
+    <string name="choice">选择</string>
+    <string name="yahtzee">Yahtzee</string>
+    <string name="score">得分</string>
+    <string name="total">总分</string>
+    <string name="bonus">奖励分</string>
+    <string name="gameTotal">游戏总分</string>
+
+    <string name="gameOver">游戏结束</string>
+</resources>

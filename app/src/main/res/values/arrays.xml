@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cmdList">
+        <item>ZZyCgDice &lt;diceNumbers&gt;</item>
+        <item>SetRollTimes &lt;n&gt;</item>
+        <item>Author</item>
+        <item>Test</item>
+        <item>Help</item>
+    </string-array>
+
+    <string-array name="gameTypes">
+        <item>@string/fiveYahtzee</item>
+        <item>@string/sixYahtzee</item>
+        <item>@string/balut</item>
+        <item>@string/liarDice</item>
+        <item>@string/rollADice</item>
+    </string-array>
+</resources>
