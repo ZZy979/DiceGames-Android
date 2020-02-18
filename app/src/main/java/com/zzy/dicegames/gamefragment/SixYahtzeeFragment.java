@@ -63,7 +63,7 @@ public class SixYahtzeeFragment extends AbstractYahtzeeFragment {
 		int pairs = 0, pairScore = 0;   // 用于2对、3对
 		int s3 = 0, s2 = 0;             // 用于小屋
 		boolean yahtzee = Arrays.stream(d).allMatch(x -> x == d[0]);
-		boolean joker = yahtzee && scoreBoard.isSelected(d[0] - 1) && scoreBoard.isSelected(19);
+		boolean joker = yahtzee && mScoreBoardFragment.isSelected(d[0] - 1) && mScoreBoardFragment.isSelected(19);
 		Map<Integer, Integer> numCount = new HashMap<>();
 		for (int i = 1; i <= 6; ++i)
 			numCount.put(i, 0);

@@ -40,6 +40,8 @@ public abstract class GameFragment extends Fragment {
 					.add(R.id.diceFragment, mDiceFragment)
 					.commit();
 		}
+		else
+			mDiceFragment = (DiceFragment) getChildFragmentManager().findFragmentById(R.id.diceFragment);
 
 		return rootView;
 	}
@@ -95,6 +97,7 @@ public abstract class GameFragment extends Fragment {
 		else if (parsedCmd.equals("SetRollTimes") && args.length == 1) {
 			try {
 				mDiceFragment.setRollTimes(Integer.parseInt(args[0]));
+				mDiceFragment.activateRollButton();
 			}
 			catch (NumberFormatException ignored) {
 			}

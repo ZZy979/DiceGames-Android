@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.dice.DiceFragment;
 
 /**
  * 掷骰子计分板Fragment，嵌套于一个{@link RollADiceFragment}
@@ -16,10 +17,13 @@ import com.zzy.dicegames.R;
  */
 public class RollADiceScoreBoardFragment extends Fragment {
 	/** 所属的游戏Fragment */
-	RollADiceFragment mGameFragment;
+	private RollADiceFragment mGameFragment;
 
 	/** 骰子个数选择器 */
-	NumberPicker mDiceCountPicker;
+	private NumberPicker mDiceCountPicker;
+
+	/** 用于保存和恢复状态：骰子个数 */
+	private static final String DICE_COUNT = "diceCount";
 
 	public RollADiceScoreBoardFragment() {}
 
@@ -29,12 +33,26 @@ public class RollADiceScoreBoardFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_roll_a_dice_score_board, container, false);
 
 		mDiceCountPicker = rootView.findViewById(R.id.diceCountPicker);
-		mDiceCountPicker.setMinValue(1);
-		mDiceCountPicker.setMaxValue(6);
-		mDiceCountPicker.setValue(6);
+		mDiceCountPicker.setMinValue(DiceFragment.MIN_DICE_NUM);
+		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_NUM);
+		if (savedInstanceState == null)
+			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_NUM);
 		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mGameFragment.setDiceCount(newVal));
 
 		return rootView;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putInt(DICE_COUNT, mDiceCountPicker.getValue());
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		if (savedInstanceState != null)
+			mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 	}
 
 }

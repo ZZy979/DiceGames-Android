@@ -20,7 +20,11 @@ import java.util.stream.Collectors;
 public class TestActivity extends Activity {
 	private DiceFragment mDiceFragment;
 
-	private EditText etDiceNumbers;
+	/** 骰子个数选择器 */
+	private NumberPicker mDiceCountPicker;
+
+	/** 用于保存和恢复状态：骰子个数 */
+	private static final String DICE_COUNT = "diceCount";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,25 +40,29 @@ public class TestActivity extends Activity {
 					.add(R.id.diceFragment, mDiceFragment)
 					.commit();
 		}
+		else
+			mDiceFragment = (DiceFragment) getFragmentManager().findFragmentById(R.id.diceFragment);
 
 		findViewById(R.id.btnActivate).setOnClickListener(v -> mDiceFragment.activateRollButton());
 
-		NumberPicker diceCountPicker = findViewById(R.id.diceCountPicker);
-		diceCountPicker.setMinValue(1);
-		diceCountPicker.setMaxValue(6);
-		diceCountPicker.setValue(6);
-		diceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mDiceFragment.setDiceCount(newVal));
+		mDiceCountPicker = findViewById(R.id.diceCountPicker);
+		mDiceCountPicker.setMinValue(DiceFragment.MIN_DICE_NUM);
+		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_NUM);
+		if (savedInstanceState == null)
+			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_NUM);
+		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mDiceFragment.setDiceCount(newVal));
 
 		EditText etRollTimes = findViewById(R.id.etRollTimes);
 		findViewById(R.id.btnOKRollTimes).setOnClickListener(v -> {
 			try {
 				mDiceFragment.setRollTimes(Integer.parseInt(etRollTimes.getText().toString()));
+				mDiceFragment.activateRollButton();
 			}
 			catch (NumberFormatException ignored) {
 			}
 		});
 
-		etDiceNumbers = findViewById(R.id.etDiceNumbers);
+		EditText etDiceNumbers = findViewById(R.id.etDiceNumbers);
 		findViewById(R.id.btnOKDiceNumbers).setOnClickListener(v -> {
 			try {
 				mDiceFragment.setDiceNumbers(Arrays.stream(etDiceNumbers.getText().toString().split(","))
@@ -75,6 +83,18 @@ public class TestActivity extends Activity {
 						.collect(Collectors.joining(","))
 				)
 		);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putInt(DICE_COUNT, mDiceCountPicker.getValue());
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 	}
 
 }

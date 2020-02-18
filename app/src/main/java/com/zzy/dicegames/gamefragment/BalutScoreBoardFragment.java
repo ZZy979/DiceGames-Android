@@ -12,9 +12,12 @@ import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Balut计分板Fragment，嵌套于一个{@link BalutFragment}
@@ -52,6 +55,12 @@ public class BalutScoreBoardFragment extends Fragment {
 	/** 游戏结束时执行的动作 */
 	private Runnable mGameOverAction;
 
+	/** 用于保存和恢复状态：每个得分项是否已选择 */
+	private static final String CATEGORY_SELECTED = "categorySelected";
+
+	/** 用于保存和恢复状态：每个得分项的得分 */
+	private static final String CATEGORY_SCORE = "categoryScore";
+
 	public BalutScoreBoardFragment() {}
 
 	@Override
@@ -59,6 +68,8 @@ public class BalutScoreBoardFragment extends Fragment {
 		mGameFragment = (BalutFragment) getParentFragment();
 		View rootView = inflater.inflate(R.layout.fragment_balut_score_board, container, false);
 		initViews(rootView);
+		for (int i = 0; i < mGameFragment.getCategoryCount(); ++i)
+			mItemSelected.add(0);
 		return rootView;
 	}
 
@@ -118,9 +129,55 @@ public class BalutScoreBoardFragment extends Fragment {
 		));
 
 		mGameTotalTextView = rootView.findViewById(R.id.tvGameTotal);
+	}
 
-		for (int i = 0; i < mGameFragment.getCategoryCount(); ++i)
-			mItemSelected.add(0);
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		List<List<Boolean>> categorySelected = new ArrayList<>();
+		for (int i = 0; i < mItemSelected.size(); ++i) {
+			int finalI = i;
+			categorySelected.add(IntStream.range(0, TIMES_PER_ITEM)
+					.mapToObj(x -> x < mItemSelected.get(finalI))
+					.collect(Collectors.toList())
+			);
+		}
+		outState.putSerializable(CATEGORY_SELECTED, (Serializable) categorySelected);
+
+		List<List<Integer>> categoryScore = new ArrayList<>();
+		for (int i = 0; i < mScoreTextViews.size(); ++i)
+			categoryScore.add(mScoreTextViews.get(i).stream()
+					.map(t -> Integer.parseInt(t.getText().toString()))
+					.collect(Collectors.toList())
+			);
+		outState.putSerializable(CATEGORY_SCORE, (Serializable) categoryScore);
+
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		if (savedInstanceState != null) {
+			List<List<Boolean>> categorySelected = (List<List<Boolean>>) savedInstanceState.getSerializable(CATEGORY_SELECTED);
+			List<List<Integer>> categoryScore = (List<List<Integer>>) savedInstanceState.getSerializable(CATEGORY_SCORE);
+			if (categorySelected != null && categoryScore != null) {
+				for (int i = 0; i < categorySelected.size(); ++i) {
+					for (int j = 0; j < TIMES_PER_ITEM; ++j) {
+						mScoreTextViews.get(i).get(j).setText(String.valueOf(categoryScore.get(i).get(j)));
+						if (categorySelected.get(i).get(j)) {
+							mScoreTextViews.get(i).get(j).setTextColor(Color.RED);
+							mItemSelected.set(i, mItemSelected.get(i) + 1);
+							mGameTotal += categoryScore.get(i).get(j);
+						}
+					}
+					if (mItemSelected.get(i) == TIMES_PER_ITEM) {
+						mScoreButtons.get(i).setEnabled(false);
+						++mSelected;
+					}
+				}
+				mGameTotalTextView.setText(String.valueOf(mGameTotal));
+			}
+		}
 	}
 
 	/** 选择第{@code index}项，更新得分并激活"Roll"按钮 */

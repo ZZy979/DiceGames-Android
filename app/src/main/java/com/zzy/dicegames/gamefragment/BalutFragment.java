@@ -16,7 +16,7 @@ import java.util.Arrays;
  */
 public class BalutFragment extends GameFragment {
 	/** 计分板 */
-	private BalutScoreBoardFragment scoreBoard;
+	private BalutScoreBoardFragment mScoreBoardFragment;
 
 	public BalutFragment() {}
 
@@ -25,25 +25,28 @@ public class BalutFragment extends GameFragment {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
 		if (savedInstanceState == null) {
-			scoreBoard = new BalutScoreBoardFragment();
-			scoreBoard.setGameOverAction(this::startNewGame);
+			mScoreBoardFragment = new BalutScoreBoardFragment();
+			mScoreBoardFragment.setGameOverAction(this::startNewGame);
 			getChildFragmentManager().beginTransaction()
-					.add(R.id.gameFragment, scoreBoard)
+					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
 					.commit();
-			mDiceFragment.setRollListener(scoreBoard::updateScores);
 		}
+		else
+			mScoreBoardFragment = (BalutScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
+
+		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
 
 		return rootView;
 	}
 
 	@Override
 	public void startNewGame() {
-		scoreBoard = new BalutScoreBoardFragment();
-		scoreBoard.setGameOverAction(this::startNewGame);
+		mScoreBoardFragment = new BalutScoreBoardFragment();
+		mScoreBoardFragment.setGameOverAction(this::startNewGame);
 		getChildFragmentManager().beginTransaction()
-				.replace(R.id.gameFragment, scoreBoard)
+				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
 				.commit();
-		mDiceFragment.setRollListener(scoreBoard::updateScores);
+		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
 		mDiceFragment.activateRollButton();
 	}
 

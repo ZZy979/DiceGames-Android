@@ -62,6 +62,15 @@ public class DiceFragment extends Fragment {
 	/** 掷骰子监听器 */
 	private Consumer<int[]> mRollListener;
 
+	/** 用于保存和恢复状态：{@link #mDiceCount} */
+	private static final String DICE_COUNT = "diceCount";
+
+	/** 用于保存和恢复状态：{@link #mRollTimes} */
+	private static final String ROLL_TIMES = "rollTimes";
+
+	/** 用于保存和恢复状态：{@link #mLeftRollTimes} */
+	private static final String LEFT_ROLL_TIMES = "leftRollTimes";
+
 	public DiceFragment() {}
 
 	@Override
@@ -89,12 +98,34 @@ public class DiceFragment extends Fragment {
 				roll();
 		});
 
-		Bundle bundle = getArguments();
-		if (bundle != null) {
-			setDiceCount(bundle.getInt("diceCount", MAX_DICE_NUM));
-			setRollTimes(bundle.getInt("rollTimes", 2));
+		if (savedInstanceState == null) {
+			Bundle bundle = getArguments();
+			if (bundle != null) {
+				setDiceCount(bundle.getInt("diceCount", MAX_DICE_NUM));
+				setRollTimes(bundle.getInt("rollTimes", 2));
+			}
+			activateRollButton();
 		}
+
 		return rootView;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putInt(DICE_COUNT, mDiceCount);
+		outState.putInt(ROLL_TIMES, mRollTimes);
+		outState.putInt(LEFT_ROLL_TIMES, mLeftRollTimes);
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		if (savedInstanceState != null) {
+			setDiceCount(savedInstanceState.getInt(DICE_COUNT));
+			setRollTimes(savedInstanceState.getInt(ROLL_TIMES));
+			setLeftRollTimes(savedInstanceState.getInt(LEFT_ROLL_TIMES));
+		}
 	}
 
 	/** 返回骰子个数 */
@@ -116,29 +147,29 @@ public class DiceFragment extends Fragment {
 	}
 
 	/**
-	 * 设置"Roll"按钮的可点击次数，小于等于0表示不限次数<br>
-	 * 设置之后将重新激活"Roll"按钮并掷骰子
+	 * 设置"Roll"按钮的可点击次数，小于等于0表示不限次数
 	 */
 	public void setRollTimes(int rollTimes) {
 		mRollTimes = rollTimes;
-		if (rollTimes <= 0) {
-			mRollButton.setText(getContext().getString(R.string.roll));
-			mRollButton.setEnabled(true);
-		}
-		activateRollButton();
 	}
 
 	/**
 	 * 设置剩余点击次数，并更新标签和可用状态
 	 *
-	 * @throws IllegalArgumentException 如果设置的值不在[0, mRollTimes]之间
+	 * @throws IllegalArgumentException 如果{@code mRollTimes > 0}且设置的值不在{@code [0, mRollTimes]}之间
 	 */
 	public void setLeftRollTimes(int leftRollTimes) {
-		if (leftRollTimes < 0 || leftRollTimes > mRollTimes)
-			throw new IllegalArgumentException("剩余点击次数必须在0~" + mRollTimes + "之间");
-		mLeftRollTimes = leftRollTimes;
-		mRollButton.setText(String.format("%s(%d)", getContext().getString(R.string.roll), leftRollTimes));
-		mRollButton.setEnabled(mLeftRollTimes != 0);
+		if (mRollTimes <= 0) {
+			mRollButton.setText(getContext().getString(R.string.roll));
+			mRollButton.setEnabled(true);
+		}
+		else {
+			if (leftRollTimes < 0 || leftRollTimes > mRollTimes)
+				throw new IllegalArgumentException("剩余点击次数必须在0~" + mRollTimes + "之间");
+			mLeftRollTimes = leftRollTimes;
+			mRollButton.setText(String.format("%s(%d)", getContext().getString(R.string.roll), leftRollTimes));
+			mRollButton.setEnabled(mLeftRollTimes != 0);
+		}
 	}
 
 	/** 设置掷骰子监听器 */

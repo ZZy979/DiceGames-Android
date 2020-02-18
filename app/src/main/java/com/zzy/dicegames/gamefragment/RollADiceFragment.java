@@ -13,19 +13,24 @@ import com.zzy.dicegames.R;
  * @author 赵正阳
  */
 public class RollADiceFragment extends GameFragment {
+	/** 计分板 */
+	private RollADiceScoreBoardFragment mScoreBoardFragment;
 
 	public RollADiceFragment() {}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = super.onCreateView(inflater, container, savedInstanceState);
+		View rootView = super.onCreateView(inflater, container,
+				savedInstanceState);
 
 		if (savedInstanceState == null) {
-			RollADiceScoreBoardFragment scoreBoard = new RollADiceScoreBoardFragment();
+			mScoreBoardFragment = new RollADiceScoreBoardFragment();
 			getChildFragmentManager().beginTransaction()
-					.add(R.id.gameFragment, scoreBoard)
+					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
 					.commit();
 		}
+		else
+			mScoreBoardFragment = (RollADiceScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
 
 		return rootView;
 	}

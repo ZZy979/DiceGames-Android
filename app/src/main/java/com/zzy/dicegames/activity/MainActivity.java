@@ -66,9 +66,11 @@ public class MainActivity extends Activity {
 		if (savedInstanceState == null) {
 			mGameFragment = new FiveYahtzeeFragment();
 			getFragmentManager().beginTransaction()
-					.add(R.id.mainContent, mGameFragment)
+					.add(R.id.gameFragment, mGameFragment)
 					.commit();
 		}
+		else
+			mGameFragment = (GameFragment) getFragmentManager().findFragmentById(R.id.gameFragment);
 
 		mHandler = new MainHandler(this);
 	}
@@ -143,7 +145,7 @@ public class MainActivity extends Activity {
 			if (newGameFragment != null) {
 				mGameFragment = newGameFragment;
 				getFragmentManager().beginTransaction()
-						.replace(R.id.mainContent, mGameFragment)
+						.replace(R.id.gameFragment, mGameFragment)
 						.commit();
 			}
 		}

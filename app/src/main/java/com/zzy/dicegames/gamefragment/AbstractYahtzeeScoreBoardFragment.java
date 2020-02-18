@@ -12,9 +12,12 @@ import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Yahtzee计分板Fragment，嵌套于一个{@link AbstractYahtzeeFragment}<br>
@@ -62,6 +65,12 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 	/** 游戏结束时执行的动作 */
 	private Runnable mGameOverAction;
 
+	/** 用于保存和恢复状态：每个得分项是否已选择 */
+	private static final String CATEGORY_SELECTED = "categorySelected";
+
+	/** 用于保存和恢复状态：每个得分项的得分 */
+	private static final String CATEGORY_SCORE = "categoryScore";
+
 	public AbstractYahtzeeScoreBoardFragment() {}
 
 	@Override
@@ -74,6 +83,50 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 
 	/** 获取得分按钮和标签 */
 	protected abstract void initViews(View rootView);
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		List<Boolean> categorySelected = IntStream.range(0, mGameFragment.getCategoryCount())
+				.mapToObj(this::isSelected)
+				.collect(Collectors.toList());
+		outState.putSerializable(CATEGORY_SELECTED, (Serializable) categorySelected);
+
+		List<Integer> categoryScore = mScoreTextViews.stream()
+				.map(t -> Integer.parseInt(t.getText().toString()))
+				.collect(Collectors.toList());
+		outState.putSerializable(CATEGORY_SCORE, (Serializable) categoryScore);
+
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		if (savedInstanceState != null) {
+			List<Boolean> categorySelected = (List<Boolean>) savedInstanceState.getSerializable(CATEGORY_SELECTED);
+			List<Integer> categoryScore = (List<Integer>) savedInstanceState.getSerializable(CATEGORY_SCORE);
+			if (categorySelected != null && categoryScore != null) {
+				for (int i = 0; i < categorySelected.size(); ++i) {
+					mScoreTextViews.get(i).setText(String.valueOf(categoryScore.get(i)));
+					if (categorySelected.get(i)) {
+						mScoreButtons.get(i).setEnabled(false);
+						mScoreTextViews.get(i).setTextColor(Color.RED);
+						++mSelected;
+						if (i <= 5)
+							mUpperTotal += categoryScore.get(i);
+						mGameTotal += categoryScore.get(i);
+					}
+				}
+				if (mUpperTotal >= mGameFragment.getBonusCondition()) {
+					mBonus = mGameFragment.getBonus();
+					mGameTotal += mBonus;
+				}
+				mUpperTotalTextView.setText(String.valueOf(mUpperTotal));
+				mBonusTextView.setText(String.valueOf(mBonus));
+				mGameTotalTextView.setText(String.valueOf(mGameTotal));
+			}
+		}
+	}
 
 	/** 选择第{@code index}项，更新得分并激活"Roll"按钮 */
 	private void choose(int index) {
