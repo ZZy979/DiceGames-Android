@@ -53,6 +53,11 @@ public class BalutFragment extends GameFragment {
 	}
 
 	@Override
+	public String getGameTypeCode() {
+		return "balut";
+	}
+
+	@Override
 	public int getDiceCount() {
 		return 5;
 	}

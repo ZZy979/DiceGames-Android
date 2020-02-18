@@ -24,7 +24,6 @@ public abstract class GameFragment extends Fragment {
 
 	public GameFragment() {}
 
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_game, container, false);
@@ -45,8 +44,11 @@ public abstract class GameFragment extends Fragment {
 		return rootView;
 	}
 
-	/** 返回游戏标题 */
+	/** 返回游戏标题（与系统语言相关，用于界面展示） */
 	public abstract String getTitle();
+
+	/** 返回游戏类型代码（与系统语言无关，代码内部使用） */
+	public abstract String getGameTypeCode();
 
 	/** 返回游戏使用的骰子个数 */
 	public abstract int getDiceCount();

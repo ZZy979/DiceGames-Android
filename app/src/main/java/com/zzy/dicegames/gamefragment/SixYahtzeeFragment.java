@@ -27,6 +27,11 @@ public class SixYahtzeeFragment extends AbstractYahtzeeFragment {
 	}
 
 	@Override
+	public String getGameTypeCode() {
+		return "six_yahtzee";
+	}
+
+	@Override
 	public int getDiceCount() {
 		return 6;
 	}

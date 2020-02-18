@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">骰子游戏</string>
-    <string name="zzy">赵正阳</string>
-    <string name="cmdList">命令列表</string>
 
     <string name="fiveYahtzee">5骰Yahtzee</string>
     <string name="sixYahtzee">6骰Yahtzee</string>
@@ -12,6 +10,7 @@
 
     <string name="newGame">新游戏</string>
     <string name="gameType">游戏类型</string>
+    <string name="help">帮助</string>
     <string name="cmd">？？？</string>
     <string name="selectGameType">请选择游戏类型</string>
     <string name="quitPrompt">再按一次退出骰子游戏</string>
@@ -58,4 +57,7 @@
     <string name="gameTotal">游戏总分</string>
 
     <string name="gameOver">游戏结束</string>
+
+    <string name="zzy">赵正阳</string>
+    <string name="cmdList">命令列表</string>
 </resources>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>6-dice Yahtzee Rules</title>
+</head>
+<body>
+<h1 style="text-align:center;">6-dice Yahtzee Rules</h1>
+<p>The basic rules are the same as 5-dice Yahtzee except that six dice are used
+and there are totally 20 scoring categories, and scoring rules are somewhat different.</p>
+
+<h3>Scoring</h3>
+<p>The score card is divided into an Upper Section and a Lower Section.</p>
+<h4>Upper Section</h4>
+<table align="center" border="1">
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Combination</th>
+        <th>Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1</td>
+        <td>Dice with number one</td>
+        <td>Total of ones</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Dice with number two</td>
+        <td>Total of twos</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Dice with number three</td>
+        <td>Total of threes</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Dice with number four</td>
+        <td>Total of fours</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>Dice with number five</td>
+        <td>Total of fives</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>Dice with number six</td>
+        <td>Total of sixes</td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>Bonus</h4>
+<p>If the player score a total of 84 or more in upper section, he can get a 100-point bonus.
+("84 points" are based on getting four of each number on average)</p>
+
+<h4>Lower Section</h4>
+<table align="center" border="1">
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Combination</th>
+        <th>Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1 pair</td>
+        <td>A pair of dice of the same numbers</td>
+        <td>Total of the largest pair</td>
+    </tr>
+    <tr>
+        <td>2 pairs</td>
+        <td>Two pairs of dice of the same numbers</td>
+        <td>Total of the largest two pairs</td>
+    </tr>
+    <tr>
+        <td>3 pairs</td>
+        <td>Three pairs of dice of the same numbers</td>
+        <td>Total of the three pairs</td>
+    </tr>
+    <tr>
+        <td>3 of a kind</td>
+        <td>Three dice of the same number</td>
+        <td>Total of the three dice</td>
+    </tr>
+    <tr>
+        <td>4 of a kind</td>
+        <td>Four dice of the same number</td>
+        <td>Total of the four dice</td>
+    </tr>
+    <tr>
+        <td>5 of a kind</td>
+        <td>Five dice of the same number</td>
+        <td>Total of the five dice</td>
+    </tr>
+    <tr>
+        <td>Small Straight</td>
+        <td>1,2,3,4,5</td>
+        <td>15</td>
+    </tr>
+    <tr>
+        <td>Large Straight</td>
+        <td>2,3,4,5,6</td>
+        <td>20</td>
+    </tr>
+    <tr>
+        <td>Full Straight</td>
+        <td>1,2,3,4,5,6</td>
+        <td>21</td>
+    </tr>
+    <tr>
+        <td>Hut</td>
+        <td>Three dice of a number and two of another</td>
+        <td>Total of the five dice</td>
+    </tr>
+    <tr>
+        <td>House</td>
+        <td>Three dice of a number and three of another</td>
+        <td>Total of all dice</td>
+    </tr>
+    <tr>
+        <td>Tower</td>
+        <td>Four dice of a number and two of another</td>
+        <td>Total of all dice</td>
+    </tr>
+    <tr>
+        <td>Chance</td>
+        <td>Any combination</td>
+        <td>Total of all dice</td>
+    </tr>
+    <tr>
+        <td>Yahtzee</td>
+        <td>All 6 dice of the same number</td>
+        <td>100</td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>Joker Rule</h4>
+<p>If the player get a combination of all six dice with the same number,
+and Yahtzee and the corresponding category in Upper Section have already been chosen,
+then he can score in any open categories in Lower Section,
+although this doesn't meet the normal requirement of there categories at all.
+At this time, the scoring rule of all categories are changed to total of all dice,
+except "Small Straight", "Large Straight" and "Full Straight".</p>
+<p>For example, you roll six Sixes, and you've chosen the "6" and "Yahtzee" categories,
+then you can score 36 points in "1 pair" or 21 points in "Full Straight" (if not chosen yet).</p>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>5-dice Yahtzee Rules</title>
+</head>
+<body>
+<h1 style="text-align:center;">5-dice Yahtzee Rules</h1>
+<div align="center">
+    <img src="Yahtzee.png" width="150px">
+</div>
+<h3>Objective</h3>
+<p>The objective of the game is to get as many points as possible by rolling five dice
+and getting certain combinations.</p>
+
+<h3>Gameplay</h3>
+<p>In each turn, the player can roll the dice up to three times then choose a scoring category,
+although he may stop and score after the first or second roll.
+After each roll, the player can choose the dice that he want to keep by clicking on them,
+so that they won't be changed in the next roll.
+If the player doesn't want to keep a dice any more, click on it again.</p>
+<p>There are totally 14 scoring categories, and the player must choose one in each turn.
+Each category can be chosen only once.
+If the player can't (or doesn't want to) enter a score, he must enter a zero.
+The game ends when all the categories are chosen.
+Scores are totalled, including any bonus points.</p>
+
+<h3>Scoring</h3>
+<p>The score card is divided into an Upper Section and a Lower Section.</p>
+<h4>Upper Section</h4>
+<table align="center" border="1">
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Combination</th>
+        <th>Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1</td>
+        <td>Dice with number one</td>
+        <td>Total of ones</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Dice with number two</td>
+        <td>Total of twos</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Dice with number three</td>
+        <td>Total of threes</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Dice with number four</td>
+        <td>Total of fours</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>Dice with number five</td>
+        <td>Total of fives</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>Dice with number six</td>
+        <td>Total of sixes</td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>Bonus</h4>
+<p>If the player score a total of 63 or more in upper section, he can get a 50-point bonus.
+("63 points" are based on getting three of each number on average)</p>
+
+<h4>Lower Section</h4>
+<table align="center" border="1">
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Combination</th>
+        <th>Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>2 pairs</td>
+        <td>Two pairs of dice of the same numbers</td>
+        <td>Total of all dice</td>
+    </tr>
+    <tr>
+        <td>3 of a kind</td>
+        <td>At least three dice of the same number</td>
+        <td>Total of all dice</td>
+    </tr>
+    <tr>
+        <td>4 of a kind</td>
+        <td>At least four dice of the same number</td>
+        <td>Total of all dice</td>
+    </tr>
+    <tr>
+        <td>Full House</td>
+        <td>Three dice of a number and two of another</td>
+        <td>25</td>
+    </tr>
+    <tr>
+        <td>Small Straight</td>
+        <td>Four sequential dice<br>(1,2,3,4 or 2,3,4,5 or 3,4,5,6)</td>
+        <td>30</td>
+    </tr>
+    <tr>
+        <td>Large Straight</td>
+        <td>Five sequential dice<br>(1,2,3,4,5 or 2,3,4,5,6)</td>
+        <td>40</td>
+    </tr>
+    <tr>
+        <td>Chance</td>
+        <td>Any combination</td>
+        <td>Total of all dice</td>
+    </tr>
+    <tr>
+        <td>Yahtzee</td>
+        <td>All five dice of the same number</td>
+        <td>50</td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>Joker Rule</h4>
+<p>If the player get a combination of all five dice with the same number,
+and Yahtzee and the corresponding category in Upper Section have already been chosen,
+then he can score in any open categories in Lower Section,
+although this doesn't meet the normal requirement of there categories at all.</p>
+<p>For example, you roll five Fours, and you've chosen the "4" and "Yahtzee" categories,
+then you can score 40 points in "Large Straight" (if not chosen yet).</p>
+</body>
+</html>

@@ -48,7 +48,7 @@ public class DiceFragment extends Fragment {
 	private int mDiceCount = MAX_DICE_NUM;
 
 	/** 骰子数组 */
-	private Dice[] mDices = new Dice[MAX_DICE_NUM];
+	private Dice[] mDice = new Dice[MAX_DICE_NUM];
 
 	/** "Roll"按钮 */
 	private Button mRollButton;
@@ -67,12 +67,12 @@ public class DiceFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_dice, container, false);
-		mDices[0] = rootView.findViewById(R.id.dice1);
-		mDices[1] = rootView.findViewById(R.id.dice2);
-		mDices[2] = rootView.findViewById(R.id.dice3);
-		mDices[3] = rootView.findViewById(R.id.dice4);
-		mDices[4] = rootView.findViewById(R.id.dice5);
-		mDices[5] = rootView.findViewById(R.id.dice6);
+		mDice[0] = rootView.findViewById(R.id.dice1);
+		mDice[1] = rootView.findViewById(R.id.dice2);
+		mDice[2] = rootView.findViewById(R.id.dice3);
+		mDice[3] = rootView.findViewById(R.id.dice4);
+		mDice[4] = rootView.findViewById(R.id.dice5);
+		mDice[5] = rootView.findViewById(R.id.dice6);
 
 		mRollButton = rootView.findViewById(R.id.btnRoll);
 		mRollButton.setOnClickListener(v -> {
@@ -80,7 +80,7 @@ public class DiceFragment extends Fragment {
 				if (mLeftRollTimes > 0) {
 					setLeftRollTimes(mLeftRollTimes - 1);
 					if (mLeftRollTimes == 0)
-						for (Dice dice : mDices)
+						for (Dice dice : mDice)
 							dice.setEnabled(false);
 					roll();
 				}
@@ -111,8 +111,8 @@ public class DiceFragment extends Fragment {
 		if (diceCount < MIN_DICE_NUM || diceCount > MAX_DICE_NUM)
 			throw new IllegalArgumentException(String.format("骰子个数必须在%d~%d之间", MIN_DICE_NUM, MAX_DICE_NUM));
 		mDiceCount = diceCount;
-		for (int i = 0; i < mDices.length; ++i)
-			mDices[i].setVisibility(i < diceCount ? View.VISIBLE : View.INVISIBLE);
+		for (int i = 0; i < mDice.length; ++i)
+			mDice[i].setVisibility(i < diceCount ? View.VISIBLE : View.INVISIBLE);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class DiceFragment extends Fragment {
 
 	/** 掷骰子<strong>一次</strong>，锁定的骰子除外 */
 	private void rollOnce() {
-		for (Dice dice : mDices) {
+		for (Dice dice : mDice) {
 			dice.setNumber(new Random().nextInt(6) + 1);
 		}
 	}
@@ -179,7 +179,7 @@ public class DiceFragment extends Fragment {
 	public void activateRollButton() {
 		if (mRollTimes > 0)
 			setLeftRollTimes(mRollTimes);
-		for (Dice dice : mDices) {
+		for (Dice dice : mDice) {
 			dice.setEnabled(true);
 			dice.setLocked(false);
 		}
@@ -188,7 +188,7 @@ public class DiceFragment extends Fragment {
 
 	/** 返回骰子点数的数组 */
 	public int[] getDiceNumbers() {
-		return Arrays.stream(mDices)
+		return Arrays.stream(mDice)
 				.filter(dice -> dice.getVisibility() == View.VISIBLE)
 				.mapToInt(Dice::getNumber)
 				.toArray();
@@ -202,7 +202,7 @@ public class DiceFragment extends Fragment {
 	 */
 	public void setDiceNumbers(int[] newNumbers) {
 		for (int i = 0; i < mDiceCount && i < newNumbers.length; ++i)
-			mDices[i].forceSetNumber(newNumbers[i]);
+			mDice[i].forceSetNumber(newNumbers[i]);
 		if (mRollListener != null)
 			mRollListener.accept(getDiceNumbers());
 	}

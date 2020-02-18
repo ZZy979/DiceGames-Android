@@ -22,18 +22,18 @@ import java.lang.ref.WeakReference;
 import java.util.Date;
 
 public class MainActivity extends Activity {
-	private String[] gameTypes;
+	private String[] mGameTypes;
 
-	private GameFragment gameFragment;
+	private GameFragment mGameFragment;
 
 	/** 上次按返回键的时间 */
-	private long lastPressTime = 0;
+	private long mLastPressTime = 0;
 
 	// -------------------------消息处理-------------------------
 	/** 解析提交的命令行 */
 	private static final int MSG_SUBMIT_CMD = 1;
 
-	private MainHandler handler;
+	private MainHandler mHandler;
 
 	/** 防止内存泄露的消息处理器 */
 	private static class MainHandler extends Handler {
@@ -62,15 +62,15 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		gameTypes = getResources().getStringArray(R.array.gameTypes);
+		mGameTypes = getResources().getStringArray(R.array.gameTypes);
 		if (savedInstanceState == null) {
-			gameFragment = new FiveYahtzeeFragment();
+			mGameFragment = new FiveYahtzeeFragment();
 			getFragmentManager().beginTransaction()
-					.add(R.id.mainContent, gameFragment)
+					.add(R.id.mainContent, mGameFragment)
 					.commit();
 		}
 
-		handler = new MainHandler(this);
+		mHandler = new MainHandler(this);
 	}
 
 	@Override
@@ -81,16 +81,22 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
 		switch (item.getItemId()) {
 		case R.id.menuNewGame:
-			gameFragment.startNewGame();
+			mGameFragment.startNewGame();
 			break;
 		case R.id.menuGameType:
 			new AlertDialog.Builder(this)
 					.setIcon(R.mipmap.ic_launcher)
 					.setTitle(R.string.selectGameType)
-					.setItems(gameTypes, (dialog, which) -> changeGameType(gameTypes[which]))
+					.setItems(mGameTypes, (dialog, which) -> changeGameType(mGameTypes[which]))
 					.create().show();
+			break;
+		case R.id.menuHelp:
+			intent = new Intent(this, HelpActivity.class);
+			intent.putExtra(HelpActivity.GAME_TYPE_CODE, mGameFragment.getGameTypeCode());
+			startActivity(intent);
 			break;
 		case R.id.menuCmd:
 			final EditText editText = new EditText(this);
@@ -99,8 +105,8 @@ public class MainActivity extends Activity {
 					.setTitle(R.string.cmd)
 					.setView(editText)
 					.setPositiveButton(R.string.ok, (dialog, which) -> {
-						Message message = handler.obtainMessage(MSG_SUBMIT_CMD, editText.getText().toString());
-						handler.sendMessage(message);
+						Message message = mHandler.obtainMessage(MSG_SUBMIT_CMD, editText.getText().toString());
+						mHandler.sendMessage(message);
 					})
 					.create().show();
 			break;
@@ -111,16 +117,16 @@ public class MainActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		long currentTime = new Date().getTime();
-		if (currentTime - lastPressTime < 1000) finish();
+		if (currentTime - mLastPressTime < 1000) finish();
 		else {
-			lastPressTime = currentTime;
+			mLastPressTime = currentTime;
 			Toast.makeText(this, R.string.quitPrompt, Toast.LENGTH_SHORT).show();
 		}
 	}
 
 	private void changeGameType(String title) {
-		if (gameFragment.getTitle().equals(title))
-			gameFragment.startNewGame();
+		if (mGameFragment.getTitle().equals(title))
+			mGameFragment.startNewGame();
 		else {
 			GameFragment newGameFragment = null;
 			if (title.equals(getString(R.string.fiveYahtzee)))
@@ -135,9 +141,9 @@ public class MainActivity extends Activity {
 				newGameFragment = new RollADiceFragment();
 
 			if (newGameFragment != null) {
-				gameFragment = newGameFragment;
+				mGameFragment = newGameFragment;
 				getFragmentManager().beginTransaction()
-						.replace(R.id.mainContent, gameFragment)
+						.replace(R.id.mainContent, mGameFragment)
 						.commit();
 			}
 		}
@@ -171,7 +177,7 @@ public class MainActivity extends Activity {
 					.setPositiveButton(R.string.ok, null)
 					.create().show();
 		else
-			gameFragment.executeCmd(cmd);
+			mGameFragment.executeCmd(cmd);
 	}
 
 }
