@@ -47,12 +47,12 @@ public class SixYahtzeeFragment extends AbstractYahtzeeFragment {
 	}
 
 	@Override
-	public int getBonusCondition() {
+	public int getGameBonusCondition() {
 		return 84;
 	}
 
 	@Override
-	public int getBonus() {
+	public int getGameBonus() {
 		return 100;
 	}
 

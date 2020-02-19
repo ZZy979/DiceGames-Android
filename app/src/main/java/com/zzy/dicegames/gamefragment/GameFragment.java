@@ -33,8 +33,8 @@ public abstract class GameFragment extends Fragment {
 		if (savedInstanceState == null) {
 			mDiceFragment = new DiceFragment();
 			Bundle bundle = new Bundle();
-			bundle.putInt("diceCount", getDiceCount());
-			bundle.putInt("rollTimes", getRollTimes());
+			bundle.putInt(DiceFragment.DICE_COUNT, getDiceCount());
+			bundle.putInt(DiceFragment.ROLL_TIMES, getRollTimes());
 			mDiceFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.diceFragment, mDiceFragment)
@@ -60,16 +60,6 @@ public abstract class GameFragment extends Fragment {
 
 	/** 开始一次新游戏 */
 	public abstract void startNewGame();
-
-	/** 重新激活骰子窗口的"Roll"按钮、解锁骰子并掷骰子 */
-	public void activateRollButton() {
-		mDiceFragment.activateRollButton();
-	}
-
-	/** 设置骰子窗口的骰子个数 */
-	public void setDiceCount(int diceCount) {
-		mDiceFragment.setDiceCount(diceCount);
-	}
 
 	/**
 	 * 解析命令行并执行相应操作。命令列表：

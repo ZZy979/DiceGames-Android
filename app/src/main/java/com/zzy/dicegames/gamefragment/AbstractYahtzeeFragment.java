@@ -24,7 +24,11 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 
 		if (savedInstanceState == null) {
 			mScoreBoardFragment = createScoreBoardFragment();
-			mScoreBoardFragment.setGameOverAction(this::startNewGame);
+			Bundle bundle = new Bundle();
+			bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+			bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS_CONDITION, getGameBonusCondition());
+			bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS, getGameBonus());
+			mScoreBoardFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
 					.commit();
@@ -33,6 +37,9 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 			mScoreBoardFragment = (AbstractYahtzeeScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
+		mScoreBoardFragment.setGameOverAction(this::startNewGame);
 
 		return rootView;
 	}
@@ -40,11 +47,19 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 	@Override
 	public void startNewGame() {
 		mScoreBoardFragment = createScoreBoardFragment();
-		mScoreBoardFragment.setGameOverAction(this::startNewGame);
+		Bundle bundle = new Bundle();
+		bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+		bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS_CONDITION, getGameBonusCondition());
+		bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS, getGameBonus());
+		mScoreBoardFragment.setArguments(bundle);
 		getChildFragmentManager().beginTransaction()
 				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
 				.commit();
+
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
+		mScoreBoardFragment.setGameOverAction(this::startNewGame);
 		mDiceFragment.activateRollButton();
 	}
 
@@ -55,10 +70,10 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 	public abstract int getCategoryCount();
 
 	/** 上区总分大于等于多少时获得奖励分 */
-	public abstract int getBonusCondition();
+	public abstract int getGameBonusCondition();
 
 	/** 奖励分 */
-	public abstract int getBonus();
+	public abstract int getGameBonus();
 
 	/**
 	 * 根据骰子点数计算得分项的得分

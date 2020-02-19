@@ -17,8 +17,9 @@ public class SixYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFragm
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Bundle bundle = new Bundle();
-		bundle.putInt("layoutId", R.layout.fragment_six_yahtzee_score_board);
+		// AbstractYahtzeeFragment应当已设置过游戏参数，这里添加布局id参数
+		Bundle bundle = getArguments();
+		bundle.putInt(LAYOUT_ID, R.layout.fragment_six_yahtzee_score_board);
 		setArguments(bundle);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
@@ -46,7 +47,7 @@ public class SixYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFragm
 		mScoreButtons.add(rootView.findViewById(R.id.btnChance));
 		mScoreButtons.add(rootView.findViewById(R.id.btnYahtzee));
 		for (Button scoreButton : mScoreButtons)
-			scoreButton.setOnClickListener(mChooseAction);
+			scoreButton.setOnClickListener(v -> choose(mScoreButtons.indexOf(v)));
 
 		mScoreTextViews.add(rootView.findViewById(R.id.tv1));
 		mScoreTextViews.add(rootView.findViewById(R.id.tv2));

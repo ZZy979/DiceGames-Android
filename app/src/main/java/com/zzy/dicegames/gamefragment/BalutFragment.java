@@ -26,7 +26,9 @@ public class BalutFragment extends GameFragment {
 
 		if (savedInstanceState == null) {
 			mScoreBoardFragment = new BalutScoreBoardFragment();
-			mScoreBoardFragment.setGameOverAction(this::startNewGame);
+			Bundle bundle = new Bundle();
+			bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+			mScoreBoardFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
 					.commit();
@@ -35,19 +37,11 @@ public class BalutFragment extends GameFragment {
 			mScoreBoardFragment = (BalutScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
+		mScoreBoardFragment.setGameOverAction(this::startNewGame);
 
 		return rootView;
-	}
-
-	@Override
-	public void startNewGame() {
-		mScoreBoardFragment = new BalutScoreBoardFragment();
-		mScoreBoardFragment.setGameOverAction(this::startNewGame);
-		getChildFragmentManager().beginTransaction()
-				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
-				.commit();
-		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-		mDiceFragment.activateRollButton();
 	}
 
 	@Override
@@ -68,6 +62,23 @@ public class BalutFragment extends GameFragment {
 	@Override
 	public int getRollTimes() {
 		return 2;
+	}
+
+	@Override
+	public void startNewGame() {
+		mScoreBoardFragment = new BalutScoreBoardFragment();
+		Bundle bundle = new Bundle();
+		bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+		mScoreBoardFragment.setArguments(bundle);
+		getChildFragmentManager().beginTransaction()
+				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
+				.commit();
+
+		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
+		mScoreBoardFragment.setGameOverAction(this::startNewGame);
+		mDiceFragment.activateRollButton();
 	}
 
 	/** 返回得分项数量 */

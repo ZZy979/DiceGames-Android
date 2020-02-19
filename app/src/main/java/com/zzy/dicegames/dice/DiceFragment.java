@@ -31,8 +31,8 @@ import java.util.function.Consumer;
  * （例如{@code MainActivity.onCreate()}中），否则会产生空指针异常！<br>
  * 创建{@code DiceFragment}时的初始化参数通过{@link #setArguments(Bundle)}方法传入：
  * <ul>
- *     <li>diceCount：骰子点数，默认6</li>
- *     <li>rollTimes："Roll"按钮可点击次数，默认2</li>
+ *     <li>{@link #DICE_COUNT}：骰子点数，默认6</li>
+ *     <li>{@link #ROLL_TIMES}："Roll"按钮可点击次数，默认2</li>
  * </ul>
  *
  * @author 赵正阳
@@ -44,6 +44,14 @@ public class DiceFragment extends Fragment {
 	/** 骰子个数最大值 */
 	public static final int MAX_DICE_NUM = 6;
 
+	// ----------传入参数----------
+	/** 用于传入参数/保存和恢复状态：{@link #mDiceCount} */
+	public static final String DICE_COUNT = "diceCount";
+
+	/** 用于传入参数/保存和恢复状态：{@link #mRollTimes} */
+	public static final String ROLL_TIMES = "rollTimes";
+
+	// ----------状态数据----------
 	/** 骰子个数 */
 	private int mDiceCount = MAX_DICE_NUM;
 
@@ -62,12 +70,7 @@ public class DiceFragment extends Fragment {
 	/** 掷骰子监听器 */
 	private Consumer<int[]> mRollListener;
 
-	/** 用于保存和恢复状态：{@link #mDiceCount} */
-	private static final String DICE_COUNT = "diceCount";
-
-	/** 用于保存和恢复状态：{@link #mRollTimes} */
-	private static final String ROLL_TIMES = "rollTimes";
-
+	// ----------保存和恢复状态----------
 	/** 用于保存和恢复状态：{@link #mLeftRollTimes} */
 	private static final String LEFT_ROLL_TIMES = "leftRollTimes";
 
@@ -101,8 +104,8 @@ public class DiceFragment extends Fragment {
 		if (savedInstanceState == null) {
 			Bundle bundle = getArguments();
 			if (bundle != null) {
-				setDiceCount(bundle.getInt("diceCount", MAX_DICE_NUM));
-				setRollTimes(bundle.getInt("rollTimes", 2));
+				setDiceCount(bundle.getInt(DICE_COUNT, MAX_DICE_NUM));
+				setRollTimes(bundle.getInt(ROLL_TIMES, 2));
 			}
 			activateRollButton();
 		}

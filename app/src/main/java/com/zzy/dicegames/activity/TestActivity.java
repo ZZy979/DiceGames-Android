@@ -34,7 +34,7 @@ public class TestActivity extends Activity {
 		if (savedInstanceState == null) {
 			mDiceFragment = new DiceFragment();
 			Bundle bundle = new Bundle();
-			bundle.putInt("rollTimes", 2);
+			bundle.putInt(DiceFragment.ROLL_TIMES, 2);
 			mDiceFragment.setArguments(bundle);
 			getFragmentManager().beginTransaction()
 					.add(R.id.diceFragment, mDiceFragment)

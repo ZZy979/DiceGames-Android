@@ -16,21 +16,30 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Balut计分板Fragment，嵌套于一个{@link BalutFragment}
+ * Balut计分板Fragment，嵌套于一个{@link BalutFragment}<br>
+ * 通过{@link #setArguments(Bundle)}传入的参数：
+ * <ul><li>{@link #CATEGORY_COUNT}：得分项数量</li></ul>
  *
  * @author 赵正阳
  */
 public class BalutScoreBoardFragment extends Fragment {
+	// ----------传入参数----------
+	/** 传入参数：{@link #mCategoryCount} */
+	public static final String CATEGORY_COUNT = "categoryCount";
+
+	// ----------游戏参数----------
 	/** 每个得分项可选择的次数 */
 	private static final int TIMES_PER_ITEM = 4;
 
-	/** 所属的游戏Fragment */
-	private BalutFragment mGameFragment;
+	/** 得分项数量 */
+	protected int mCategoryCount;
 
+	// ----------游戏状态数据----------
 	/** 得分项按钮 */
 	private List<Button> mScoreButtons = new ArrayList<>();
 
@@ -49,12 +58,16 @@ public class BalutScoreBoardFragment extends Fragment {
 	/** 每个得分项已选择的次数 */
 	private List<Integer> mItemSelected = new ArrayList<>();
 
-	/** 选择一个得分项时执行的动作 */
-	private View.OnClickListener mChooseAction = v -> choose(mScoreButtons.indexOf(v));
+	/** 每次选择一项后执行的动作 */
+	private Runnable mActionAfterChoosing;
+
+	/** 计算每一项得分的函数 */
+	private BiFunction<int[], Integer, Integer> mCalcScoreFunc;
 
 	/** 游戏结束时执行的动作 */
 	private Runnable mGameOverAction;
 
+	// ----------保存和恢复状态----------
 	/** 用于保存和恢复状态：每个得分项是否已选择 */
 	private static final String CATEGORY_SELECTED = "categorySelected";
 
@@ -65,10 +78,12 @@ public class BalutScoreBoardFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mGameFragment = (BalutFragment) getParentFragment();
 		View rootView = inflater.inflate(R.layout.fragment_balut_score_board, container, false);
 		initViews(rootView);
-		for (int i = 0; i < mGameFragment.getCategoryCount(); ++i)
+
+		mCategoryCount = getArguments().getInt(CATEGORY_COUNT);
+
+		for (int i = 0; i < mCategoryCount; ++i)
 			mItemSelected.add(0);
 		return rootView;
 	}
@@ -83,7 +98,7 @@ public class BalutScoreBoardFragment extends Fragment {
 		mScoreButtons.add(rootView.findViewById(R.id.btnChoice));
 		mScoreButtons.add(rootView.findViewById(R.id.btnBalut));
 		for (Button scoreButton : mScoreButtons)
-			scoreButton.setOnClickListener(mChooseAction);
+			scoreButton.setOnClickListener(v -> choose(mScoreButtons.indexOf(v)));
 
 		mScoreTextViews.add(Arrays.asList(
 				rootView.findViewById(R.id.tv41),
@@ -193,7 +208,7 @@ public class BalutScoreBoardFragment extends Fragment {
 			++mSelected;
 		}
 
-		if (mSelected == mGameFragment.getCategoryCount())
+		if (mSelected == mCategoryCount)
 			new AlertDialog.Builder(getContext())
 					.setTitle(getContext().getString(R.string.gameOver))
 					.setMessage(String.format("%s: %d", getContext().getString(R.string.score), mGameTotal))
@@ -203,7 +218,15 @@ public class BalutScoreBoardFragment extends Fragment {
 					})
 					.show();
 		else
-			mGameFragment.activateRollButton();
+			mActionAfterChoosing.run();
+	}
+
+	public void setActionAfterChoosing(Runnable actionAfterChoosing) {
+		mActionAfterChoosing = actionAfterChoosing;
+	}
+
+	public void setCalcScoreFunc(BiFunction<int[], Integer, Integer> calcScoreFunc) {
+		mCalcScoreFunc = calcScoreFunc;
 	}
 
 	public void setGameOverAction(Runnable gameOverAction) {
@@ -216,7 +239,7 @@ public class BalutScoreBoardFragment extends Fragment {
 		for (int i = 0; i < mScoreButtons.size(); ++i)
 			if (mScoreButtons.get(i).isEnabled())
 				mScoreTextViews.get(i).get(mItemSelected.get(i)).setText(
-						String.valueOf(mGameFragment.calcScore(diceNumbers, i)));
+						String.valueOf(mCalcScoreFunc.apply(diceNumbers, i)));
 	}
 
 }

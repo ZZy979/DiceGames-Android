@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,15 +24,39 @@ import java.util.stream.IntStream;
  * Yahtzee计分板Fragment，嵌套于一个{@link AbstractYahtzeeFragment}<br>
  * 通过{@link #setArguments(Bundle)}传入的参数：
  * <ul>
- *     <li>layoutId：布局资源id</li>
+ *     <li>{@link #LAYOUT_ID}：布局资源id</li>
+ *     <li>{@link #CATEGORY_COUNT}：得分项数量</li>
+ *     <li>{@link #GAME_BONUS_CONDITION}：游戏奖励分条件</li>
+ *     <li>{@link #GAME_BONUS}：游戏奖励分</li>
  * </ul>
  *
  * @author 赵正阳
  */
 public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
-	/** 所属的游戏Fragment */
-	private AbstractYahtzeeFragment mGameFragment;
+	// ----------传入参数----------
+	/** 传入参数：布局资源id */
+	public static final String LAYOUT_ID = "layoutId";
 
+	/** 传入参数：{@link #mCategoryCount} */
+	public static final String CATEGORY_COUNT = "categoryCount";
+
+	/** 传入参数：{@link #mGameBonusCondition} */
+	public static final String GAME_BONUS_CONDITION = "gameBonusCondition";
+
+	/** 传入参数：{@link #mGameBonus} */
+	public static final String GAME_BONUS = "gameBonus";
+
+	// ----------游戏参数----------
+	/** 得分项数量 */
+	protected int mCategoryCount;
+
+	/** 游戏奖励分条件 */
+	protected int mGameBonusCondition;
+
+	/** 游戏奖励分 */
+	protected int mGameBonus;
+
+	// ----------游戏状态数据----------
 	/** 得分项按钮 */
 	protected List<Button> mScoreButtons = new ArrayList<>();
 
@@ -59,12 +84,16 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 	/** 已选择得分项的个数 */
 	private int mSelected = 0;
 
-	/** 选择一个得分项时执行的动作 */
-	protected View.OnClickListener mChooseAction = v -> choose(mScoreButtons.indexOf(v));
+	/** 每次选择一项后执行的动作 */
+	private Runnable mActionAfterChoosing;
+
+	/** 计算每一项得分的函数 */
+	private BiFunction<int[], Integer, Integer> mCalcScoreFunc;
 
 	/** 游戏结束时执行的动作 */
 	private Runnable mGameOverAction;
 
+	// ----------保存和恢复状态----------
 	/** 用于保存和恢复状态：每个得分项是否已选择 */
 	private static final String CATEGORY_SELECTED = "categorySelected";
 
@@ -75,9 +104,14 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mGameFragment = (AbstractYahtzeeFragment) getParentFragment();
-		View rootView = inflater.inflate(getArguments().getInt("layoutId"), container, false);
+		Bundle bundle = getArguments();
+		View rootView = inflater.inflate(bundle.getInt(LAYOUT_ID), container, false);
 		initViews(rootView);
+
+		mCategoryCount = bundle.getInt(CATEGORY_COUNT);
+		mGameBonusCondition = bundle.getInt(GAME_BONUS_CONDITION);
+		mGameBonus = bundle.getInt(GAME_BONUS);
+
 		return rootView;
 	}
 
@@ -86,7 +120,7 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		List<Boolean> categorySelected = IntStream.range(0, mGameFragment.getCategoryCount())
+		List<Boolean> categorySelected = IntStream.range(0, mCategoryCount)
 				.mapToObj(this::isSelected)
 				.collect(Collectors.toList());
 		outState.putSerializable(CATEGORY_SELECTED, (Serializable) categorySelected);
@@ -117,8 +151,8 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 						mGameTotal += categoryScore.get(i);
 					}
 				}
-				if (mUpperTotal >= mGameFragment.getBonusCondition()) {
-					mBonus = mGameFragment.getBonus();
+				if (mUpperTotal >= mGameBonusCondition) {
+					mBonus = mGameBonus;
 					mGameTotal += mBonus;
 				}
 				mUpperTotalTextView.setText(String.valueOf(mUpperTotal));
@@ -129,13 +163,13 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 	}
 
 	/** 选择第{@code index}项，更新得分并激活"Roll"按钮 */
-	private void choose(int index) {
+	protected void choose(int index) {
 		int score = Integer.parseInt(mScoreTextViews.get(index).getText().toString());
 		if (index <= 5) {
 			mUpperTotal += score;
 			mUpperTotalTextView.setText(String.valueOf(mUpperTotal));
-			if (mUpperTotal >= mGameFragment.getBonusCondition() && mBonus == 0) {
-				mBonus = mGameFragment.getBonus();
+			if (mUpperTotal >= mGameBonusCondition && mBonus == 0) {
+				mBonus = mGameBonus;
 				mBonusTextView.setText(String.valueOf(mBonus));
 				mGameTotal += mBonus;
 			}
@@ -147,7 +181,7 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		mScoreTextViews.get(index).setTextColor(Color.RED);
 
 		++mSelected;
-		if (mSelected == mGameFragment.getCategoryCount())
+		if (mSelected == mCategoryCount)
 			new AlertDialog.Builder(getContext())
 					.setTitle(getContext().getString(R.string.gameOver))
 					.setMessage(String.format("%s: %d", getContext().getString(R.string.score), mGameTotal))
@@ -157,7 +191,15 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 					})
 					.show();
 		else
-			mGameFragment.activateRollButton();
+			mActionAfterChoosing.run();
+	}
+
+	public void setActionAfterChoosing(Runnable actionAfterChoosing) {
+		mActionAfterChoosing = actionAfterChoosing;
+	}
+
+	public void setCalcScoreFunc(BiFunction<int[], Integer, Integer> calcScoreFunc) {
+		mCalcScoreFunc = calcScoreFunc;
 	}
 
 	public void setGameOverAction(Runnable gameOverAction) {
@@ -170,7 +212,7 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		for (int i = 0; i < mScoreButtons.size(); ++i)
 			if (mScoreButtons.get(i).isEnabled())
 				mScoreTextViews.get(i).setText(
-						String.valueOf(mGameFragment.calcScore(diceNumbers, i)));
+						String.valueOf(mCalcScoreFunc.apply(diceNumbers, i)));
 	}
 
 	public boolean isSelected(int index) {

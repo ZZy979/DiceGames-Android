@@ -32,6 +32,8 @@ public class RollADiceFragment extends GameFragment {
 		else
 			mScoreBoardFragment = (RollADiceScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
 
+		mScoreBoardFragment.setActionOnChangingDiceCount(mDiceFragment::setDiceCount);
+
 		return rootView;
 	}
 
