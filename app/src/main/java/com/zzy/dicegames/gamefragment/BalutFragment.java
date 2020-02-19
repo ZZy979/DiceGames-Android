@@ -16,7 +16,7 @@ import java.util.Arrays;
  */
 public class BalutFragment extends GameFragment {
 	/** 计分板 */
-	private BalutScoreBoardFragment scoreBoard;
+	private BalutScoreBoardFragment mScoreBoardFragment;
 
 	public BalutFragment() {}
 
@@ -25,31 +25,33 @@ public class BalutFragment extends GameFragment {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
 		if (savedInstanceState == null) {
-			scoreBoard = new BalutScoreBoardFragment();
-			scoreBoard.setGameOverAction(this::startNewGame);
+			mScoreBoardFragment = new BalutScoreBoardFragment();
+			Bundle bundle = new Bundle();
+			bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+			mScoreBoardFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
-					.add(R.id.gameFragment, scoreBoard)
+					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
 					.commit();
-			mDiceFragment.setRollListener(scoreBoard::updateScores);
 		}
+		else
+			mScoreBoardFragment = (BalutScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
+
+		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
+		mScoreBoardFragment.setGameOverAction(this::startNewGame);
 
 		return rootView;
 	}
 
 	@Override
-	public void startNewGame() {
-		scoreBoard = new BalutScoreBoardFragment();
-		scoreBoard.setGameOverAction(this::startNewGame);
-		getChildFragmentManager().beginTransaction()
-				.replace(R.id.gameFragment, scoreBoard)
-				.commit();
-		mDiceFragment.setRollListener(scoreBoard::updateScores);
-		mDiceFragment.activateRollButton();
+	public String getTitle() {
+		return getContext().getString(R.string.balut);
 	}
 
 	@Override
-	public String getTitle() {
-		return getContext().getString(R.string.balut);
+	public String getGameTypeCode() {
+		return "balut";
 	}
 
 	@Override
@@ -60,6 +62,23 @@ public class BalutFragment extends GameFragment {
 	@Override
 	public int getRollTimes() {
 		return 2;
+	}
+
+	@Override
+	public void startNewGame() {
+		mScoreBoardFragment = new BalutScoreBoardFragment();
+		Bundle bundle = new Bundle();
+		bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+		mScoreBoardFragment.setArguments(bundle);
+		getChildFragmentManager().beginTransaction()
+				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
+				.commit();
+
+		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
+		mScoreBoardFragment.setGameOverAction(this::startNewGame);
+		mDiceFragment.activateRollButton();
 	}
 
 	/** 返回得分项数量 */

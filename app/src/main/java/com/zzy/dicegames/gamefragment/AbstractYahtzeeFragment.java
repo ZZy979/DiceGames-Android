@@ -14,7 +14,7 @@ import com.zzy.dicegames.R;
  */
 public abstract class AbstractYahtzeeFragment extends GameFragment {
 	/** 计分板 */
-	protected AbstractYahtzeeScoreBoardFragment scoreBoard;
+	protected AbstractYahtzeeScoreBoardFragment mScoreBoardFragment;
 
 	public AbstractYahtzeeFragment() {}
 
@@ -23,25 +23,43 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
 		if (savedInstanceState == null) {
-			scoreBoard = createScoreBoardFragment();
-			scoreBoard.setGameOverAction(this::startNewGame);
+			mScoreBoardFragment = createScoreBoardFragment();
+			Bundle bundle = new Bundle();
+			bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+			bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS_CONDITION, getGameBonusCondition());
+			bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS, getGameBonus());
+			mScoreBoardFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
-					.add(R.id.gameFragment, scoreBoard)
+					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
 					.commit();
-			mDiceFragment.setRollListener(scoreBoard::updateScores);
 		}
+		else
+			mScoreBoardFragment = (AbstractYahtzeeScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
+
+		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
+		mScoreBoardFragment.setGameOverAction(this::startNewGame);
 
 		return rootView;
 	}
 
 	@Override
 	public void startNewGame() {
-		scoreBoard = createScoreBoardFragment();
-		scoreBoard.setGameOverAction(this::startNewGame);
+		mScoreBoardFragment = createScoreBoardFragment();
+		Bundle bundle = new Bundle();
+		bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+		bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS_CONDITION, getGameBonusCondition());
+		bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS, getGameBonus());
+		mScoreBoardFragment.setArguments(bundle);
 		getChildFragmentManager().beginTransaction()
-				.replace(R.id.gameFragment, scoreBoard)
+				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
 				.commit();
-		mDiceFragment.setRollListener(scoreBoard::updateScores);
+
+		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
+		mScoreBoardFragment.setGameOverAction(this::startNewGame);
 		mDiceFragment.activateRollButton();
 	}
 
@@ -52,10 +70,10 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 	public abstract int getCategoryCount();
 
 	/** 上区总分大于等于多少时获得奖励分 */
-	public abstract int getBonusCondition();
+	public abstract int getGameBonusCondition();
 
 	/** 奖励分 */
-	public abstract int getBonus();
+	public abstract int getGameBonus();
 
 	/**
 	 * 根据骰子点数计算得分项的得分

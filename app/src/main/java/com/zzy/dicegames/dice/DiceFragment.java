@@ -31,8 +31,8 @@ import java.util.function.Consumer;
  * （例如{@code MainActivity.onCreate()}中），否则会产生空指针异常！<br>
  * 创建{@code DiceFragment}时的初始化参数通过{@link #setArguments(Bundle)}方法传入：
  * <ul>
- *     <li>diceCount：骰子点数，默认6</li>
- *     <li>rollTimes："Roll"按钮可点击次数，默认2</li>
+ *     <li>{@link #DICE_COUNT}：骰子点数，默认6</li>
+ *     <li>{@link #ROLL_TIMES}："Roll"按钮可点击次数，默认2</li>
  * </ul>
  *
  * @author 赵正阳
@@ -44,11 +44,19 @@ public class DiceFragment extends Fragment {
 	/** 骰子个数最大值 */
 	public static final int MAX_DICE_NUM = 6;
 
+	// ----------传入参数----------
+	/** 用于传入参数/保存和恢复状态：{@link #mDiceCount} */
+	public static final String DICE_COUNT = "diceCount";
+
+	/** 用于传入参数/保存和恢复状态：{@link #mRollTimes} */
+	public static final String ROLL_TIMES = "rollTimes";
+
+	// ----------状态数据----------
 	/** 骰子个数 */
 	private int mDiceCount = MAX_DICE_NUM;
 
 	/** 骰子数组 */
-	private Dice[] mDices = new Dice[MAX_DICE_NUM];
+	private Dice[] mDice = new Dice[MAX_DICE_NUM];
 
 	/** "Roll"按钮 */
 	private Button mRollButton;
@@ -62,17 +70,21 @@ public class DiceFragment extends Fragment {
 	/** 掷骰子监听器 */
 	private Consumer<int[]> mRollListener;
 
+	// ----------保存和恢复状态----------
+	/** 用于保存和恢复状态：{@link #mLeftRollTimes} */
+	private static final String LEFT_ROLL_TIMES = "leftRollTimes";
+
 	public DiceFragment() {}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_dice, container, false);
-		mDices[0] = rootView.findViewById(R.id.dice1);
-		mDices[1] = rootView.findViewById(R.id.dice2);
-		mDices[2] = rootView.findViewById(R.id.dice3);
-		mDices[3] = rootView.findViewById(R.id.dice4);
-		mDices[4] = rootView.findViewById(R.id.dice5);
-		mDices[5] = rootView.findViewById(R.id.dice6);
+		mDice[0] = rootView.findViewById(R.id.dice1);
+		mDice[1] = rootView.findViewById(R.id.dice2);
+		mDice[2] = rootView.findViewById(R.id.dice3);
+		mDice[3] = rootView.findViewById(R.id.dice4);
+		mDice[4] = rootView.findViewById(R.id.dice5);
+		mDice[5] = rootView.findViewById(R.id.dice6);
 
 		mRollButton = rootView.findViewById(R.id.btnRoll);
 		mRollButton.setOnClickListener(v -> {
@@ -80,7 +92,7 @@ public class DiceFragment extends Fragment {
 				if (mLeftRollTimes > 0) {
 					setLeftRollTimes(mLeftRollTimes - 1);
 					if (mLeftRollTimes == 0)
-						for (Dice dice : mDices)
+						for (Dice dice : mDice)
 							dice.setEnabled(false);
 					roll();
 				}
@@ -89,12 +101,34 @@ public class DiceFragment extends Fragment {
 				roll();
 		});
 
-		Bundle bundle = getArguments();
-		if (bundle != null) {
-			setDiceCount(bundle.getInt("diceCount", MAX_DICE_NUM));
-			setRollTimes(bundle.getInt("rollTimes", 2));
+		if (savedInstanceState == null) {
+			Bundle bundle = getArguments();
+			if (bundle != null) {
+				setDiceCount(bundle.getInt(DICE_COUNT, MAX_DICE_NUM));
+				setRollTimes(bundle.getInt(ROLL_TIMES, 2));
+			}
+			activateRollButton();
 		}
+
 		return rootView;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putInt(DICE_COUNT, mDiceCount);
+		outState.putInt(ROLL_TIMES, mRollTimes);
+		outState.putInt(LEFT_ROLL_TIMES, mLeftRollTimes);
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		if (savedInstanceState != null) {
+			setDiceCount(savedInstanceState.getInt(DICE_COUNT));
+			setRollTimes(savedInstanceState.getInt(ROLL_TIMES));
+			setLeftRollTimes(savedInstanceState.getInt(LEFT_ROLL_TIMES));
+		}
 	}
 
 	/** 返回骰子个数 */
@@ -111,34 +145,34 @@ public class DiceFragment extends Fragment {
 		if (diceCount < MIN_DICE_NUM || diceCount > MAX_DICE_NUM)
 			throw new IllegalArgumentException(String.format("骰子个数必须在%d~%d之间", MIN_DICE_NUM, MAX_DICE_NUM));
 		mDiceCount = diceCount;
-		for (int i = 0; i < mDices.length; ++i)
-			mDices[i].setVisibility(i < diceCount ? View.VISIBLE : View.INVISIBLE);
+		for (int i = 0; i < mDice.length; ++i)
+			mDice[i].setVisibility(i < diceCount ? View.VISIBLE : View.INVISIBLE);
 	}
 
 	/**
-	 * 设置"Roll"按钮的可点击次数，小于等于0表示不限次数<br>
-	 * 设置之后将重新激活"Roll"按钮并掷骰子
+	 * 设置"Roll"按钮的可点击次数，小于等于0表示不限次数
 	 */
 	public void setRollTimes(int rollTimes) {
 		mRollTimes = rollTimes;
-		if (rollTimes <= 0) {
-			mRollButton.setText(getContext().getString(R.string.roll));
-			mRollButton.setEnabled(true);
-		}
-		activateRollButton();
 	}
 
 	/**
 	 * 设置剩余点击次数，并更新标签和可用状态
 	 *
-	 * @throws IllegalArgumentException 如果设置的值不在[0, mRollTimes]之间
+	 * @throws IllegalArgumentException 如果{@code mRollTimes > 0}且设置的值不在{@code [0, mRollTimes]}之间
 	 */
 	public void setLeftRollTimes(int leftRollTimes) {
-		if (leftRollTimes < 0 || leftRollTimes > mRollTimes)
-			throw new IllegalArgumentException("剩余点击次数必须在0~" + mRollTimes + "之间");
-		mLeftRollTimes = leftRollTimes;
-		mRollButton.setText(String.format("%s(%d)", getContext().getString(R.string.roll), leftRollTimes));
-		mRollButton.setEnabled(mLeftRollTimes != 0);
+		if (mRollTimes <= 0) {
+			mRollButton.setText(getContext().getString(R.string.roll));
+			mRollButton.setEnabled(true);
+		}
+		else {
+			if (leftRollTimes < 0 || leftRollTimes > mRollTimes)
+				throw new IllegalArgumentException("剩余点击次数必须在0~" + mRollTimes + "之间");
+			mLeftRollTimes = leftRollTimes;
+			mRollButton.setText(String.format("%s(%d)", getContext().getString(R.string.roll), leftRollTimes));
+			mRollButton.setEnabled(mLeftRollTimes != 0);
+		}
 	}
 
 	/** 设置掷骰子监听器 */
@@ -148,7 +182,7 @@ public class DiceFragment extends Fragment {
 
 	/** 掷骰子<strong>一次</strong>，锁定的骰子除外 */
 	private void rollOnce() {
-		for (Dice dice : mDices) {
+		for (Dice dice : mDice) {
 			dice.setNumber(new Random().nextInt(6) + 1);
 		}
 	}
@@ -179,7 +213,7 @@ public class DiceFragment extends Fragment {
 	public void activateRollButton() {
 		if (mRollTimes > 0)
 			setLeftRollTimes(mRollTimes);
-		for (Dice dice : mDices) {
+		for (Dice dice : mDice) {
 			dice.setEnabled(true);
 			dice.setLocked(false);
 		}
@@ -188,7 +222,7 @@ public class DiceFragment extends Fragment {
 
 	/** 返回骰子点数的数组 */
 	public int[] getDiceNumbers() {
-		return Arrays.stream(mDices)
+		return Arrays.stream(mDice)
 				.filter(dice -> dice.getVisibility() == View.VISIBLE)
 				.mapToInt(Dice::getNumber)
 				.toArray();
@@ -202,7 +236,7 @@ public class DiceFragment extends Fragment {
 	 */
 	public void setDiceNumbers(int[] newNumbers) {
 		for (int i = 0; i < mDiceCount && i < newNumbers.length; ++i)
-			mDices[i].forceSetNumber(newNumbers[i]);
+			mDice[i].forceSetNumber(newNumbers[i]);
 		if (mRollListener != null)
 			mRollListener.accept(getDiceNumbers());
 	}

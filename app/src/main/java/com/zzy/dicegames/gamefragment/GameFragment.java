@@ -24,7 +24,6 @@ public abstract class GameFragment extends Fragment {
 
 	public GameFragment() {}
 
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_game, container, false);
@@ -34,19 +33,24 @@ public abstract class GameFragment extends Fragment {
 		if (savedInstanceState == null) {
 			mDiceFragment = new DiceFragment();
 			Bundle bundle = new Bundle();
-			bundle.putInt("diceCount", getDiceCount());
-			bundle.putInt("rollTimes", getRollTimes());
+			bundle.putInt(DiceFragment.DICE_COUNT, getDiceCount());
+			bundle.putInt(DiceFragment.ROLL_TIMES, getRollTimes());
 			mDiceFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.diceFragment, mDiceFragment)
 					.commit();
 		}
+		else
+			mDiceFragment = (DiceFragment) getChildFragmentManager().findFragmentById(R.id.diceFragment);
 
 		return rootView;
 	}
 
-	/** 返回游戏标题 */
+	/** 返回游戏标题（与系统语言相关，用于界面展示） */
 	public abstract String getTitle();
+
+	/** 返回游戏类型代码（与系统语言无关，代码内部使用） */
+	public abstract String getGameTypeCode();
 
 	/** 返回游戏使用的骰子个数 */
 	public abstract int getDiceCount();
@@ -56,16 +60,6 @@ public abstract class GameFragment extends Fragment {
 
 	/** 开始一次新游戏 */
 	public abstract void startNewGame();
-
-	/** 重新激活骰子窗口的"Roll"按钮、解锁骰子并掷骰子 */
-	public void activateRollButton() {
-		mDiceFragment.activateRollButton();
-	}
-
-	/** 设置骰子窗口的骰子个数 */
-	public void setDiceCount(int diceCount) {
-		mDiceFragment.setDiceCount(diceCount);
-	}
 
 	/**
 	 * 解析命令行并执行相应操作。命令列表：
@@ -93,6 +87,7 @@ public abstract class GameFragment extends Fragment {
 		else if (parsedCmd.equals("SetRollTimes") && args.length == 1) {
 			try {
 				mDiceFragment.setRollTimes(Integer.parseInt(args[0]));
+				mDiceFragment.activateRollButton();
 			}
 			catch (NumberFormatException ignored) {
 			}

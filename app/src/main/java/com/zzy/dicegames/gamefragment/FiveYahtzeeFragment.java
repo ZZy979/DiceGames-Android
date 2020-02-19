@@ -25,6 +25,11 @@ public class FiveYahtzeeFragment extends AbstractYahtzeeFragment {
 	}
 
 	@Override
+	public String getGameTypeCode() {
+		return "five_yahtzee";
+	}
+
+	@Override
 	public int getDiceCount() {
 		return 5;
 	}
@@ -40,12 +45,12 @@ public class FiveYahtzeeFragment extends AbstractYahtzeeFragment {
 	}
 
 	@Override
-	public int getBonusCondition() {
+	public int getGameBonusCondition() {
 		return 63;
 	}
 
 	@Override
-	public int getBonus() {
+	public int getGameBonus() {
 		return 50;
 	}
 
@@ -54,7 +59,7 @@ public class FiveYahtzeeFragment extends AbstractYahtzeeFragment {
 		int sum = Arrays.stream(d).sum();
 		String s = Arrays.stream(d).distinct().mapToObj(String::valueOf).collect(Collectors.joining());
 		boolean yahtzee = Arrays.stream(d).allMatch(x -> x == d[0]);
-		boolean joker = yahtzee && scoreBoard.isSelected(d[0] - 1) && scoreBoard.isSelected(13);
+		boolean joker = yahtzee && mScoreBoardFragment.isSelected(d[0] - 1) && mScoreBoardFragment.isSelected(13);
 
 		switch (index) {
 		case 0:	case 1:	case 2:	case 3:	case 4:	case 5:     // 1~6

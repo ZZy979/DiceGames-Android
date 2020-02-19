@@ -8,6 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -27,22 +29,34 @@ public class Dice extends View {
 	private static final int BORDER_WIDTH = 10;
 
 	/** 6个点数的图片 */
-	private final Bitmap[] pics = new Bitmap[6];
+	private final Bitmap[] mPics = new Bitmap[6];
 
 	/** 绘制图片的区域 */
-	private final Rect drawImageRect;
+	private final Rect mDrawImageRect;
 
 	/** 绘制边框的区域 */
-	private final Rect borderRect;
+	private final Rect mBorderRect;
 
 	/** 绘制边框的画笔 */
-	Paint mPaint;
+	private Paint mPaint;
 
 	/** 骰子点数 */
 	private int mNumber;
 
 	/** 是否被锁定 */
 	private boolean mLocked;
+
+	/** 用于保存和恢复状态：超类状态 */
+	private static final String SUPER_STATE = "superState";
+
+	/** 用于保存和恢复状态：{@link #mNumber} */
+	private static final String NUMBER = "number";
+
+	/** 用于保存和恢复状态：{@link #mLocked} */
+	private static final String LOCKED = "locked";
+
+	/** 用于保存和恢复状态：{@link #isEnabled()} */
+	private static final String ENABLED = "enabled";
 
 	public Dice(Context context) {
 		this(context, null);
@@ -59,19 +73,19 @@ public class Dice extends View {
 	public Dice(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
 		super(context, attrs, defStyleAttr, defStyleRes);
 
-		pics[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d1);
-		pics[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d2);
-		pics[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d3);
-		pics[3] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d4);
-		pics[4] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d5);
-		pics[5] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d6);
+		mPics[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d1);
+		mPics[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d2);
+		mPics[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d3);
+		mPics[3] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d4);
+		mPics[4] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d5);
+		mPics[5] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d6);
 
-		drawImageRect = new Rect(getPaddingLeft() + BORDER_WIDTH,
+		mDrawImageRect = new Rect(getPaddingLeft() + BORDER_WIDTH,
 				getPaddingTop() + BORDER_WIDTH,
 				getPaddingLeft() + SIDE_LENGTH - BORDER_WIDTH,
 				getPaddingTop() + SIDE_LENGTH - BORDER_WIDTH);
 
-		borderRect = new Rect(getPaddingLeft(), getPaddingTop(),
+		mBorderRect = new Rect(getPaddingLeft(), getPaddingTop(),
 				getPaddingLeft() + SIDE_LENGTH, getPaddingTop() + SIDE_LENGTH);
 
 		mPaint = new Paint();
@@ -89,6 +103,25 @@ public class Dice extends View {
 			if (isEnabled())
 				setLocked(!mLocked);
 		});
+	}
+
+	@Override
+	protected Parcelable onSaveInstanceState() {
+		Bundle bundle = new Bundle();
+		bundle.putParcelable(SUPER_STATE, super.onSaveInstanceState());
+		bundle.putInt(NUMBER, mNumber);
+		bundle.putBoolean(LOCKED, mLocked);
+		bundle.putBoolean(ENABLED, isEnabled());
+		return bundle;
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Parcelable state) {
+		Bundle bundle = (Bundle) state;
+		super.onRestoreInstanceState(bundle.getParcelable(SUPER_STATE));
+		mNumber = bundle.getInt(NUMBER);
+		mLocked = bundle.getBoolean(LOCKED);
+		setEnabled(bundle.getBoolean(ENABLED));
 	}
 
 	/** 返回骰子点数 */
@@ -132,14 +165,9 @@ public class Dice extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		canvas.drawBitmap(pics[mNumber - 1], null, drawImageRect, null);
+		canvas.drawBitmap(mPics[mNumber - 1], null, mDrawImageRect, null);
 		if (mLocked)
-			canvas.drawRect(borderRect, mPaint);
-	}
-
-	@Override
-	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-		super.onLayout(changed, left, top, right, bottom);
+			canvas.drawRect(mBorderRect, mPaint);
 	}
 
 	@Override

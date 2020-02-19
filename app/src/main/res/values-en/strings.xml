@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DiceGames</string>
-    <string name="zzy">Zhao Zhengyang</string>
-    <string name="cmdList">cmd list</string>
 
     <string name="fiveYahtzee">5-dice Yahtzee</string>
     <string name="sixYahtzee">6-dice Yahtzee</string>
@@ -12,6 +10,7 @@
 
     <string name="newGame">New Game</string>
     <string name="gameType">Game Type</string>
+    <string name="help">Help</string>
     <string name="cmd">\?\?\?</string>
     <string name="selectGameType">Please select game type</string>
     <string name="quitPrompt">Click again to exit</string>
@@ -23,9 +22,9 @@
 
     <string name="diceWindow">Dice Window</string>
     <string name="activateRollButton">Activate \"Roll\" Button</string>
-    <string name="diceCount">Number of Dices</string>
+    <string name="diceCount">Number of Dice</string>
     <string name="rollTimes">Roll Times</string>
-    <string name="diceNumbers">Numbers Shown on Dices</string>
+    <string name="diceNumbers">Numbers Shown on Dice</string>
     <string name="wrongDiceNumber">Dice number must be between 1 and 6</string>
     <string name="wrongFormat">Wrong format</string>
 
@@ -42,8 +41,8 @@
     <string name="s4e">4 of a kind</string>
     <string name="s5e">5 of a kind</string>
     <string name="straight">Straight</string>
-    <string name="smallStraight">Sml. Straight</string>
-    <string name="largeStraight">Lge. Straight</string>
+    <string name="smallStraight">Small Straight</string>
+    <string name="largeStraight">Large Straight</string>
     <string name="fullStraight">Full Straight</string>
     <string name="fullHouse">Full House</string>
     <string name="hut">Hut</string>
@@ -58,4 +57,7 @@
     <string name="gameTotal">Game Total</string>
 
     <string name="gameOver">Game Over</string>
+
+    <string name="zzy">Zhao Zhengyang</string>
+    <string name="cmdList">cmd list</string>
 </resources>

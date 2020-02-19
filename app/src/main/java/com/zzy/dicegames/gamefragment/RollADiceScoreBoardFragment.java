@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.dice.DiceFragment;
+
+import java.util.function.IntConsumer;
 
 /**
  * 掷骰子计分板Fragment，嵌套于一个{@link RollADiceFragment}
@@ -15,26 +18,48 @@ import com.zzy.dicegames.R;
  * @author 赵正阳
  */
 public class RollADiceScoreBoardFragment extends Fragment {
-	/** 所属的游戏Fragment */
-	RollADiceFragment mGameFragment;
-
+	// ----------游戏状态数据----------
 	/** 骰子个数选择器 */
-	NumberPicker mDiceCountPicker;
+	private NumberPicker mDiceCountPicker;
+
+	/** 改变骰子个数时执行的动作 */
+	private IntConsumer mActionOnChangingDiceCount;
+
+	// ----------保存和恢复状态----------
+	/** 用于保存和恢复状态：骰子个数 */
+	private static final String DICE_COUNT = "diceCount";
 
 	public RollADiceScoreBoardFragment() {}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mGameFragment = (RollADiceFragment) getParentFragment();
 		View rootView = inflater.inflate(R.layout.fragment_roll_a_dice_score_board, container, false);
 
 		mDiceCountPicker = rootView.findViewById(R.id.diceCountPicker);
-		mDiceCountPicker.setMinValue(1);
-		mDiceCountPicker.setMaxValue(6);
-		mDiceCountPicker.setValue(6);
-		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mGameFragment.setDiceCount(newVal));
+		mDiceCountPicker.setMinValue(DiceFragment.MIN_DICE_NUM);
+		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_NUM);
+		if (savedInstanceState == null)
+			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_NUM);
+		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mActionOnChangingDiceCount.accept(newVal));
 
 		return rootView;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putInt(DICE_COUNT, mDiceCountPicker.getValue());
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		if (savedInstanceState != null)
+			mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
+	}
+
+	public void setActionOnChangingDiceCount(IntConsumer actionOnChangingDiceCount) {
+		mActionOnChangingDiceCount = actionOnChangingDiceCount;
 	}
 
 }
