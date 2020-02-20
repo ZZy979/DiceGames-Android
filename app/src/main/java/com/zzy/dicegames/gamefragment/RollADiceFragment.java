@@ -43,11 +43,6 @@ public class RollADiceFragment extends GameFragment {
 	}
 
 	@Override
-	public String getGameTypeCode() {
-		return "roll_a_dice";
-	}
-
-	@Override
 	public int getDiceCount() {
 		return 6;
 	}

@@ -3,6 +3,7 @@ package com.zzy.dicegames.gamefragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,13 @@ import java.util.Arrays;
 public abstract class GameFragment extends Fragment {
 	/** 骰子窗口 */
 	protected DiceFragment mDiceFragment;
+
+	/** 是否作弊 */
+	protected boolean mCheated = false;
+
+	// ----------保存和恢复状态----------
+	/** 用于保存和恢复状态：{@link #mCheated} */
+	private static final String CHEATED = "cheated";
 
 	public GameFragment() {}
 
@@ -46,11 +54,21 @@ public abstract class GameFragment extends Fragment {
 		return rootView;
 	}
 
-	/** 返回游戏标题（与系统语言相关，用于界面展示） */
-	public abstract String getTitle();
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putBoolean(CHEATED, mCheated);
+		super.onSaveInstanceState(outState);
+	}
 
-	/** 返回游戏类型代码（与系统语言无关，代码内部使用） */
-	public abstract String getGameTypeCode();
+	@Override
+	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		if (savedInstanceState != null)
+			mCheated = savedInstanceState.getBoolean(CHEATED);
+	}
+
+	/** 返回游戏标题 */
+	public abstract String getTitle();
 
 	/** 返回游戏使用的骰子个数 */
 	public abstract int getDiceCount();
@@ -80,6 +98,7 @@ public abstract class GameFragment extends Fragment {
 				mDiceFragment.setDiceNumbers(Arrays.stream(args[0].split(","))
 						.mapToInt(Integer::parseInt)
 						.toArray());
+				mCheated = true;
 			}
 			catch (IllegalArgumentException ignored) {
 			}
@@ -88,6 +107,7 @@ public abstract class GameFragment extends Fragment {
 			try {
 				mDiceFragment.setRollTimes(Integer.parseInt(args[0]));
 				mDiceFragment.activateRollButton();
+				mCheated = true;
 			}
 			catch (NumberFormatException ignored) {
 			}

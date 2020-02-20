@@ -1,6 +1,5 @@
 package com.zzy.dicegames.gamefragment;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,13 +9,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.zzy.dicegames.R;
+import com.zzy.dicegames.database.entity.AbstractYahtzeeScore;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -64,25 +64,25 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 	protected List<TextView> mScoreTextViews = new ArrayList<>();
 
 	/** 上区总分 */
-	private int mUpperTotal = 0;
+	protected int mUpperTotal = 0;
 
 	/** 上区总分标签 */
 	protected TextView mUpperTotalTextView;
 
 	/** 奖励分 */
-	private int mBonus = 0;
+	protected int mBonus = 0;
 
 	/** 奖励分标签 */
 	protected TextView mBonusTextView;
 
 	/** 游戏总分 */
-	private int mGameTotal = 0;
+	protected int mGameTotal = 0;
 
 	/** 游戏总分标签 */
 	protected TextView mGameTotalTextView;
 
 	/** 已选择得分项的个数 */
-	private int mSelected = 0;
+	protected int mSelected = 0;
 
 	/** 每次选择一项后执行的动作 */
 	private Runnable mActionAfterChoosing;
@@ -91,7 +91,7 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 	private BiFunction<int[], Integer, Integer> mCalcScoreFunc;
 
 	/** 游戏结束时执行的动作 */
-	private Runnable mGameOverAction;
+	private Consumer<AbstractYahtzeeScore> mGameOverAction;
 
 	// ----------保存和恢复状态----------
 	/** 用于保存和恢复状态：每个得分项是否已选择 */
@@ -182,14 +182,7 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 
 		++mSelected;
 		if (mSelected == mCategoryCount)
-			new AlertDialog.Builder(getContext())
-					.setTitle(getContext().getString(R.string.gameOver))
-					.setMessage(String.format("%s: %d", getContext().getString(R.string.score), mGameTotal))
-					.setPositiveButton(R.string.ok, (dialog, which) -> {
-						if (mGameOverAction != null)
-							mGameOverAction.run();
-					})
-					.show();
+			mGameOverAction.accept(getScore());
 		else
 			mActionAfterChoosing.run();
 	}
@@ -202,11 +195,11 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		mCalcScoreFunc = calcScoreFunc;
 	}
 
-	public void setGameOverAction(Runnable gameOverAction) {
+	public void setGameOverAction(Consumer<AbstractYahtzeeScore> gameOverAction) {
 		mGameOverAction = gameOverAction;
 	}
 
-	/** 根据骰子点数更新分数 */
+	/** 根据骰子点数更新得分 */
 	public void updateScores(int[] diceNumbers) {
 		Arrays.sort(diceNumbers);
 		for (int i = 0; i < mScoreButtons.size(); ++i)
@@ -221,5 +214,7 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		else
 			return !mScoreButtons.get(index).isEnabled();
 	}
+
+	protected abstract AbstractYahtzeeScore getScore();
 
 }

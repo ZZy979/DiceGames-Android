@@ -1,11 +1,15 @@
 package com.zzy.dicegames.gamefragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.database.ScoreDatabase;
+import com.zzy.dicegames.database.dao.BalutScoreDao;
+import com.zzy.dicegames.database.entity.BalutScore;
 
 import java.util.Arrays;
 
@@ -39,7 +43,7 @@ public class BalutFragment extends GameFragment {
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
 		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
 		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
-		mScoreBoardFragment.setGameOverAction(this::startNewGame);
+		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 
 		return rootView;
 	}
@@ -47,11 +51,6 @@ public class BalutFragment extends GameFragment {
 	@Override
 	public String getTitle() {
 		return getContext().getString(R.string.balut);
-	}
-
-	@Override
-	public String getGameTypeCode() {
-		return "balut";
 	}
 
 	@Override
@@ -77,7 +76,7 @@ public class BalutFragment extends GameFragment {
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
 		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
 		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
-		mScoreBoardFragment.setGameOverAction(this::startNewGame);
+		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 		mDiceFragment.activateRollButton();
 	}
 
@@ -111,6 +110,33 @@ public class BalutFragment extends GameFragment {
 		default:
 			return 0;
 		}
+	}
+
+	/**
+	 * 游戏结束时的回调函数，保存得分并开始新游戏（如果作弊则不保存得分）<br>
+	 * 将该方法设置为计分板的监听器，游戏结束时计分板将以本局得分为参数调用该监听器
+	 */
+	private void onGameOver(BalutScore score) {
+		int rank = mCheated ? 0 : saveScore(score);
+		String honor;
+		if (rank == 1)
+			honor = getString(R.string.newHighScore);
+		else if (rank >= 2 && rank <= 9)
+			honor = getString(R.string.top10);
+		else
+			honor = getString(R.string.score);
+		new AlertDialog.Builder(getContext())
+				.setTitle(getContext().getString(R.string.gameOver))
+				.setMessage(String.format("%s: %d", honor, score.getScore()))
+				.setPositiveButton(R.string.ok, (dialog, which) -> startNewGame())
+				.show();
+	}
+
+	/** 保存得分，返回该得分在前10名中的名次，0表示不在前10名中 */
+	private int saveScore(BalutScore score) {
+		BalutScoreDao balutScoreDao = ScoreDatabase.getInstance(getContext()).balutScoreDao();
+		balutScoreDao.insert(score);
+		return balutScoreDao.findTop10Score().indexOf(score.getScore()) + 1;
 	}
 
 }
