@@ -1,6 +1,5 @@
 package com.zzy.dicegames.gamefragment;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,12 +10,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.database.entity.BalutScore;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -65,7 +67,7 @@ public class BalutScoreBoardFragment extends Fragment {
 	private BiFunction<int[], Integer, Integer> mCalcScoreFunc;
 
 	/** 游戏结束时执行的动作 */
-	private Runnable mGameOverAction;
+	private Consumer<BalutScore> mGameOverAction;
 
 	// ----------保存和恢复状态----------
 	/** 用于保存和恢复状态：每个得分项是否已选择 */
@@ -208,15 +210,12 @@ public class BalutScoreBoardFragment extends Fragment {
 			++mSelected;
 		}
 
-		if (mSelected == mCategoryCount)
-			new AlertDialog.Builder(getContext())
-					.setTitle(getContext().getString(R.string.gameOver))
-					.setMessage(String.format("%s: %d", getContext().getString(R.string.score), mGameTotal))
-					.setPositiveButton(R.string.ok, (dialog, which) -> {
-						if (mGameOverAction != null)
-							mGameOverAction.run();
-					})
-					.show();
+		if (mSelected == mCategoryCount) {
+			int gotBalut = (int) mScoreTextViews.get(6).stream()
+					.filter(t -> !t.getText().toString().equals("0"))
+					.count();
+			mGameOverAction.accept(new BalutScore(LocalDate.now().toString(), mGameTotal, gotBalut));
+		}
 		else
 			mActionAfterChoosing.run();
 	}
@@ -229,11 +228,11 @@ public class BalutScoreBoardFragment extends Fragment {
 		mCalcScoreFunc = calcScoreFunc;
 	}
 
-	public void setGameOverAction(Runnable gameOverAction) {
+	public void setGameOverAction(Consumer<BalutScore> gameOverAction) {
 		mGameOverAction = gameOverAction;
 	}
 
-	/** 根据骰子点数更新分数 */
+	/** 根据骰子点数更新得分 */
 	public void updateScores(int[] diceNumbers) {
 		Arrays.sort(diceNumbers);
 		for (int i = 0; i < mScoreButtons.size(); ++i)

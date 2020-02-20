@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 	/** 上次按返回键的时间 */
 	private long mLastPressTime = 0;
 
-	// -------------------------消息处理-------------------------
+	// ----------消息处理----------
 	/** 解析提交的命令行 */
 	private static final int MSG_SUBMIT_CMD = 1;
 
@@ -97,7 +97,12 @@ public class MainActivity extends Activity {
 			break;
 		case R.id.menuHelp:
 			intent = new Intent(this, HelpActivity.class);
-			intent.putExtra(HelpActivity.GAME_TYPE_CODE, mGameFragment.getGameTypeCode());
+			intent.putExtra(HelpActivity.GAME_TITLE, mGameFragment.getTitle());
+			startActivity(intent);
+			break;
+		case R.id.menuHighScores:
+			intent = new Intent(this, HighScoresActivity.class);
+			intent.putExtra(HighScoresActivity.GAME_TITLE, mGameFragment.getTitle());
 			startActivity(intent);
 			break;
 		case R.id.menuCmd:
@@ -113,7 +118,7 @@ public class MainActivity extends Activity {
 					.create().show();
 			break;
 		}
-		return super.onOptionsItemSelected(item);
+		return true;
 	}
 
 	@Override

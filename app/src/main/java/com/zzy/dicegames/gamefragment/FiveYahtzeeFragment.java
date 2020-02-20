@@ -1,6 +1,10 @@
 package com.zzy.dicegames.gamefragment;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.database.ScoreDatabase;
+import com.zzy.dicegames.database.dao.FiveYahtzeeScoreDao;
+import com.zzy.dicegames.database.entity.AbstractYahtzeeScore;
+import com.zzy.dicegames.database.entity.FiveYahtzeeScore;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -22,11 +26,6 @@ public class FiveYahtzeeFragment extends AbstractYahtzeeFragment {
 	@Override
 	public String getTitle() {
 		return getContext().getString(R.string.fiveYahtzee);
-	}
-
-	@Override
-	public String getGameTypeCode() {
-		return "five_yahtzee";
 	}
 
 	@Override
@@ -116,6 +115,13 @@ public class FiveYahtzeeFragment extends AbstractYahtzeeFragment {
 		default:
 			return 0;
 		}
+	}
+
+	@Override
+	protected int saveScore(AbstractYahtzeeScore score) {
+		FiveYahtzeeScoreDao fiveYahtzeeScoreDao = ScoreDatabase.getInstance(getContext()).fiveYahtzeeScoreDao();
+		fiveYahtzeeScoreDao.insert((FiveYahtzeeScore) score);
+		return fiveYahtzeeScoreDao.findTop10Score().indexOf(score.getScore()) + 1;
 	}
 
 }

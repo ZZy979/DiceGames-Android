@@ -11,6 +11,7 @@
     <string name="newGame">New Game</string>
     <string name="gameType">Game Type</string>
     <string name="help">Help</string>
+    <string name="highScores">High Scores</string>
     <string name="cmd">\?\?\?</string>
     <string name="selectGameType">Please select game type</string>
     <string name="quitPrompt">Click again to exit</string>
@@ -57,6 +58,8 @@
     <string name="gameTotal">Game Total</string>
 
     <string name="gameOver">Game Over</string>
+    <string name="newHighScore">New high score</string>
+    <string name="top10">Top 10</string>
 
     <string name="zzy">Zhao Zhengyang</string>
     <string name="cmdList">cmd list</string>

@@ -7,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.database.entity.AbstractYahtzeeScore;
+import com.zzy.dicegames.database.entity.FiveYahtzeeScore;
+
+import java.time.LocalDate;
 
 /**
  * 5骰Yahtzee计分板Fragment
@@ -61,6 +65,13 @@ public class FiveYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFrag
 		mUpperTotalTextView = rootView.findViewById(R.id.tvUpperTotal);
 		mBonusTextView = rootView.findViewById(R.id.tvBonus);
 		mGameTotalTextView = rootView.findViewById(R.id.tvGameTotal);
+	}
+
+	@Override
+	protected AbstractYahtzeeScore getScore() {
+		return new FiveYahtzeeScore(LocalDate.now().toString(), mGameTotal,
+				mBonus == 0 ? 0 : 1,
+				mScoreTextViews.get(13).getText().toString().equals("0") ? 0 : 1);
 	}
 
 }

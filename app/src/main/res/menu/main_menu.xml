@@ -10,6 +10,9 @@
         android:id="@+id/menuHelp"
         android:title="@string/help" />
     <item
+        android:id="@+id/menuHighScores"
+        android:title="@string/highScores" />
+    <item
         android:id="@+id/menuCmd"
         android:title="@string/cmd" />
 </menu>
