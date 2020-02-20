@@ -1,6 +1,7 @@
 package com.zzy.dicegames.database.dao;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -16,6 +17,9 @@ import java.util.List;
 @Dao
 public interface FiveYahtzeeScoreDao {
 
+	@Query("SELECT * FROM five_yahtzee_score")
+	List<FiveYahtzeeScore> findAll();
+
 	@Query("SELECT * FROM five_yahtzee_score ORDER BY score DESC LIMIT 10")
 	List<FiveYahtzeeScore> findTop10();
 
@@ -24,5 +28,11 @@ public interface FiveYahtzeeScoreDao {
 
 	@Insert
 	void insert(FiveYahtzeeScore fiveYahtzeeScore);
+
+	@Insert
+	void insertAll(List<FiveYahtzeeScore> fiveYahtzeeScores);
+
+	@Delete
+	void deleteAll(List<FiveYahtzeeScore> fiveYahtzeeScores);
 
 }

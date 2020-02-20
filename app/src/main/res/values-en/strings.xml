@@ -61,6 +61,8 @@
     <string name="newHighScore">New high score</string>
     <string name="top10">Top 10</string>
 
+    <string name="importScoresSuccess">Scores successfully imported</string>
+    <string name="exportScoresSuccess">Scores successfully exported to %s</string>
     <string name="zzy">Zhao Zhengyang</string>
     <string name="cmdList">cmd list</string>
 </resources>

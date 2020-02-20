@@ -6,18 +6,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.database.ScoreDatabase;
+import com.zzy.dicegames.database.entity.BalutScore;
+import com.zzy.dicegames.database.entity.FiveYahtzeeScore;
+import com.zzy.dicegames.database.entity.SixYahtzeeScore;
 import com.zzy.dicegames.gamefragment.BalutFragment;
 import com.zzy.dicegames.gamefragment.FiveYahtzeeFragment;
 import com.zzy.dicegames.gamefragment.GameFragment;
 import com.zzy.dicegames.gamefragment.RollADiceFragment;
 import com.zzy.dicegames.gamefragment.SixYahtzeeFragment;
+import com.zzy.dicegames.parser.ScoresParser;
+import com.zzy.dicegames.parser.ScoresParserImpl;
 
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Date;
 
@@ -28,6 +41,9 @@ public class MainActivity extends Activity {
 
 	/** 上次按返回键的时间 */
 	private long mLastPressTime = 0;
+
+	/** 导入和导出得分数据的文件名 */
+	private static final String SCORES_FILENAME = "scores.xml";
 
 	// ----------消息处理----------
 	/** 解析提交的命令行 */
@@ -156,9 +172,82 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	/** 从XML文件中导入得分数据，导入成功则返回{@code true}，否则返回{@code false} */
+	private boolean importScores(File file) {
+		ScoresParser parser;
+		try {
+			parser = new ScoresParserImpl(file);
+		}
+		catch (FileNotFoundException e) {
+			return false;
+		}
+
+		ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
+		scoreDatabase.fiveYahtzeeScoreDao().insertAll(parser.parseFiveYahtzeeScores());
+		scoreDatabase.sixYahtzeeScoreDao().insertAll(parser.parseSixYahtzeeScores());
+		scoreDatabase.balutScoreDao().insertAll(parser.parseBalutScores());
+		return true;
+	}
+
+	/** 将得分数据导出到XML文件，导出成功则返回{@code true}，否则返回{@code false} */
+	private boolean exportScores(File file) {
+		try {
+			ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
+			FileOutputStream fos = new FileOutputStream(file);
+			XmlSerializer serializer = Xml.newSerializer();
+			serializer.setOutput(fos, "utf-8");
+			serializer.startDocument("utf-8", true);
+			serializer.startTag(null, "scores");
+
+			// 5骰Yahtzee
+			serializer.startTag(null, "FiveYahtzeeScores");
+			for (FiveYahtzeeScore fiveYahtzeeScore : scoreDatabase.fiveYahtzeeScoreDao().findAll())
+				serializer.startTag(null, "FiveYahtzeeScore")
+						.attribute(null, "date", fiveYahtzeeScore.getDate())
+						.attribute(null, "score", fiveYahtzeeScore.getScore().toString())
+						.attribute(null, "got_bonus", fiveYahtzeeScore.getGotBonus().toString())
+						.attribute(null, "got_yahtzee", fiveYahtzeeScore.getGotYahtzee().toString())
+						.endTag(null, "FiveYahtzeeScore");
+			serializer.endTag(null, "FiveYahtzeeScores");
+
+			// 6骰Yahtzee
+			serializer.startTag(null, "SixYahtzeeScores");
+			for (SixYahtzeeScore sixYahtzeeScore : scoreDatabase.sixYahtzeeScoreDao().findAll())
+				serializer.startTag(null, "SixYahtzeeScore")
+						.attribute(null, "date", sixYahtzeeScore.getDate())
+						.attribute(null, "score", sixYahtzeeScore.getScore().toString())
+						.attribute(null, "got_bonus", sixYahtzeeScore.getGotBonus().toString())
+						.attribute(null, "got_yahtzee", sixYahtzeeScore.getGotYahtzee().toString())
+						.endTag(null, "SixYahtzeeScore");
+			serializer.endTag(null, "SixYahtzeeScores");
+
+			// Balut
+			serializer.startTag(null, "BalutScores");
+			for (BalutScore balutScore : scoreDatabase.balutScoreDao().findAll())
+				serializer.startTag(null, "BalutScore")
+						.attribute(null, "date", balutScore.getDate())
+						.attribute(null, "score", balutScore.getScore().toString())
+						.attribute(null, "got_balut", balutScore.getGotBalut().toString())
+						.endTag(null, "BalutScore");
+			serializer.endTag(null, "BalutScores");
+
+			serializer.endTag(null, "scores");
+			serializer.endDocument();
+			fos.close();
+			return true;
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	/**
 	 * 解析命令行并执行相应操作。命令列表：
 	 * <table border="1">
+	 * <tr><td>{@code ImportScores}</td><td>导入得分数据</td></tr>
+	 * <tr><td>{@code ExportScores}</td><td>导出得分数据</td></tr>
+	 * <tr><td>{@code ClearScores}</td><td>清除得分数据</td></tr>
 	 * <tr><td>{@code Author}</td><td>显示作者</td></tr>
 	 * <tr><td>{@code Test}</td><td>打开测试界面</td></tr>
 	 * <tr><td>{@code Help}</td><td>显示命令列表</td></tr>
@@ -172,7 +261,26 @@ public class MainActivity extends Activity {
 		String[] words = parsedCmd.split("\\s+", 2);
 		parsedCmd = words[0];
 		String[] args = words.length > 1 ? words[1].split("\\s+") : new String[0];
-		if (parsedCmd.equals("Author") && args.length == 0)
+		if (parsedCmd.equals("ImportScores") && args.length == 0) {
+			File file = new File(getExternalFilesDir(null), SCORES_FILENAME);
+			if (importScores(file))
+				Toast.makeText(this, R.string.importScoresSuccess, Toast.LENGTH_SHORT).show();
+		}
+		else if (parsedCmd.equals("ExportScores") && args.length == 0) {
+			File file = new File(getExternalFilesDir(null), SCORES_FILENAME);
+			if (exportScores(file))
+				Toast.makeText(this,
+						String.format(getString(R.string.exportScoresSuccess), file.getAbsolutePath()),
+						Toast.LENGTH_LONG
+				).show();
+		}
+		else if (parsedCmd.equals("ClearScores") && args.length == 0) {
+			ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
+			scoreDatabase.fiveYahtzeeScoreDao().deleteAll(scoreDatabase.fiveYahtzeeScoreDao().findAll());
+			scoreDatabase.sixYahtzeeScoreDao().deleteAll(scoreDatabase.sixYahtzeeScoreDao().findAll());
+			scoreDatabase.balutScoreDao().deleteAll(scoreDatabase.balutScoreDao().findAll());
+		}
+		else if (parsedCmd.equals("Author") && args.length == 0)
 			Toast.makeText(this, getString(R.string.zzy), Toast.LENGTH_SHORT).show();
 		else if (parsedCmd.equals("Test") && args.length == 0)
 			startActivity(new Intent(this, TestActivity.class));

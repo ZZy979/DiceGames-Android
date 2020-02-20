@@ -3,6 +3,9 @@
     <string-array name="cmdList">
         <item>ZZyCgDice &lt;diceNumbers&gt;</item>
         <item>SetRollTimes &lt;n&gt;</item>
+        <item>ImportScores</item>
+        <item>ExportScores</item>
+        <item>ClearScores</item>
         <item>Author</item>
         <item>Test</item>
         <item>Help</item>
