@@ -147,6 +147,12 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		ScoreDatabase.closeInstance();
+		super.onDestroy();
+	}
+
 	private void changeGameType(String title) {
 		if (mGameFragment.getTitle().equals(title))
 			mGameFragment.startNewGame();

@@ -1,110 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="10sp"
-    android:orientation="vertical"
     tools:context=".activity.TestActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20sp"
-        android:text="@string/diceWindow"
-        android:textSize="18sp" />
-
-    <FrameLayout
-        android:id="@+id/diceFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20sp"
-        android:text="@string/activateRollButton"
-        android:textSize="18sp" />
-
-    <Button
-        android:id="@+id/btnActivate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50sp"
-        android:layout_marginEnd="50sp"
-        android:text="@string/activate" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20sp"
-        android:text="@string/diceCount"
-        android:textSize="18sp" />
-
-    <NumberPicker
-        android:id="@+id/diceCountPicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20sp"
-        android:text="@string/rollTimes"
-        android:textSize="18sp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100sp"
-        android:layout_marginEnd="100sp">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/etRollTimes"
-            android:layout_width="0sp"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="number"
-            android:text="2" />
+            android:layout_marginStart="20sp"
+            android:text="@string/diceWindow"
+            android:textSize="18sp" />
+
+        <FrameLayout
+            android:id="@+id/diceFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:text="@string/activateRollButton"
+            android:textSize="18sp" />
 
         <Button
-            android:id="@+id/btnOKRollTimes"
+            android:id="@+id/btnActivate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50sp"
+            android:layout_marginEnd="50sp"
+            android:text="@string/activate" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:text="@string/diceCount"
+            android:textSize="18sp" />
+
+        <NumberPicker
+            android:id="@+id/diceCountPicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ok" />
+            android:layout_gravity="center_horizontal"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:text="@string/rollTimes"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100sp"
+            android:layout_marginEnd="100sp">
+
+            <EditText
+                android:id="@+id/etRollTimes"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:text="2" />
+
+            <Button
+                android:id="@+id/btnOKRollTimes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ok" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20sp"
+            android:text="@string/diceNumbers"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50sp"
+            android:layout_marginEnd="50sp">
+
+            <EditText
+                android:id="@+id/etDiceNumbers"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="text"
+                android:text="6,6,6,6,6,6" />
+
+            <Button
+                android:id="@+id/btnOKDiceNumbers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ok" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20sp"
-        android:text="@string/diceNumbers"
-        android:textSize="18sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50sp"
-        android:layout_marginEnd="50sp">
-
-        <EditText
-            android:id="@+id/etDiceNumbers"
-            android:layout_width="0sp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="text"
-            android:text="6,6,6,6,6,6" />
-
-        <Button
-            android:id="@+id/btnOKDiceNumbers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/ok" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

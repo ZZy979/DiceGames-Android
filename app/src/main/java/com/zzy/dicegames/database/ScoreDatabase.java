@@ -36,6 +36,11 @@ public abstract class ScoreDatabase extends RoomDatabase {
 		return sInstance;
 	}
 
+	public static void closeInstance() {
+		if (sInstance != null)
+			sInstance.close();
+	}
+
 	public abstract FiveYahtzeeScoreDao fiveYahtzeeScoreDao();
 
 	public abstract SixYahtzeeScoreDao sixYahtzeeScoreDao();
