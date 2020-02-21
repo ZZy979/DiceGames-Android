@@ -109,6 +109,11 @@ public class DiceFragment extends Fragment {
 			}
 			activateRollButton();
 		}
+		else {
+			setDiceCount(savedInstanceState.getInt(DICE_COUNT));
+			setRollTimes(savedInstanceState.getInt(ROLL_TIMES));
+			setLeftRollTimes(savedInstanceState.getInt(LEFT_ROLL_TIMES));
+		}
 
 		return rootView;
 	}
@@ -119,16 +124,6 @@ public class DiceFragment extends Fragment {
 		outState.putInt(ROLL_TIMES, mRollTimes);
 		outState.putInt(LEFT_ROLL_TIMES, mLeftRollTimes);
 		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		if (savedInstanceState != null) {
-			setDiceCount(savedInstanceState.getInt(DICE_COUNT));
-			setRollTimes(savedInstanceState.getInt(ROLL_TIMES));
-			setLeftRollTimes(savedInstanceState.getInt(LEFT_ROLL_TIMES));
-		}
 	}
 
 	/** 返回骰子个数 */

@@ -48,8 +48,10 @@ public abstract class GameFragment extends Fragment {
 					.add(R.id.diceFragment, mDiceFragment)
 					.commit();
 		}
-		else
+		else {
 			mDiceFragment = (DiceFragment) getChildFragmentManager().findFragmentById(R.id.diceFragment);
+			mCheated = savedInstanceState.getBoolean(CHEATED);
+		}
 
 		return rootView;
 	}
@@ -58,13 +60,6 @@ public abstract class GameFragment extends Fragment {
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putBoolean(CHEATED, mCheated);
 		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		if (savedInstanceState != null)
-			mCheated = savedInstanceState.getBoolean(CHEATED);
 	}
 
 	/** 返回游戏标题 */

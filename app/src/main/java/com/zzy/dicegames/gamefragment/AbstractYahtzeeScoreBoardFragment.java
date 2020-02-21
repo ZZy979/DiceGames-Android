@@ -112,6 +112,9 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		mGameBonusCondition = bundle.getInt(GAME_BONUS_CONDITION);
 		mGameBonus = bundle.getInt(GAME_BONUS);
 
+		if (savedInstanceState != null)
+			restoreState(savedInstanceState);
+
 		return rootView;
 	}
 
@@ -133,32 +136,28 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		if (savedInstanceState != null) {
-			List<Boolean> categorySelected = (List<Boolean>) savedInstanceState.getSerializable(CATEGORY_SELECTED);
-			List<Integer> categoryScore = (List<Integer>) savedInstanceState.getSerializable(CATEGORY_SCORE);
-			if (categorySelected != null && categoryScore != null) {
-				for (int i = 0; i < categorySelected.size(); ++i) {
-					mScoreTextViews.get(i).setText(String.valueOf(categoryScore.get(i)));
-					if (categorySelected.get(i)) {
-						mScoreButtons.get(i).setEnabled(false);
-						mScoreTextViews.get(i).setTextColor(Color.RED);
-						++mSelected;
-						if (i <= 5)
-							mUpperTotal += categoryScore.get(i);
-						mGameTotal += categoryScore.get(i);
-					}
+	private void restoreState(Bundle savedInstanceState) {
+		List<Boolean> categorySelected = (List<Boolean>) savedInstanceState.getSerializable(CATEGORY_SELECTED);
+		List<Integer> categoryScore = (List<Integer>) savedInstanceState.getSerializable(CATEGORY_SCORE);
+		if (categorySelected != null && categoryScore != null) {
+			for (int i = 0; i < categorySelected.size(); ++i) {
+				mScoreTextViews.get(i).setText(String.valueOf(categoryScore.get(i)));
+				if (categorySelected.get(i)) {
+					mScoreButtons.get(i).setEnabled(false);
+					mScoreTextViews.get(i).setTextColor(Color.RED);
+					++mSelected;
+					if (i <= 5)
+						mUpperTotal += categoryScore.get(i);
+					mGameTotal += categoryScore.get(i);
 				}
-				if (mUpperTotal >= mGameBonusCondition) {
-					mBonus = mGameBonus;
-					mGameTotal += mBonus;
-				}
-				mUpperTotalTextView.setText(String.valueOf(mUpperTotal));
-				mBonusTextView.setText(String.valueOf(mBonus));
-				mGameTotalTextView.setText(String.valueOf(mGameTotal));
 			}
+			if (mUpperTotal >= mGameBonusCondition) {
+				mBonus = mGameBonus;
+				mGameTotal += mBonus;
+			}
+			mUpperTotalTextView.setText(String.valueOf(mUpperTotal));
+			mBonusTextView.setText(String.valueOf(mBonus));
+			mGameTotalTextView.setText(String.valueOf(mGameTotal));
 		}
 	}
 

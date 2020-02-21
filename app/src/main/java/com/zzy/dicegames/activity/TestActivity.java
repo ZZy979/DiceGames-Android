@@ -50,6 +50,8 @@ public class TestActivity extends Activity {
 		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_NUM);
 		if (savedInstanceState == null)
 			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_NUM);
+		else
+			mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mDiceFragment.setDiceCount(newVal));
 
 		EditText etRollTimes = findViewById(R.id.etRollTimes);
@@ -89,12 +91,6 @@ public class TestActivity extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putInt(DICE_COUNT, mDiceCountPicker.getValue());
 		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 	}
 
 }

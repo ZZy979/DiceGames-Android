@@ -40,6 +40,8 @@ public class RollADiceScoreBoardFragment extends Fragment {
 		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_NUM);
 		if (savedInstanceState == null)
 			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_NUM);
+		else
+			mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mActionOnChangingDiceCount.accept(newVal));
 
 		return rootView;
@@ -49,13 +51,6 @@ public class RollADiceScoreBoardFragment extends Fragment {
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putInt(DICE_COUNT, mDiceCountPicker.getValue());
 		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		if (savedInstanceState != null)
-			mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 	}
 
 	public void setActionOnChangingDiceCount(IntConsumer actionOnChangingDiceCount) {
