@@ -7,7 +7,7 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.dice.DiceFragment;
+import com.zzy.dicegames.fragment.dice.DiceFragment;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  * @author 赵正阳
  */
 public class TestActivity extends Activity {
+	/** 骰子窗口 */
 	private DiceFragment mDiceFragment;
 
 	/** 骰子个数选择器 */

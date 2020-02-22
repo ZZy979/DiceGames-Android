@@ -60,6 +60,15 @@
     <string name="gameOver">Game Over</string>
     <string name="newHighScore">New high score</string>
     <string name="top10">Top 10</string>
+    <string name="nothing">Nothing yet</string>
+    <string name="statistics">Statistics</string>
+    <string name="gamesPlayed">Games played</string>
+    <string name="maxScore">Maximum score</string>
+    <string name="minScore">Minimum score</string>
+    <string name="averageScore">Average score</string>
+    <string name="gotBonus">Got bonus</string>
+    <string name="gotYahtzee">Got Yahtzee</string>
+    <string name="gotBalut">Got Balut</string>
 
     <string name="importScoresSuccess">Scores successfully imported</string>
     <string name="exportScoresSuccess">Scores successfully exported to %s</string>

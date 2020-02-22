@@ -1,4 +1,4 @@
-package com.zzy.dicegames.gamefragment;
+package com.zzy.dicegames.fragment.game;
 
 import android.app.Fragment;
 import android.graphics.Color;
@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 
 /**
  * Yahtzee计分板Fragment，嵌套于一个{@link AbstractYahtzeeFragment}<br>
- * 通过{@link #setArguments(Bundle)}传入的参数：
+ * 传入的参数：
  * <ul>
  *     <li>{@link #LAYOUT_ID}：布局资源id</li>
  *     <li>{@link #CATEGORY_COUNT}：得分项数量</li>
@@ -180,9 +180,11 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		mScoreTextViews.get(index).setTextColor(Color.RED);
 
 		++mSelected;
-		if (mSelected == mCategoryCount)
-			mGameOverAction.accept(getScore());
-		else
+		if (mSelected == mCategoryCount) {
+			if (mGameOverAction != null)
+				mGameOverAction.accept(getScore());
+		}
+		else if (mActionAfterChoosing != null)
 			mActionAfterChoosing.run();
 	}
 

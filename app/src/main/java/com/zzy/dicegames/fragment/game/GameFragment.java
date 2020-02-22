@@ -1,16 +1,15 @@
-package com.zzy.dicegames.gamefragment;
+package com.zzy.dicegames.fragment.game;
 
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.dice.DiceFragment;
+import com.zzy.dicegames.fragment.dice.DiceFragment;
 
 import java.util.Arrays;
 
@@ -72,37 +71,33 @@ public abstract class GameFragment extends Fragment {
 	public abstract int getRollTimes();
 
 	/** 开始一次新游戏 */
-	public abstract void startNewGame();
+	public void startNewGame() {
+		mCheated = false;
+	}
 
 	/**
-	 * 解析命令行并执行相应操作。命令列表：
+	 * 执行命令行。命令列表：
 	 * <table border="1">
-	 * <tr><td>{@code ZZyCgDice <diceNumbers>}</td><td>设置骰子点数</td></tr>
-	 * <tr><td>{@code SetRollTimes <n>}</td><td>设置掷骰子次数</td></tr>
+	 * <tr><td>{@code ZZyCgDice [-t|--trust-me] <nums>}</td><td>设置骰子点数，若指定了参数-t则不算作弊</td></tr>
+	 * <tr><td>{@code SetRollTimes [-t|--trust-me] <n>}</td><td>设置掷骰子次数，若指定了参数-t则不算作弊</td></tr>
 	 * </table>
 	 */
-	public void executeCmd(String cmd) {
-		String parsedCmd = cmd.trim();
-		if (parsedCmd.isEmpty())
-			return;
-		String[] words = parsedCmd.split("\\s+", 2);
-		parsedCmd = words[0];
-		String[] args = words.length > 1 ? words[1].split("\\s+") : new String[0];
-		if (parsedCmd.equals("ZZyCgDice") && args.length == 1) {
+	public void executeCmd(String cmd, String[] args) {
+		if (cmd.equals("ZZyCgDice") && (args.length == 1 || args.length == 2)) {
 			try {
-				mDiceFragment.setDiceNumbers(Arrays.stream(args[0].split(","))
+				mDiceFragment.setDiceNumbers(Arrays.stream(args[args.length - 1].split(","))
 						.mapToInt(Integer::parseInt)
 						.toArray());
-				mCheated = true;
+				mCheated = !(args.length == 2 && (args[0].equals("-t") || args[0].equals("--trust-me")));
 			}
 			catch (IllegalArgumentException ignored) {
 			}
 		}
-		else if (parsedCmd.equals("SetRollTimes") && args.length == 1) {
+		else if (cmd.equals("SetRollTimes") && (args.length == 1 || args.length == 2)) {
 			try {
-				mDiceFragment.setRollTimes(Integer.parseInt(args[0]));
+				mDiceFragment.setRollTimes(Integer.parseInt(args[args.length - 1]));
 				mDiceFragment.activateRollButton();
-				mCheated = true;
+				mCheated = !(args.length == 2 && (args[0].equals("-t") || args[0].equals("--trust-me")));
 			}
 			catch (NumberFormatException ignored) {
 			}

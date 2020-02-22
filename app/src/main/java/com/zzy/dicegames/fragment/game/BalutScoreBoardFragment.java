@@ -1,4 +1,4 @@
-package com.zzy.dicegames.gamefragment;
+package com.zzy.dicegames.fragment.game;
 
 import android.app.Fragment;
 import android.graphics.Color;
@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 
 /**
  * Balut计分板Fragment，嵌套于一个{@link BalutFragment}<br>
- * 通过{@link #setArguments(Bundle)}传入的参数：
+ * 传入的参数：
  * <ul><li>{@link #CATEGORY_COUNT}：得分项数量</li></ul>
  *
  * @author 赵正阳
@@ -210,12 +210,14 @@ public class BalutScoreBoardFragment extends Fragment {
 		}
 
 		if (mSelected == mCategoryCount) {
-			int gotBalut = (int) mScoreTextViews.get(6).stream()
-					.filter(t -> !t.getText().toString().equals("0"))
-					.count();
-			mGameOverAction.accept(new BalutScore(LocalDate.now().toString(), mGameTotal, gotBalut));
+			if (mGameOverAction != null) {
+				int gotBalut = (int) mScoreTextViews.get(6).stream()
+						.filter(t -> !t.getText().toString().equals("0"))
+						.count();
+				mGameOverAction.accept(new BalutScore(LocalDate.now().toString(), mGameTotal, gotBalut));
+			}
 		}
-		else
+		else if (mActionAfterChoosing != null)
 			mActionAfterChoosing.run();
 	}
 

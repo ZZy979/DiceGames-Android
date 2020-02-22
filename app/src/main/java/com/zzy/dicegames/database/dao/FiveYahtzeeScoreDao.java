@@ -26,6 +26,24 @@ public interface FiveYahtzeeScoreDao {
 	@Query("SELECT score FROM five_yahtzee_score ORDER BY score DESC LIMIT 10")
 	List<Integer> findTop10Score();
 
+	@Query("SELECT COUNT(*) FROM five_yahtzee_score")
+	int count();
+
+	@Query("SELECT MAX(score) FROM five_yahtzee_score")
+	int maxScore();
+
+	@Query("SELECT MIN(score) FROM five_yahtzee_score")
+	int minScore();
+
+	@Query("SELECT AVG(score) FROM five_yahtzee_score")
+	double averageScore();
+
+	@Query("SELECT SUM(got_bonus) FROM five_yahtzee_score")
+	int sumGotBonus();
+
+	@Query("SELECT SUM(got_yahtzee) FROM five_yahtzee_score")
+	int sumGotYahtzee();
+
 	@Insert
 	void insert(FiveYahtzeeScore fiveYahtzeeScore);
 

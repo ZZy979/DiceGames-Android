@@ -1,4 +1,4 @@
-package com.zzy.dicegames.gamefragment;
+package com.zzy.dicegames.fragment.game;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -65,6 +65,7 @@ public class BalutFragment extends GameFragment {
 
 	@Override
 	public void startNewGame() {
+		super.startNewGame();
 		mScoreBoardFragment = new BalutScoreBoardFragment();
 		Bundle bundle = new Bundle();
 		bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());

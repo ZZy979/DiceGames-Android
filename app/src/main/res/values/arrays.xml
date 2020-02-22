@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="cmdList">
-        <item>ZZyCgDice &lt;diceNumbers&gt;</item>
-        <item>SetRollTimes &lt;n&gt;</item>
+        <item>ZZyCgDice [-t|--trust-me] &lt;nums&gt;</item>
+        <item>SetRollTimes [-t|--trust-me] &lt;n&gt;</item>
         <item>ImportScores</item>
         <item>ExportScores</item>
         <item>ClearScores</item>

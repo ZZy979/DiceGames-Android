@@ -1,4 +1,4 @@
-package com.zzy.dicegames.gamefragment;
+package com.zzy.dicegames.fragment.game;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.database.ScoreDatabase;

@@ -1,4 +1,4 @@
-package com.zzy.dicegames.gamefragment;
+package com.zzy.dicegames.fragment.game;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.dice.DiceFragment;
+import com.zzy.dicegames.fragment.dice.DiceFragment;
 
 import java.util.function.IntConsumer;
 

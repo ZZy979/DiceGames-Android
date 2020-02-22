@@ -3,12 +3,14 @@ package com.zzy.dicegames.database.entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 /**
  * 游戏得分实体类基类
  *
  * @author 赵正阳
  */
-public abstract class BaseScore {
+public abstract class BaseScore implements Serializable {
 	@PrimaryKey(autoGenerate = true)
 	private Integer id;
 

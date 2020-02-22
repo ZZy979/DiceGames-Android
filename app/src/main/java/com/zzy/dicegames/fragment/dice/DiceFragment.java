@@ -1,4 +1,4 @@
-package com.zzy.dicegames.dice;
+package com.zzy.dicegames.fragment.dice;
 
 
 import android.app.Fragment;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.widget.Dice;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -25,11 +26,8 @@ import java.util.function.Consumer;
  * 通过{@code setRollTimes()}设置可点击次数（默认为2）并重新激活，设置为非正数表示不限次数<br>
  * 通过{@code activateRollButton()}重新激活"Roll"按钮
  * <h3>掷骰子监听器</h3>
- * 指定每次掷骰子之后要执行的动作
- * <h1>注意：</h1>
- * 除了{@code setRollListener()}之外的所有方法均不能在{@code onCreateView()}执行之前调用
- * （例如{@code MainActivity.onCreate()}中），否则会产生空指针异常！<br>
- * 创建{@code DiceFragment}时的初始化参数通过{@link #setArguments(Bundle)}方法传入：
+ * 指定每次掷骰子之后要执行的动作<br><br>
+ * 传入的参数：
  * <ul>
  *     <li>{@link #DICE_COUNT}：骰子点数，默认6</li>
  *     <li>{@link #ROLL_TIMES}："Roll"按钮可点击次数，默认2</li>
