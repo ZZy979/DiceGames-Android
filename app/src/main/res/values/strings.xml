@@ -60,6 +60,15 @@
     <string name="gameOver">游戏结束</string>
     <string name="newHighScore">新最高分</string>
     <string name="top10">前10名</string>
+    <string name="nothing">暂无</string>
+    <string name="statistics">统计数据</string>
+    <string name="gamesPlayed">局数</string>
+    <string name="maxScore">最高分</string>
+    <string name="minScore">最低分</string>
+    <string name="averageScore">平均分</string>
+    <string name="gotBonus">得到奖励分</string>
+    <string name="gotYahtzee">得到Yahtzee</string>
+    <string name="gotBalut">得到Balut</string>
 
     <string name="importScoresSuccess">得分数据导入成功</string>
     <string name="exportScoresSuccess">得分数据已成功导出到%s</string>

@@ -17,11 +17,11 @@ import com.zzy.dicegames.database.ScoreDatabase;
 import com.zzy.dicegames.database.entity.BalutScore;
 import com.zzy.dicegames.database.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.database.entity.SixYahtzeeScore;
-import com.zzy.dicegames.gamefragment.BalutFragment;
-import com.zzy.dicegames.gamefragment.FiveYahtzeeFragment;
-import com.zzy.dicegames.gamefragment.GameFragment;
-import com.zzy.dicegames.gamefragment.RollADiceFragment;
-import com.zzy.dicegames.gamefragment.SixYahtzeeFragment;
+import com.zzy.dicegames.fragment.game.BalutFragment;
+import com.zzy.dicegames.fragment.game.FiveYahtzeeFragment;
+import com.zzy.dicegames.fragment.game.GameFragment;
+import com.zzy.dicegames.fragment.game.RollADiceFragment;
+import com.zzy.dicegames.fragment.game.SixYahtzeeFragment;
 import com.zzy.dicegames.parser.ScoresParser;
 import com.zzy.dicegames.parser.ScoresParserImpl;
 
@@ -147,20 +147,26 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void changeGameType(String title) {
-		if (mGameFragment.getTitle().equals(title))
+	@Override
+	protected void onDestroy() {
+		ScoreDatabase.closeInstance();
+		super.onDestroy();
+	}
+
+	private void changeGameType(String gameTitle) {
+		if (mGameFragment.getTitle().equals(gameTitle))
 			mGameFragment.startNewGame();
 		else {
 			GameFragment newGameFragment = null;
-			if (title.equals(getString(R.string.fiveYahtzee)))
+			if (gameTitle.equals(getString(R.string.fiveYahtzee)))
 				newGameFragment = new FiveYahtzeeFragment();
-			else if (title.equals(getString(R.string.sixYahtzee)))
+			else if (gameTitle.equals(getString(R.string.sixYahtzee)))
 				newGameFragment = new SixYahtzeeFragment();
-			else if (title.equals(getString(R.string.balut)))
+			else if (gameTitle.equals(getString(R.string.balut)))
 				newGameFragment = new BalutFragment();
-			else if (title.equals(getString(R.string.liarDice)))
+			else if (gameTitle.equals(getString(R.string.liarDice)))
 				;
-			else if (title.equals(getString(R.string.rollADice)))
+			else if (gameTitle.equals(getString(R.string.rollADice)))
 				newGameFragment = new RollADiceFragment();
 
 			if (newGameFragment != null) {
@@ -252,21 +258,20 @@ public class MainActivity extends Activity {
 	 * <tr><td>{@code Test}</td><td>打开测试界面</td></tr>
 	 * <tr><td>{@code Help}</td><td>显示命令列表</td></tr>
 	 * </table>
-	 * 其他由{@link GameFragment#executeCmd(String)}执行
+	 * 其他由{@link GameFragment#executeCmd(String, String[])}执行
 	 */
 	private void parseCmd(String cmd) {
-		String parsedCmd = cmd.trim();
-		if (parsedCmd.isEmpty())
+		if (cmd.trim().isEmpty())
 			return;
-		String[] words = parsedCmd.split("\\s+", 2);
-		parsedCmd = words[0];
+		String[] words = cmd.trim().split("\\s+", 2);
+		cmd = words[0];
 		String[] args = words.length > 1 ? words[1].split("\\s+") : new String[0];
-		if (parsedCmd.equals("ImportScores") && args.length == 0) {
+		if (cmd.equals("ImportScores") && args.length == 0) {
 			File file = new File(getExternalFilesDir(null), SCORES_FILENAME);
 			if (importScores(file))
 				Toast.makeText(this, R.string.importScoresSuccess, Toast.LENGTH_SHORT).show();
 		}
-		else if (parsedCmd.equals("ExportScores") && args.length == 0) {
+		else if (cmd.equals("ExportScores") && args.length == 0) {
 			File file = new File(getExternalFilesDir(null), SCORES_FILENAME);
 			if (exportScores(file))
 				Toast.makeText(this,
@@ -274,17 +279,17 @@ public class MainActivity extends Activity {
 						Toast.LENGTH_LONG
 				).show();
 		}
-		else if (parsedCmd.equals("ClearScores") && args.length == 0) {
+		else if (cmd.equals("ClearScores") && args.length == 0) {
 			ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
 			scoreDatabase.fiveYahtzeeScoreDao().deleteAll(scoreDatabase.fiveYahtzeeScoreDao().findAll());
 			scoreDatabase.sixYahtzeeScoreDao().deleteAll(scoreDatabase.sixYahtzeeScoreDao().findAll());
 			scoreDatabase.balutScoreDao().deleteAll(scoreDatabase.balutScoreDao().findAll());
 		}
-		else if (parsedCmd.equals("Author") && args.length == 0)
+		else if (cmd.equals("Author") && args.length == 0)
 			Toast.makeText(this, getString(R.string.zzy), Toast.LENGTH_SHORT).show();
-		else if (parsedCmd.equals("Test") && args.length == 0)
+		else if (cmd.equals("Test") && args.length == 0)
 			startActivity(new Intent(this, TestActivity.class));
-		else if (parsedCmd.equals("Help") && args.length == 0)
+		else if (cmd.equals("Help") && args.length == 0)
 			new AlertDialog.Builder(this)
 					.setIcon(R.drawable.cmd)
 					.setTitle(R.string.cmdList)
@@ -292,7 +297,7 @@ public class MainActivity extends Activity {
 					.setPositiveButton(R.string.ok, null)
 					.create().show();
 		else
-			mGameFragment.executeCmd(cmd);
+			mGameFragment.executeCmd(cmd, args);
 	}
 
 }

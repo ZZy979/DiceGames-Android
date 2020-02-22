@@ -21,42 +21,49 @@ public class HelpActivity extends Activity {
 	/** 传入Intent参数：游戏标题 */
 	public static final String GAME_TITLE = "gameTitle";
 
-	/** 支持的游戏类型列表 */
-	private List<String> mSupportedGameTypes;
-
 	/** 支持的语言列表 */
 	private static final List<String> SUPPORTED_LANG = Arrays.asList("zh", "en");
+
+	/** 帮助文件名 */
+	private String mFilename;
+
+	/** 用于保存和恢复状态：骰子个数 */
+	private static final String FILENAME = "filename";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_help);
 
-		mSupportedGameTypes = Arrays.asList(
-				getString(R.string.fiveYahtzee),
-				getString(R.string.sixYahtzee),
-				getString(R.string.balut),
-				getString(R.string.rollADice)
-		);
-
 		WebView webView = findViewById(R.id.wvHelp);
 
-		String filename = getFilename(getIntent().getStringExtra(GAME_TITLE));
+		// 注意Intent中的参数不会随系统语言的变化而变化
+		if (savedInstanceState == null)
+			mFilename = getFilename(getIntent().getStringExtra(GAME_TITLE));
+		else
+			mFilename = savedInstanceState.getString(FILENAME);
+
 		String lang = getResources().getConfiguration().getLocales().get(0).getLanguage();
 		if (!SUPPORTED_LANG.contains(lang))
 			lang = "zh";
 
-		webView.loadUrl(String.format("file:///android_asset/help/%s_%s.html", filename, lang));
+		webView.loadUrl(String.format("file:///android_asset/help/%s_%s.html", mFilename, lang));
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putString(FILENAME, mFilename);
+		super.onSaveInstanceState(outState);
 	}
 
 	private String getFilename(String gameTitle) {
-		if (gameTitle.equals(mSupportedGameTypes.get(0)))
+		if (gameTitle.equals(getString(R.string.fiveYahtzee)))
 			return "five_yahtzee";
-		else if (gameTitle.equals(mSupportedGameTypes.get(1)))
+		else if (gameTitle.equals(getString(R.string.sixYahtzee)))
 			return "six_yahtzee";
-		else if (gameTitle.equals(mSupportedGameTypes.get(2)))
+		else if (gameTitle.equals(getString(R.string.balut)))
 			return "balut";
-		else if (gameTitle.equals(mSupportedGameTypes.get(3)))
+		else if (gameTitle.equals(getString(R.string.rollADice)))
 			return "roll_a_dice";
 		else
 			return "";

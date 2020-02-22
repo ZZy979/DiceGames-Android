@@ -1,4 +1,4 @@
-package com.zzy.dicegames.dice;
+package com.zzy.dicegames.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

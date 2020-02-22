@@ -1,4 +1,4 @@
-package com.zzy.dicegames.gamefragment;
+package com.zzy.dicegames.fragment.game;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -54,6 +54,7 @@ public class RollADiceFragment extends GameFragment {
 
 	@Override
 	public void startNewGame() {
+		super.startNewGame();
 		mDiceFragment.activateRollButton();
 	}
 

@@ -1,4 +1,4 @@
-package com.zzy.dicegames.gamefragment;
+package com.zzy.dicegames.fragment.game;
 
 import android.app.Fragment;
 import android.graphics.Color;
@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 
 /**
  * Yahtzee计分板Fragment，嵌套于一个{@link AbstractYahtzeeFragment}<br>
- * 通过{@link #setArguments(Bundle)}传入的参数：
+ * 传入的参数：
  * <ul>
  *     <li>{@link #LAYOUT_ID}：布局资源id</li>
  *     <li>{@link #CATEGORY_COUNT}：得分项数量</li>
@@ -112,6 +112,9 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		mGameBonusCondition = bundle.getInt(GAME_BONUS_CONDITION);
 		mGameBonus = bundle.getInt(GAME_BONUS);
 
+		if (savedInstanceState != null)
+			restoreState(savedInstanceState);
+
 		return rootView;
 	}
 
@@ -133,32 +136,28 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		if (savedInstanceState != null) {
-			List<Boolean> categorySelected = (List<Boolean>) savedInstanceState.getSerializable(CATEGORY_SELECTED);
-			List<Integer> categoryScore = (List<Integer>) savedInstanceState.getSerializable(CATEGORY_SCORE);
-			if (categorySelected != null && categoryScore != null) {
-				for (int i = 0; i < categorySelected.size(); ++i) {
-					mScoreTextViews.get(i).setText(String.valueOf(categoryScore.get(i)));
-					if (categorySelected.get(i)) {
-						mScoreButtons.get(i).setEnabled(false);
-						mScoreTextViews.get(i).setTextColor(Color.RED);
-						++mSelected;
-						if (i <= 5)
-							mUpperTotal += categoryScore.get(i);
-						mGameTotal += categoryScore.get(i);
-					}
+	private void restoreState(Bundle savedInstanceState) {
+		List<Boolean> categorySelected = (List<Boolean>) savedInstanceState.getSerializable(CATEGORY_SELECTED);
+		List<Integer> categoryScore = (List<Integer>) savedInstanceState.getSerializable(CATEGORY_SCORE);
+		if (categorySelected != null && categoryScore != null) {
+			for (int i = 0; i < categorySelected.size(); ++i) {
+				mScoreTextViews.get(i).setText(String.valueOf(categoryScore.get(i)));
+				if (categorySelected.get(i)) {
+					mScoreButtons.get(i).setEnabled(false);
+					mScoreTextViews.get(i).setTextColor(Color.RED);
+					++mSelected;
+					if (i <= 5)
+						mUpperTotal += categoryScore.get(i);
+					mGameTotal += categoryScore.get(i);
 				}
-				if (mUpperTotal >= mGameBonusCondition) {
-					mBonus = mGameBonus;
-					mGameTotal += mBonus;
-				}
-				mUpperTotalTextView.setText(String.valueOf(mUpperTotal));
-				mBonusTextView.setText(String.valueOf(mBonus));
-				mGameTotalTextView.setText(String.valueOf(mGameTotal));
 			}
+			if (mUpperTotal >= mGameBonusCondition) {
+				mBonus = mGameBonus;
+				mGameTotal += mBonus;
+			}
+			mUpperTotalTextView.setText(String.valueOf(mUpperTotal));
+			mBonusTextView.setText(String.valueOf(mBonus));
+			mGameTotalTextView.setText(String.valueOf(mGameTotal));
 		}
 	}
 
@@ -181,9 +180,11 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 		mScoreTextViews.get(index).setTextColor(Color.RED);
 
 		++mSelected;
-		if (mSelected == mCategoryCount)
-			mGameOverAction.accept(getScore());
-		else
+		if (mSelected == mCategoryCount) {
+			if (mGameOverAction != null)
+				mGameOverAction.accept(getScore());
+		}
+		else if (mActionAfterChoosing != null)
 			mActionAfterChoosing.run();
 	}
 

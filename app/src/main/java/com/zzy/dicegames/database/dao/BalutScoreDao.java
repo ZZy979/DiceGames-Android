@@ -26,6 +26,21 @@ public interface BalutScoreDao {
 	@Query("SELECT score FROM balut_score ORDER BY score DESC LIMIT 10")
 	List<Integer> findTop10Score();
 
+	@Query("SELECT COUNT(*) FROM balut_score")
+	int count();
+
+	@Query("SELECT MAX(score) FROM balut_score")
+	int maxScore();
+
+	@Query("SELECT MIN(score) FROM balut_score")
+	int minScore();
+
+	@Query("SELECT AVG(score) FROM balut_score")
+	double averageScore();
+
+	@Query("SELECT SUM(got_balut) FROM balut_score")
+	int sumGotBalut();
+
 	@Insert
 	void insert(BalutScore balutScore);
 

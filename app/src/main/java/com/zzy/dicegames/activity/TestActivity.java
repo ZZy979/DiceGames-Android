@@ -7,7 +7,7 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.dice.DiceFragment;
+import com.zzy.dicegames.fragment.dice.DiceFragment;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  * @author 赵正阳
  */
 public class TestActivity extends Activity {
+	/** 骰子窗口 */
 	private DiceFragment mDiceFragment;
 
 	/** 骰子个数选择器 */
@@ -50,6 +51,8 @@ public class TestActivity extends Activity {
 		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_NUM);
 		if (savedInstanceState == null)
 			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_NUM);
+		else
+			mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mDiceFragment.setDiceCount(newVal));
 
 		EditText etRollTimes = findViewById(R.id.etRollTimes);
@@ -89,12 +92,6 @@ public class TestActivity extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putInt(DICE_COUNT, mDiceCountPicker.getValue());
 		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 	}
 
 }

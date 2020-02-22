@@ -1,4 +1,4 @@
-package com.zzy.dicegames.gamefragment;
+package com.zzy.dicegames.fragment.game;
 
 import android.app.Fragment;
 import android.graphics.Color;
@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 
 /**
  * Balut计分板Fragment，嵌套于一个{@link BalutFragment}<br>
- * 通过{@link #setArguments(Bundle)}传入的参数：
+ * 传入的参数：
  * <ul><li>{@link #CATEGORY_COUNT}：得分项数量</li></ul>
  *
  * @author 赵正阳
@@ -84,9 +84,12 @@ public class BalutScoreBoardFragment extends Fragment {
 		initViews(rootView);
 
 		mCategoryCount = getArguments().getInt(CATEGORY_COUNT);
-
 		for (int i = 0; i < mCategoryCount; ++i)
 			mItemSelected.add(0);
+
+		if (savedInstanceState != null)
+			restoreState(savedInstanceState);
+
 		return rootView;
 	}
 
@@ -171,29 +174,25 @@ public class BalutScoreBoardFragment extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		if (savedInstanceState != null) {
-			List<List<Boolean>> categorySelected = (List<List<Boolean>>) savedInstanceState.getSerializable(CATEGORY_SELECTED);
-			List<List<Integer>> categoryScore = (List<List<Integer>>) savedInstanceState.getSerializable(CATEGORY_SCORE);
-			if (categorySelected != null && categoryScore != null) {
-				for (int i = 0; i < categorySelected.size(); ++i) {
-					for (int j = 0; j < TIMES_PER_ITEM; ++j) {
-						mScoreTextViews.get(i).get(j).setText(String.valueOf(categoryScore.get(i).get(j)));
-						if (categorySelected.get(i).get(j)) {
-							mScoreTextViews.get(i).get(j).setTextColor(Color.RED);
-							mItemSelected.set(i, mItemSelected.get(i) + 1);
-							mGameTotal += categoryScore.get(i).get(j);
-						}
-					}
-					if (mItemSelected.get(i) == TIMES_PER_ITEM) {
-						mScoreButtons.get(i).setEnabled(false);
-						++mSelected;
+	private void restoreState(Bundle savedInstanceState) {
+		List<List<Boolean>> categorySelected = (List<List<Boolean>>) savedInstanceState.getSerializable(CATEGORY_SELECTED);
+		List<List<Integer>> categoryScore = (List<List<Integer>>) savedInstanceState.getSerializable(CATEGORY_SCORE);
+		if (categorySelected != null && categoryScore != null) {
+			for (int i = 0; i < categorySelected.size(); ++i) {
+				for (int j = 0; j < TIMES_PER_ITEM; ++j) {
+					mScoreTextViews.get(i).get(j).setText(String.valueOf(categoryScore.get(i).get(j)));
+					if (categorySelected.get(i).get(j)) {
+						mScoreTextViews.get(i).get(j).setTextColor(Color.RED);
+						mItemSelected.set(i, mItemSelected.get(i) + 1);
+						mGameTotal += categoryScore.get(i).get(j);
 					}
 				}
-				mGameTotalTextView.setText(String.valueOf(mGameTotal));
+				if (mItemSelected.get(i) == TIMES_PER_ITEM) {
+					mScoreButtons.get(i).setEnabled(false);
+					++mSelected;
+				}
 			}
+			mGameTotalTextView.setText(String.valueOf(mGameTotal));
 		}
 	}
 
@@ -211,12 +210,14 @@ public class BalutScoreBoardFragment extends Fragment {
 		}
 
 		if (mSelected == mCategoryCount) {
-			int gotBalut = (int) mScoreTextViews.get(6).stream()
-					.filter(t -> !t.getText().toString().equals("0"))
-					.count();
-			mGameOverAction.accept(new BalutScore(LocalDate.now().toString(), mGameTotal, gotBalut));
+			if (mGameOverAction != null) {
+				int gotBalut = (int) mScoreTextViews.get(6).stream()
+						.filter(t -> !t.getText().toString().equals("0"))
+						.count();
+				mGameOverAction.accept(new BalutScore(LocalDate.now().toString(), mGameTotal, gotBalut));
+			}
 		}
-		else
+		else if (mActionAfterChoosing != null)
 			mActionAfterChoosing.run();
 	}
 
