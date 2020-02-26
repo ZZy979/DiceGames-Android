@@ -204,8 +204,7 @@ public class DiceFragment extends Fragment {
 
 	/** 重新激活"Roll"按钮、解锁骰子并掷骰子 */
 	public void activateRollButton() {
-		if (mRollTimes > 0)
-			setLeftRollTimes(mRollTimes);
+		setLeftRollTimes(mRollTimes);
 		for (Dice dice : mDice) {
 			dice.setEnabled(true);
 			dice.setLocked(false);

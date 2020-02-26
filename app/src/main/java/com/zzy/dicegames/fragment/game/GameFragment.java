@@ -72,6 +72,8 @@ public abstract class GameFragment extends Fragment {
 
 	/** 开始一次新游戏 */
 	public void startNewGame() {
+		mDiceFragment.setDiceCount(getDiceCount());
+		mDiceFragment.setRollTimes(getRollTimes());
 		mCheated = false;
 	}
 
