@@ -95,7 +95,7 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 		String honor;
 		if (rank == 1)
 			honor = getString(R.string.newHighScore);
-		else if (rank >= 2 && rank <= 9)
+		else if (rank >= 2 && rank <= 10)
 			honor = getString(R.string.top10);
 		else
 			honor = getString(R.string.score);

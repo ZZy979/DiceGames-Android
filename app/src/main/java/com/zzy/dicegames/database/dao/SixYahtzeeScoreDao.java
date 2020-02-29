@@ -20,7 +20,7 @@ public interface SixYahtzeeScoreDao {
 	@Query("SELECT * FROM six_yahtzee_score")
 	List<SixYahtzeeScore> findAll();
 
-	@Query("SELECT * FROM six_yahtzee_score ORDER BY score DESC LIMIT 10")
+	@Query("SELECT * FROM six_yahtzee_score ORDER BY score DESC, date DESC LIMIT 10")
 	List<SixYahtzeeScore> findTop10();
 
 	@Query("SELECT score FROM six_yahtzee_score ORDER BY score DESC LIMIT 10")

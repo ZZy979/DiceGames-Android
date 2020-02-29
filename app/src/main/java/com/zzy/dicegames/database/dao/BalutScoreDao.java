@@ -20,7 +20,7 @@ public interface BalutScoreDao {
 	@Query("SELECT * FROM balut_score")
 	List<BalutScore> findAll();
 
-	@Query("SELECT * FROM balut_score ORDER BY score DESC LIMIT 10")
+	@Query("SELECT * FROM balut_score ORDER BY score DESC, date DESC LIMIT 10")
 	List<BalutScore> findTop10();
 
 	@Query("SELECT score FROM balut_score ORDER BY score DESC LIMIT 10")
