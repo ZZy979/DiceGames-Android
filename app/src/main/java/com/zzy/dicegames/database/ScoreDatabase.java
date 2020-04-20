@@ -20,7 +20,8 @@ import com.zzy.dicegames.database.entity.SixYahtzeeScore;
  */
 @Database(
 		entities = {FiveYahtzeeScore.class, SixYahtzeeScore.class, BalutScore.class},
-		version = 1)
+		version = 1
+)
 public abstract class ScoreDatabase extends RoomDatabase {
 	/** 唯一实例 */
 	private static ScoreDatabase sInstance;

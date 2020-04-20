@@ -1,6 +1,7 @@
 package com.zzy.dicegames.fragment.game;
 
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -75,6 +76,52 @@ public abstract class GameFragment extends Fragment {
 		mDiceFragment.setDiceCount(getDiceCount());
 		mDiceFragment.setRollTimes(getRollTimes());
 		mCheated = false;
+	}
+
+	/**
+	 * 根据名次返回对应的文字“第rank名”
+	 *
+	 * @throws IllegalArgumentException 如果rank<=0
+	 */
+	public String getRankText(int rank) {
+		if (rank <= 0)
+			throw new IllegalArgumentException("名次必须大于0");
+		String lang = getResources().getConfiguration().getLocales().get(0).getLanguage();
+		String arg;
+		if (lang.equals("en")) {
+			if (rank % 10 == 1 && rank != 11)
+				arg = String.format("%dst", rank);
+			else if (rank % 10 == 2 && rank != 12)
+				arg = String.format("%dnd", rank);
+			else if (rank % 10 == 3 && rank != 13)
+				arg = String.format("%drd", rank);
+			else
+				arg = String.format("%dth", rank);
+		}
+		else
+			arg = String.valueOf(rank);
+		return String.format(getString(R.string.nthPlace), arg);
+	}
+
+	/**
+	 * 弹出窗口，显示得分
+	 *
+	 * @param score 得分
+	 * @param rank 排名
+	 */
+	public void showScore(int score, int rank) {
+		String honor;
+		if (rank == 1)
+			honor = getString(R.string.newHighScore);
+		else if (rank >= 2 && rank <= 10)
+			honor = getRankText(rank);
+		else
+			honor = getString(R.string.score);
+		new AlertDialog.Builder(getContext())
+				.setTitle(getContext().getString(R.string.gameOver))
+				.setMessage(String.format("%s: %d", honor, score))
+				.setPositiveButton(R.string.ok, (dialog, which) -> startNewGame())
+				.show();
 	}
 
 	/**

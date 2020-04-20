@@ -1,6 +1,5 @@
 package com.zzy.dicegames.fragment.game;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,18 +91,7 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 	 */
 	protected void onGameOver(AbstractYahtzeeScore score) {
 		int rank = mCheated ? 0 : saveScore(score);
-		String honor;
-		if (rank == 1)
-			honor = getString(R.string.newHighScore);
-		else if (rank >= 2 && rank <= 10)
-			honor = getString(R.string.top10);
-		else
-			honor = getString(R.string.score);
-		new AlertDialog.Builder(getContext())
-				.setTitle(getContext().getString(R.string.gameOver))
-				.setMessage(String.format("%s: %d", honor, score.getScore()))
-				.setPositiveButton(R.string.ok, (dialog, which) -> startNewGame())
-				.show();
+		showScore(score.getScore(), rank);
 	}
 
 	/** 保存得分，返回该得分在前10名中的名次，0表示不在前10名中 */

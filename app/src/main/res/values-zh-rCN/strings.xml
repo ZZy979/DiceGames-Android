@@ -59,6 +59,7 @@
 
     <string name="gameOver">游戏结束</string>
     <string name="newHighScore">新最高分</string>
+    <string name="nthPlace">第%s名</string>
     <string name="top10">前10名</string>
     <string name="nothing">暂无</string>
     <string name="statistics">统计数据</string>

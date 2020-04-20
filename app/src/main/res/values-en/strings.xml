@@ -59,6 +59,7 @@
 
     <string name="gameOver">Game Over</string>
     <string name="newHighScore">New high score</string>
+    <string name="nthPlace">%s place</string>
     <string name="top10">Top 10</string>
     <string name="nothing">Nothing yet</string>
     <string name="statistics">Statistics</string>
