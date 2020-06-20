@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game;
+package com.zzy.dicegames.fragment.game.yahtzee;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.database.entity.AbstractYahtzeeScore;
+import com.zzy.dicegames.fragment.game.GameFragment;
 
 /**
  * Yahtzee游戏Fragment

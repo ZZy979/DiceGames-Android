@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game;
+package com.zzy.dicegames.fragment.game.rolladice;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.fragment.game.GameFragment;
 
 /**
  * 掷骰子游戏Fragment
@@ -13,8 +14,6 @@ import com.zzy.dicegames.R;
  * @author 赵正阳
  */
 public class RollADiceFragment extends GameFragment {
-	/** 计分板 */
-	private RollADiceScoreBoardFragment mScoreBoardFragment;
 
 	public RollADiceFragment() {}
 
@@ -22,6 +21,7 @@ public class RollADiceFragment extends GameFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
+		RollADiceScoreBoardFragment mScoreBoardFragment;
 		if (savedInstanceState == null) {
 			mScoreBoardFragment = new RollADiceScoreBoardFragment();
 			getChildFragmentManager().beginTransaction()

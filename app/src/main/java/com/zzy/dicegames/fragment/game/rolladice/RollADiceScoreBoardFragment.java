@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game;
+package com.zzy.dicegames.fragment.game.rolladice;
 
 import android.app.Fragment;
 import android.os.Bundle;

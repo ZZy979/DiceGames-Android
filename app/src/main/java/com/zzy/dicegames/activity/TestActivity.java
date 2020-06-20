@@ -84,8 +84,7 @@ public class TestActivity extends Activity {
 				Arrays.stream(diceNumbers)
 						.mapToObj(String::valueOf)
 						.collect(Collectors.joining(","))
-				)
-		);
+		));
 	}
 
 	@Override

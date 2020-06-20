@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game;
+package com.zzy.dicegames.fragment.game.balut;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import com.zzy.dicegames.R;
 import com.zzy.dicegames.database.ScoreDatabase;
 import com.zzy.dicegames.database.dao.BalutScoreDao;
 import com.zzy.dicegames.database.entity.BalutScore;
+import com.zzy.dicegames.fragment.game.GameFragment;
 
 import java.util.Arrays;
 
@@ -30,7 +31,7 @@ public class BalutFragment extends GameFragment {
 		if (savedInstanceState == null) {
 			mScoreBoardFragment = new BalutScoreBoardFragment();
 			Bundle bundle = new Bundle();
-			bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+			bundle.putInt(BalutScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
 			mScoreBoardFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
@@ -67,7 +68,7 @@ public class BalutFragment extends GameFragment {
 		super.startNewGame();
 		mScoreBoardFragment = new BalutScoreBoardFragment();
 		Bundle bundle = new Bundle();
-		bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
+		bundle.putInt(BalutScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
 		mScoreBoardFragment.setArguments(bundle);
 		getChildFragmentManager().beginTransaction()
 				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)

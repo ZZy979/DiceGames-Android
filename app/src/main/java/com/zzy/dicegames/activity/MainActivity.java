@@ -17,13 +17,12 @@ import com.zzy.dicegames.database.ScoreDatabase;
 import com.zzy.dicegames.database.entity.BalutScore;
 import com.zzy.dicegames.database.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.database.entity.SixYahtzeeScore;
-import com.zzy.dicegames.fragment.game.BalutFragment;
-import com.zzy.dicegames.fragment.game.FiveYahtzeeFragment;
+import com.zzy.dicegames.fragment.game.balut.BalutFragment;
+import com.zzy.dicegames.fragment.game.yahtzee.FiveYahtzeeFragment;
 import com.zzy.dicegames.fragment.game.GameFragment;
-import com.zzy.dicegames.fragment.game.RollADiceFragment;
-import com.zzy.dicegames.fragment.game.SixYahtzeeFragment;
+import com.zzy.dicegames.fragment.game.rolladice.RollADiceFragment;
+import com.zzy.dicegames.fragment.game.yahtzee.SixYahtzeeFragment;
 import com.zzy.dicegames.parser.ScoresParser;
-import com.zzy.dicegames.parser.ScoresParserImpl;
 
 import org.xmlpull.v1.XmlSerializer;
 
@@ -64,11 +63,8 @@ public class MainActivity extends Activity {
 			MainActivity activity = mWeakReference.get();
 			if (activity == null)
 				return;
-			switch (msg.what) {
-			case MSG_SUBMIT_CMD:
+			if (msg.what == MSG_SUBMIT_CMD)
 				activity.parseCmd((String) msg.obj);
-				break;
-			}
 		}
 
 	}
@@ -164,8 +160,8 @@ public class MainActivity extends Activity {
 				newGameFragment = new SixYahtzeeFragment();
 			else if (gameTitle.equals(getString(R.string.balut)))
 				newGameFragment = new BalutFragment();
-			else if (gameTitle.equals(getString(R.string.liarDice)))
-				;
+//			else if (gameTitle.equals(getString(R.string.liarDice)))
+//				;
 			else if (gameTitle.equals(getString(R.string.rollADice)))
 				newGameFragment = new RollADiceFragment();
 
@@ -180,19 +176,18 @@ public class MainActivity extends Activity {
 
 	/** 从XML文件中导入得分数据，导入成功则返回{@code true}，否则返回{@code false} */
 	private boolean importScores(File file) {
-		ScoresParser parser;
+		ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
 		try {
-			parser = new ScoresParserImpl(file);
+			ScoresParser parser = new ScoresParser(file);
+			parser.parse();
+			scoreDatabase.fiveYahtzeeScoreDao().insertAll(parser.getFiveYahtzeeScores());
+			scoreDatabase.sixYahtzeeScoreDao().insertAll(parser.getSixYahtzeeScores());
+			scoreDatabase.balutScoreDao().insertAll(parser.getBalutScores());
+			return true;
 		}
 		catch (FileNotFoundException e) {
 			return false;
 		}
-
-		ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
-		scoreDatabase.fiveYahtzeeScoreDao().insertAll(parser.parseFiveYahtzeeScores());
-		scoreDatabase.sixYahtzeeScoreDao().insertAll(parser.parseSixYahtzeeScores());
-		scoreDatabase.balutScoreDao().insertAll(parser.parseBalutScores());
-		return true;
 	}
 
 	/** 将得分数据导出到XML文件，导出成功则返回{@code true}，否则返回{@code false} */

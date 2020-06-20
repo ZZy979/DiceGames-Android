@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game;
+package com.zzy.dicegames.fragment.game.yahtzee;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
