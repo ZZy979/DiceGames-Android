@@ -17,29 +17,19 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Balut计分板Fragment，嵌套于一个{@link BalutFragment}<br>
- * 传入的参数：
- * <ul><li>{@link #CATEGORY_COUNT}：得分项数量</li></ul>
+ * Balut计分板Fragment，嵌套于一个{@link BalutFragment}
  *
  * @author 赵正阳
  */
 public class BalutScoreBoardFragment extends Fragment {
-	// ----------传入参数----------
-	/** 传入参数：{@link #mCategoryCount} */
-	public static final String CATEGORY_COUNT = "categoryCount";
-
 	// ----------游戏参数----------
 	/** 每个得分项可选择的次数 */
 	private static final int TIMES_PER_ITEM = 4;
-
-	/** 得分项数量 */
-	protected int mCategoryCount;
 
 	// ----------游戏状态数据----------
 	/** 得分项按钮 */
@@ -63,9 +53,6 @@ public class BalutScoreBoardFragment extends Fragment {
 	/** 每次选择一项后执行的动作 */
 	private Runnable mActionAfterChoosing;
 
-	/** 计算每一项得分的函数 */
-	private BiFunction<int[], Integer, Integer> mCalcScoreFunc;
-
 	/** 游戏结束时执行的动作 */
 	private Consumer<BalutScore> mGameOverAction;
 
@@ -82,9 +69,7 @@ public class BalutScoreBoardFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_balut_score_board, container, false);
 		initViews(rootView);
-
-		mCategoryCount = getArguments().getInt(CATEGORY_COUNT);
-		for (int i = 0; i < mCategoryCount; ++i)
+		for (int i = 0; i < mScoreButtons.size(); ++i)
 			mItemSelected.add(0);
 
 		if (savedInstanceState != null)
@@ -102,8 +87,10 @@ public class BalutScoreBoardFragment extends Fragment {
 		mScoreButtons.add(rootView.findViewById(R.id.btnFullHouse));
 		mScoreButtons.add(rootView.findViewById(R.id.btnChoice));
 		mScoreButtons.add(rootView.findViewById(R.id.btnBalut));
-		for (Button scoreButton : mScoreButtons)
-			scoreButton.setOnClickListener(v -> choose(mScoreButtons.indexOf(v)));
+		for (int i = 0; i < mScoreButtons.size(); ++i) {
+			int finalI = i;
+			mScoreButtons.get(i).setOnClickListener(v -> choose(finalI));
+		}
 
 		mScoreTextViews.add(Arrays.asList(
 				rootView.findViewById(R.id.tv41),
@@ -209,7 +196,7 @@ public class BalutScoreBoardFragment extends Fragment {
 			++mSelected;
 		}
 
-		if (mSelected == mCategoryCount) {
+		if (mSelected == mScoreButtons.size()) {
 			if (mGameOverAction != null) {
 				int gotBalut = (int) mScoreTextViews.get(6).stream()
 						.filter(t -> !t.getText().toString().equals("0"))
@@ -225,21 +212,48 @@ public class BalutScoreBoardFragment extends Fragment {
 		mActionAfterChoosing = actionAfterChoosing;
 	}
 
-	public void setCalcScoreFunc(BiFunction<int[], Integer, Integer> calcScoreFunc) {
-		mCalcScoreFunc = calcScoreFunc;
-	}
-
 	public void setGameOverAction(Consumer<BalutScore> gameOverAction) {
 		mGameOverAction = gameOverAction;
 	}
 
+	/**
+	 * 根据骰子点数计算所有得分项的得分
+	 *
+	 * @param d 骰子点数
+	 * @return 长度为{@code mScoreButtons.size()}的数组，表示d在每个得分项的得分
+	 */
+	public int[] calcScores(int[] d) {
+		Arrays.sort(d);
+		int sum = Arrays.stream(d).sum();
+
+		int[] result = new int[mScoreButtons.size()];
+		// 4~6
+		for (int k : d)
+			if (k >= 4 && k <= 6)
+				result[k - 4] += k;
+		// 连顺
+		if (d[0] == 1 && d[1] == 2 && d[2] == 3 && d[3] == 4 && d[4] == 5)
+			result[3] = 15;
+		else if (d[0] == 2 && d[1] == 3 && d[2] == 4 && d[3] == 5 && d[4] == 6)
+			result[3] = 20;
+		// 葫芦
+		if ((d[0] == d[1] && d[1] == d[2] && d[3] == d[4] && d[0] != d[3])
+				|| (d[0] == d[1] && d[2] == d[3] && d[3] == d[4] && d[0] != d[2]))
+			result[4] = sum;
+		// 选择
+		result[5] = sum;
+		// Balut
+		if (Arrays.stream(d).allMatch(x -> x == d[0]))
+			result[6] = 20 + 5 * d[0];
+		return result;
+	}
+
 	/** 根据骰子点数更新得分 */
 	public void updateScores(int[] diceNumbers) {
-		Arrays.sort(diceNumbers);
+		int[] scores = calcScores(diceNumbers);
 		for (int i = 0; i < mScoreButtons.size(); ++i)
-			if (mScoreButtons.get(i).isEnabled())
-				mScoreTextViews.get(i).get(mItemSelected.get(i)).setText(
-						String.valueOf(mCalcScoreFunc.apply(diceNumbers, i)));
+			if (mItemSelected.get(i) < TIMES_PER_ITEM)
+				mScoreTextViews.get(i).get(mItemSelected.get(i)).setText(String.valueOf(scores[i]));
 	}
 
 }

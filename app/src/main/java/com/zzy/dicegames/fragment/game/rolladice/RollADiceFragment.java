@@ -14,6 +14,8 @@ import com.zzy.dicegames.fragment.game.GameFragment;
  * @author 赵正阳
  */
 public class RollADiceFragment extends GameFragment {
+	/** 计分板 */
+	private RollADiceScoreBoardFragment mScoreBoardFragment;
 
 	public RollADiceFragment() {}
 
@@ -21,7 +23,6 @@ public class RollADiceFragment extends GameFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
-		RollADiceScoreBoardFragment mScoreBoardFragment;
 		if (savedInstanceState == null) {
 			mScoreBoardFragment = new RollADiceScoreBoardFragment();
 			getChildFragmentManager().beginTransaction()
@@ -54,6 +55,12 @@ public class RollADiceFragment extends GameFragment {
 	@Override
 	public void startNewGame() {
 		super.startNewGame();
+		mScoreBoardFragment = new RollADiceScoreBoardFragment();
+		getChildFragmentManager().beginTransaction()
+				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
+				.commit();
+
+		mScoreBoardFragment.setActionOnChangingDiceCount(mDiceFragment::setDiceCount);
 		mDiceFragment.activateRollButton();
 	}
 

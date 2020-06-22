@@ -26,11 +26,6 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 
 		if (savedInstanceState == null) {
 			mScoreBoardFragment = createScoreBoardFragment();
-			Bundle bundle = new Bundle();
-			bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
-			bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS_CONDITION, getGameBonusCondition());
-			bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS, getGameBonus());
-			mScoreBoardFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
 					.commit();
@@ -40,7 +35,6 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
 		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
-		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
 		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 
 		return rootView;
@@ -50,41 +44,18 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 	public void startNewGame() {
 		super.startNewGame();
 		mScoreBoardFragment = createScoreBoardFragment();
-		Bundle bundle = new Bundle();
-		bundle.putInt(AbstractYahtzeeScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
-		bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS_CONDITION, getGameBonusCondition());
-		bundle.putInt(AbstractYahtzeeScoreBoardFragment.GAME_BONUS, getGameBonus());
-		mScoreBoardFragment.setArguments(bundle);
 		getChildFragmentManager().beginTransaction()
 				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
 				.commit();
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
 		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
-		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
 		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 		mDiceFragment.activateRollButton();
 	}
 
 	/** 返回一个新的计分板Fragment */
 	public abstract AbstractYahtzeeScoreBoardFragment createScoreBoardFragment();
-
-	/** 返回得分项数量 */
-	public abstract int getCategoryCount();
-
-	/** 上区总分大于等于多少时获得奖励分 */
-	public abstract int getGameBonusCondition();
-
-	/** 奖励分 */
-	public abstract int getGameBonus();
-
-	/**
-	 * 根据骰子点数计算得分项的得分
-	 *
-	 * @param d 排序后的骰子点数
-	 * @param index 得分项索引
-	 */
-	public abstract int calcScore(int[] d, int index);
 
 	/**
 	 * 游戏结束时的回调函数，保存得分并开始新游戏（如果作弊则不保存得分）<br>

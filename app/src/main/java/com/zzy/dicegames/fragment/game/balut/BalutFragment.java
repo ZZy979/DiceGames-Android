@@ -11,8 +11,6 @@ import com.zzy.dicegames.database.dao.BalutScoreDao;
 import com.zzy.dicegames.database.entity.BalutScore;
 import com.zzy.dicegames.fragment.game.GameFragment;
 
-import java.util.Arrays;
-
 /**
  * Balut游戏Fragment
  *
@@ -30,9 +28,6 @@ public class BalutFragment extends GameFragment {
 
 		if (savedInstanceState == null) {
 			mScoreBoardFragment = new BalutScoreBoardFragment();
-			Bundle bundle = new Bundle();
-			bundle.putInt(BalutScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
-			mScoreBoardFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
 					.commit();
@@ -42,7 +37,6 @@ public class BalutFragment extends GameFragment {
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
 		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
-		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
 		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 
 		return rootView;
@@ -67,50 +61,14 @@ public class BalutFragment extends GameFragment {
 	public void startNewGame() {
 		super.startNewGame();
 		mScoreBoardFragment = new BalutScoreBoardFragment();
-		Bundle bundle = new Bundle();
-		bundle.putInt(BalutScoreBoardFragment.CATEGORY_COUNT, getCategoryCount());
-		mScoreBoardFragment.setArguments(bundle);
 		getChildFragmentManager().beginTransaction()
 				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
 				.commit();
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
 		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
-		mScoreBoardFragment.setCalcScoreFunc(this::calcScore);
 		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 		mDiceFragment.activateRollButton();
-	}
-
-	/** 返回得分项数量 */
-	public int getCategoryCount() {
-		return 7;
-	}
-
-	public int calcScore(int[] d, int index) {
-		int sum = Arrays.stream(d).sum();
-		switch (index) {
-		case 0: case 1: case 2:     // 4~6
-			return Arrays.stream(d).filter(x -> x == index + 4).sum();
-		case 3:     // 连顺
-			if (d[0] == 1 && d[1] == 2 && d[2] == 3 && d[3] == 4 && d[4] == 5)
-				return 15;
-			else if (d[0] == 2 && d[1] == 3 && d[2] == 4 && d[3] == 5 && d[4] == 6)
-				return 20;
-			else
-				return 0;
-		case 4:     // 葫芦
-			if ((d[0] == d[1] && d[1] == d[2] && d[3] == d[4] && d[0] != d[3])
-					|| (d[0] == d[1] && d[2] == d[3] && d[3] == d[4] && d[0] != d[2]))
-				return sum;
-			else
-				return 0;
-		case 5:     // 选择
-			return sum;
-		case 6:     // Balut
-			return Arrays.stream(d).allMatch(x -> x == d[0]) ? 20 + 5 * d[0] : 0;
-		default:
-			return 0;
-		}
 	}
 
 	/**
