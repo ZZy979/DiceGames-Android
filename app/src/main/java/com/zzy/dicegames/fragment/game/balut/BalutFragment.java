@@ -44,7 +44,7 @@ public class BalutFragment extends GameFragment {
 
 	@Override
 	public String getTitle() {
-		return getContext().getString(R.string.balut);
+		return getString(R.string.balut);
 	}
 
 	@Override

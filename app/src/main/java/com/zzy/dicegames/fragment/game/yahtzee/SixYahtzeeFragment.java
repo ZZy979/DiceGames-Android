@@ -22,7 +22,7 @@ public class SixYahtzeeFragment extends AbstractYahtzeeFragment {
 
 	@Override
 	public String getTitle() {
-		return getContext().getString(R.string.sixYahtzee);
+		return getString(R.string.sixYahtzee);
 	}
 
 	@Override

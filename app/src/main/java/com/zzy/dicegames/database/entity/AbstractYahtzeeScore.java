@@ -1,7 +1,7 @@
 package com.zzy.dicegames.database.entity;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.support.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.annotation.NonNull;
 
 /**
  * Yahtzee得分实体类基类

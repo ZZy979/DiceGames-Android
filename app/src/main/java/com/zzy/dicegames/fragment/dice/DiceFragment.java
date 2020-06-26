@@ -156,14 +156,14 @@ public class DiceFragment extends Fragment {
 	 */
 	public void setLeftRollTimes(int leftRollTimes) {
 		if (mRollTimes <= 0) {
-			mRollButton.setText(getContext().getString(R.string.roll));
+			mRollButton.setText(getString(R.string.roll));
 			mRollButton.setEnabled(true);
 		}
 		else {
 			if (leftRollTimes < 0 || leftRollTimes > mRollTimes)
 				throw new IllegalArgumentException("剩余点击次数必须在0~" + mRollTimes + "之间");
 			mLeftRollTimes = leftRollTimes;
-			mRollButton.setText(String.format("%s(%d)", getContext().getString(R.string.roll), leftRollTimes));
+			mRollButton.setText(String.format("%s(%d)", getString(R.string.roll), leftRollTimes));
 			mRollButton.setEnabled(mLeftRollTimes != 0);
 		}
 	}
@@ -175,9 +175,8 @@ public class DiceFragment extends Fragment {
 
 	/** 掷骰子<strong>一次</strong>，锁定的骰子除外 */
 	private void rollOnce() {
-		for (Dice dice : mDice) {
+		for (Dice dice : mDice)
 			dice.setNumber(new Random().nextInt(6) + 1);
-		}
 	}
 
 	/**

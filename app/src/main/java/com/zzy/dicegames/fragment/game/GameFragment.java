@@ -118,7 +118,7 @@ public abstract class GameFragment extends Fragment {
 		else
 			honor = getString(R.string.score);
 		new AlertDialog.Builder(getContext())
-				.setTitle(getContext().getString(R.string.gameOver))
+				.setTitle(getString(R.string.gameOver))
 				.setMessage(String.format("%s: %d", honor, score))
 				.setPositiveButton(R.string.ok, (dialog, which) -> startNewGame())
 				.show();

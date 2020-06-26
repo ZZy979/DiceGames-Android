@@ -39,7 +39,7 @@ public class RollADiceFragment extends GameFragment {
 
 	@Override
 	public String getTitle() {
-		return getContext().getString(R.string.rollADice);
+		return getString(R.string.rollADice);
 	}
 
 	@Override

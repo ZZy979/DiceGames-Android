@@ -22,7 +22,7 @@ public class FiveYahtzeeFragment extends AbstractYahtzeeFragment {
 
 	@Override
 	public String getTitle() {
-		return getContext().getString(R.string.fiveYahtzee);
+		return getString(R.string.fiveYahtzee);
 	}
 
 	@Override
