@@ -36,10 +36,10 @@ public class RollADiceScoreBoardFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_roll_a_dice_score_board, container, false);
 
 		mDiceCountPicker = rootView.findViewById(R.id.diceCountPicker);
-		mDiceCountPicker.setMinValue(DiceFragment.MIN_DICE_NUM);
-		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_NUM);
+		mDiceCountPicker.setMinValue(DiceFragment.MIN_DICE_COUNT);
+		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_COUNT);
 		if (savedInstanceState == null)
-			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_NUM);
+			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_COUNT);
 		else
 			mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mActionOnChangingDiceCount.accept(newVal));

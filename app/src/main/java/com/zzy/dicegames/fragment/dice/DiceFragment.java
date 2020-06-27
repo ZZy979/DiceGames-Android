@@ -1,6 +1,5 @@
 package com.zzy.dicegames.fragment.dice;
 
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Looper;
@@ -24,37 +23,41 @@ import java.util.function.Consumer;
  * <h3>"Roll"按钮</h3>
  * 点击"Roll"按钮掷骰子（锁定的骰子除外），当剩余次数为0时按钮将不可用<br>
  * 通过{@code setRollTimes()}设置可点击次数（默认为2）并重新激活，设置为非正数表示不限次数<br>
- * 通过{@code activateRollButton()}重新激活"Roll"按钮
+ * 通过{@code activate()}重新激活"Roll"按钮
  * <h3>掷骰子监听器</h3>
  * 指定每次掷骰子之后要执行的动作<br><br>
  * 传入的参数：
  * <ul>
  *     <li>{@link #DICE_COUNT}：骰子点数，默认6</li>
  *     <li>{@link #ROLL_TIMES}："Roll"按钮可点击次数，默认2</li>
+ *     <li>{@link #ROLL_ON_CREATE_VIEW}：创建视图后是否立即掷骰子，默认{@code true}</li>
  * </ul>
  *
  * @author 赵正阳
  */
 public class DiceFragment extends Fragment {
 	/** 骰子个数最小值 */
-	public static final int MIN_DICE_NUM = 1;
+	public static final int MIN_DICE_COUNT = 1;
 
 	/** 骰子个数最大值 */
-	public static final int MAX_DICE_NUM = 6;
+	public static final int MAX_DICE_COUNT = 6;
 
-	// ----------传入参数----------
-	/** 用于传入参数/保存和恢复状态：{@link #mDiceCount} */
+	// ----------传入参数/保存和恢复状态----------
+	/** {@link #mDiceCount}，默认{@link #MAX_DICE_COUNT} */
 	public static final String DICE_COUNT = "diceCount";
 
-	/** 用于传入参数/保存和恢复状态：{@link #mRollTimes} */
+	/** {@link #mRollTimes}，默认2 */
 	public static final String ROLL_TIMES = "rollTimes";
+
+	/** 创建视图后是否立即掷骰子，默认{@code true} */
+	public static final String ROLL_ON_CREATE_VIEW = "rollOnCreateView";
 
 	// ----------状态数据----------
 	/** 骰子个数 */
-	private int mDiceCount = MAX_DICE_NUM;
+	private int mDiceCount;
 
 	/** 骰子数组 */
-	private Dice[] mDice = new Dice[MAX_DICE_NUM];
+	private Dice[] mDice = new Dice[MAX_DICE_COUNT];
 
 	/** "Roll"按钮 */
 	private Button mRollButton;
@@ -101,11 +104,13 @@ public class DiceFragment extends Fragment {
 
 		if (savedInstanceState == null) {
 			Bundle bundle = getArguments();
-			if (bundle != null) {
-				setDiceCount(bundle.getInt(DICE_COUNT, MAX_DICE_NUM));
-				setRollTimes(bundle.getInt(ROLL_TIMES, 2));
-			}
-			activateRollButton();
+			if (bundle == null)
+				bundle = new Bundle();
+			setDiceCount(bundle.getInt(DICE_COUNT, MAX_DICE_COUNT));
+			setRollTimes(bundle.getInt(ROLL_TIMES, 2));
+			setLeftRollTimes(mRollTimes);
+			if (bundle.getBoolean(ROLL_ON_CREATE_VIEW, true))
+				roll();
 		}
 		else {
 			setDiceCount(savedInstanceState.getInt(DICE_COUNT));
@@ -135,8 +140,9 @@ public class DiceFragment extends Fragment {
 	 * @throws IllegalArgumentException 如果设置的骰子个数不在1~6之间
 	 */
 	public void setDiceCount(int diceCount) {
-		if (diceCount < MIN_DICE_NUM || diceCount > MAX_DICE_NUM)
-			throw new IllegalArgumentException(String.format("骰子个数必须在%d~%d之间", MIN_DICE_NUM, MAX_DICE_NUM));
+		if (diceCount < MIN_DICE_COUNT || diceCount > MAX_DICE_COUNT)
+			throw new IllegalArgumentException(
+					String.format("骰子个数必须在%d~%d之间", MIN_DICE_COUNT, MAX_DICE_COUNT));
 		mDiceCount = diceCount;
 		for (int i = 0; i < mDice.length; ++i)
 			mDice[i].setVisibility(i < diceCount ? View.VISIBLE : View.INVISIBLE);
@@ -201,8 +207,8 @@ public class DiceFragment extends Fragment {
 		}).start();
 	}
 
-	/** 重新激活"Roll"按钮、解锁骰子并掷骰子 */
-	public void activateRollButton() {
+	/** 激活"Roll"按钮（重置可点击次数）、解锁骰子并掷骰子 */
+	public void activate() {
 		setLeftRollTimes(mRollTimes);
 		for (Dice dice : mDice) {
 			dice.setEnabled(true);

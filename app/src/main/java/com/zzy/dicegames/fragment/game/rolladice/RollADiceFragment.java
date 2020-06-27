@@ -61,7 +61,7 @@ public class RollADiceFragment extends GameFragment {
 				.commit();
 
 		mScoreBoardFragment.setActionOnChangingDiceCount(mDiceFragment::setDiceCount);
-		mDiceFragment.activateRollButton();
+		mDiceFragment.activate();
 	}
 
 }

@@ -107,11 +107,14 @@ public class SixYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFragm
 		for (int k : d)
 			result[k - 1] += k;
 		// 1对
-		for (int i = 6; i >= 1; --i)
-			if (numCount[i] >= 2) {
-				result[6] = 2 * i;
-				break;
-			}
+		if (joker)
+			result[6] = sum;
+		else
+			for (int i = 6; i >= 1; --i)
+				if (numCount[i] >= 2) {
+					result[6] = 2 * i;
+					break;
+				}
 		// 2对
 		int pairs = 0, pairScore = 0;
 		if (joker)

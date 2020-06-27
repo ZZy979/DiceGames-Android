@@ -44,13 +44,13 @@ public class TestActivity extends Activity {
 		else
 			mDiceFragment = (DiceFragment) getFragmentManager().findFragmentById(R.id.diceFragment);
 
-		findViewById(R.id.btnActivate).setOnClickListener(v -> mDiceFragment.activateRollButton());
+		findViewById(R.id.btnActivate).setOnClickListener(v -> mDiceFragment.activate());
 
 		mDiceCountPicker = findViewById(R.id.diceCountPicker);
-		mDiceCountPicker.setMinValue(DiceFragment.MIN_DICE_NUM);
-		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_NUM);
+		mDiceCountPicker.setMinValue(DiceFragment.MIN_DICE_COUNT);
+		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_COUNT);
 		if (savedInstanceState == null)
-			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_NUM);
+			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_COUNT);
 		else
 			mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
 		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mDiceFragment.setDiceCount(newVal));
@@ -59,7 +59,7 @@ public class TestActivity extends Activity {
 		findViewById(R.id.btnOKRollTimes).setOnClickListener(v -> {
 			try {
 				mDiceFragment.setRollTimes(Integer.parseInt(etRollTimes.getText().toString()));
-				mDiceFragment.activateRollButton();
+				mDiceFragment.activate();
 			}
 			catch (NumberFormatException ignored) {
 			}

@@ -36,7 +36,7 @@ public class BalutFragment extends GameFragment {
 			mScoreBoardFragment = (BalutScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activate);
 		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 
 		return rootView;
@@ -66,9 +66,9 @@ public class BalutFragment extends GameFragment {
 				.commit();
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activate);
 		mScoreBoardFragment.setGameOverAction(this::onGameOver);
-		mDiceFragment.activateRollButton();
+		mDiceFragment.activate();
 	}
 
 	/**

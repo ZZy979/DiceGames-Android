@@ -34,7 +34,7 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 			mScoreBoardFragment = (AbstractYahtzeeScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activate);
 		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 
 		return rootView;
@@ -49,9 +49,9 @@ public abstract class AbstractYahtzeeFragment extends GameFragment {
 				.commit();
 
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activateRollButton);
+		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activate);
 		mScoreBoardFragment.setGameOverAction(this::onGameOver);
-		mDiceFragment.activateRollButton();
+		mDiceFragment.activate();
 	}
 
 	/** 返回一个新的计分板Fragment */

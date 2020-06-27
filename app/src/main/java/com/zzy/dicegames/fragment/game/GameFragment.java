@@ -145,7 +145,7 @@ public abstract class GameFragment extends Fragment {
 		else if (cmd.equals("SetRollTimes") && (args.length == 1 || args.length == 2)) {
 			try {
 				mDiceFragment.setRollTimes(Integer.parseInt(args[args.length - 1]));
-				mDiceFragment.activateRollButton();
+				mDiceFragment.activate();
 				mCheated = !(args.length == 2 && (args[0].equals("-t") || args[0].equals("--trust-me")));
 			}
 			catch (NumberFormatException ignored) {
