@@ -17,5 +17,6 @@
         <item>@string/balut</item>
         <item>@string/liarDice</item>
         <item>@string/rollADice</item>
+        <item>@string/farkle</item>
     </string-array>
 </resources>

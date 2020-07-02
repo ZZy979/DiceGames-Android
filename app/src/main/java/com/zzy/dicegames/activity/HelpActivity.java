@@ -65,6 +65,8 @@ public class HelpActivity extends Activity {
 			return "balut";
 		else if (gameTitle.equals(getString(R.string.rollADice)))
 			return "roll_a_dice";
+		else if (gameTitle.equals(getString(R.string.farkle)))
+			return "farkle";
 		else
 			return "";
 	}

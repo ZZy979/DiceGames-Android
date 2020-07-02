@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farkle Rules</title>
+</head>
+<body>
+<h1 style="text-align:center;">Farkle Rules</h1>
+<h3>Objective</h3>
+<p>The objective of the game is to score 10000 points to win.</p>
+
+<h3>Gameplay</h3>
+<p>The game is played with six dice. At the beginning each player rolls all dice.
+    After each roll, the player is required to set aside (lock) at least one scoring dice.
+    Then the player has to decide to either bank the accumulated current turn score,
+    or continue rolling the dice.
+    If a player has scored all six dice (<strong>Hot Dice</strong>), he can again roll six dice
+    and continue accumulating scores for the turn.
+    The player must have at least one scoring dice after each roll,
+    otherwise they <strong>Farkle</strong> and lose all scores accumulated for the turn.
+    It does not affect scores accumulated in previous turns.</p>
+<p>Once a player has decided to end turn or has Farkled, the turn is passed to the next player,
+    who plays according to the same rules.</p>
+<p>The first player to score 10000 points wins the game.</p>
+
+<h3>Scoring</h3>
+<table align="center" border="1">
+    <thead>
+    <tr>
+        <th>Combination</th>
+        <th>Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Each 1</td>
+        <td>100</td>
+    </tr>
+    <tr>
+        <td>Each 5</td>
+        <td>50</td>
+    </tr>
+    <tr>
+        <td>Three 1s</td>
+        <td>1000</td>
+    </tr>
+    <tr>
+        <td>Three 2s</td>
+        <td>200</td>
+    </tr>
+    <tr>
+        <td>Three 3s</td>
+        <td>300</td>
+    </tr>
+    <tr>
+        <td>Three 4s</td>
+        <td>400</td>
+    </tr>
+    <tr>
+        <td>Three 5s</td>
+        <td>500</td>
+    </tr>
+    <tr>
+        <td>Three 6s</td>
+        <td>600</td>
+    </tr>
+    <tr>
+        <td>4 of a kind</td>
+        <td>2 * score of 3 of a kind</td>
+    </tr>
+    <tr>
+        <td>5 of a kind</td>
+        <td>3 * score of 3 of a kind</td>
+    </tr>
+    <tr>
+        <td>6 of a kind</td>
+        <td>4 * score of 3 of a kind</td>
+    </tr>
+    <tr>
+        <td>3 pairs</td>
+        <td>750</td>
+    </tr>
+    <tr>
+        <td>Straight (1,2,3,4,5,6)</td>
+        <td>1500</td>
+    </tr>
+    </tbody>
+</table>
+<p>Scores are only calculated for locked dice after last roll.
+    It does't count dice which were locked and have already been scored in previous rolls .</p>
+<p>For example, if a player gets two 1s and locks them, scoring 200.
+    Then he gets another 1 in the next roll and locks it,
+    it will only score a single 100, not 1000 for three 1s, so the total score would be 300.</p>
+</body>
+</html>

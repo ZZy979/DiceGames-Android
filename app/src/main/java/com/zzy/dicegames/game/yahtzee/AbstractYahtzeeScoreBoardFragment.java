@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game.yahtzee;
+package com.zzy.dicegames.game.yahtzee;
 
 import android.app.Fragment;
 import android.graphics.Color;

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Farkle游戏规则</title>
+    <style type="text/css">
+        p { text-indent: 2em; }
+    </style>
+</head>
+<body>
+<h1 style="text-align:center;">Farkle游戏规则</h1>
+<h3>游戏目标</h3>
+<p>游戏的目标是得到10000分。</p>
+
+<h3>游戏玩法</h3>
+<p>游戏使用6个骰子。每个玩家开始时掷所有骰子。每次掷骰子后，玩家必须保留（锁定）至少一个得分的骰子。
+    之后玩家要决定保存本轮已积累的得分，或是继续掷骰子。
+    如果6个骰子全部得分(<strong>Hot Dice</strong>)，则玩家可以再次掷6个骰子并继续为本轮积累得分。
+    玩家每次掷骰子后必须有至少一个得分的骰子，否则称为<strong>Farkle</strong>，将失去本轮已积累的所有得分，
+    但不影响本轮之前已积累的得分。</p>
+<p>当一个玩家决定结束本轮或Farkle之后将轮到下一个玩家，按相同规则进行。</p>
+<p>第一个得到10000分的玩家获胜。</p>
+
+<h3>计分</h3>
+<table align="center" border="1">
+    <thead>
+    <tr>
+        <th>骰子组合</th>
+        <th>得分</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>每个1点</td>
+        <td>100</td>
+    </tr>
+    <tr>
+        <td>每个5点</td>
+        <td>50</td>
+    </tr>
+    <tr>
+        <td>3个1点</td>
+        <td>1000</td>
+    </tr>
+    <tr>
+        <td>3个2点</td>
+        <td>200</td>
+    </tr>
+    <tr>
+        <td>3个3点</td>
+        <td>300</td>
+    </tr>
+    <tr>
+        <td>3个4点</td>
+        <td>400</td>
+    </tr>
+    <tr>
+        <td>3个5点</td>
+        <td>500</td>
+    </tr>
+    <tr>
+        <td>3个6点</td>
+        <td>600</td>
+    </tr>
+    <tr>
+        <td>4个同点</td>
+        <td>2 * 3个同点的得分</td>
+    </tr>
+    <tr>
+        <td>5个同点</td>
+        <td>3 * 3个同点的得分</td>
+    </tr>
+    <tr>
+        <td>6个同点</td>
+        <td>4 * 3个同点的得分</td>
+    </tr>
+    <tr>
+        <td>3对</td>
+        <td>750</td>
+    </tr>
+    <tr>
+        <td>连顺(1,2,3,4,5,6)</td>
+        <td>1500</td>
+    </tr>
+    </tbody>
+</table>
+<p>积分仅针对上次掷骰子后锁定的骰子，不计入之前已锁定并得分的骰子。
+    例如，玩家掷出2个1点并锁定，得200分。之后又掷出1个1点并锁定，则只得100分，而不是3个1点得1000分，因此总得分为300。</p>
+</body>
+</html>

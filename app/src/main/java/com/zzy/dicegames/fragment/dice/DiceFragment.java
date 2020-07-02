@@ -18,12 +18,12 @@ import java.util.function.Consumer;
 /**
  * 骰子窗口，包括一些{@link Dice 骰子组件}和一个“换”(Roll)按钮<br>
  * <h3>骰子</h3>
- * 通过{@code setDiceCount()}设置骰子个数(1~6)；<br>
+ * 通过{@code setDiceCount()}设置骰子个数；<br>
  * 通过{@code getDiceNumbers()}和{@code setDiceNumbers()}获取和设置骰子点数<br>
  * <h3>"Roll"按钮</h3>
  * 点击"Roll"按钮掷骰子（锁定的骰子除外），当剩余次数为0时按钮将不可用<br>
- * 通过{@code setRollTimes()}设置可点击次数（默认为2）并重新激活，设置为非正数表示不限次数<br>
- * 通过{@code activate()}重新激活"Roll"按钮
+ * 通过{@code setRollTimes()}设置可点击次数并重新激活，设置为非正数表示不限次数<br>
+ * 通过{@code activate()}重新激活"Roll"按钮和骰子
  * <h3>掷骰子监听器</h3>
  * 指定每次掷骰子之后要执行的动作<br><br>
  * 传入的参数：
@@ -108,7 +108,7 @@ public class DiceFragment extends Fragment {
 				bundle = new Bundle();
 			setDiceCount(bundle.getInt(DICE_COUNT, MAX_DICE_COUNT));
 			setRollTimes(bundle.getInt(ROLL_TIMES, 2));
-			setLeftRollTimes(mRollTimes);
+			setLeftRollTimes(mRollTimes == 0 ? 1 : mRollTimes);
 			if (bundle.getBoolean(ROLL_ON_CREATE_VIEW, true))
 				roll();
 		}
@@ -129,9 +129,12 @@ public class DiceFragment extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
-	/** 返回骰子个数 */
-	public int getDiceCount() {
-		return mDiceCount;
+	public Dice[] getDice() {
+		return mDice;
+	}
+
+	public Button getRollButton() {
+		return mRollButton;
 	}
 
 	/**
@@ -149,29 +152,30 @@ public class DiceFragment extends Fragment {
 	}
 
 	/**
-	 * 设置"Roll"按钮的可点击次数，小于等于0表示不限次数
+	 * 设置"Roll"按钮的可点击次数，小于等于0表示不限次数<br>
+	 * <strong>注意：</strong>该方法并不改变剩余点击次数，调用该方法后应调用{@code setLeftRollTimes()}
+	 * 或{@code activate()}重置剩余点击次数
 	 */
 	public void setRollTimes(int rollTimes) {
 		mRollTimes = rollTimes;
 	}
 
 	/**
-	 * 设置剩余点击次数，并更新标签和可用状态
+	 * 设置剩余点击次数，并更新标签和可用状态<br>
+	 * 如果无次数限制({@code mRollTimes} = 0)，则参数值为0时禁用按钮，大于0时激活按钮；<br>
+	 * 如果有次数限制({@code mRollTimes} > 0)，则参数值为0时禁用按钮，参数值在1~{@code mRollTimes}之间时激活按钮
 	 *
-	 * @throws IllegalArgumentException 如果{@code mRollTimes > 0}且设置的值不在{@code [0, mRollTimes]}之间
+	 * @throws IllegalArgumentException 如果{@code mRollTimes} > 0且设置的值不在0~{@code mRollTimes}之间
 	 */
 	public void setLeftRollTimes(int leftRollTimes) {
-		if (mRollTimes <= 0) {
+		if (mRollTimes > 0 && (leftRollTimes < 0 || leftRollTimes > mRollTimes))
+			throw new IllegalArgumentException("剩余点击次数必须在0~" + mRollTimes + "之间");
+		mLeftRollTimes = leftRollTimes;
+		if (mRollTimes <= 0)
 			mRollButton.setText(getString(R.string.roll));
-			mRollButton.setEnabled(true);
-		}
-		else {
-			if (leftRollTimes < 0 || leftRollTimes > mRollTimes)
-				throw new IllegalArgumentException("剩余点击次数必须在0~" + mRollTimes + "之间");
-			mLeftRollTimes = leftRollTimes;
+		else
 			mRollButton.setText(String.format("%s(%d)", getString(R.string.roll), leftRollTimes));
-			mRollButton.setEnabled(mLeftRollTimes != 0);
-		}
+		mRollButton.setEnabled(mLeftRollTimes != 0);
 	}
 
 	/** 设置掷骰子监听器 */
@@ -189,7 +193,7 @@ public class DiceFragment extends Fragment {
 	 * 掷骰子并调用掷骰子监听器<br>
 	 * 多次调用{@code rollOnce()}从而制造动画效果，但仅对最后一次的结果调用监听器
 	 */
-	private void roll() {
+	public void roll() {
 		// 在单独的线程中执行，否则每次掷骰子之后无法立即重新绘制
 		new Thread(() -> {
 			// 若没有这一句会报错：Can't create handler inside thread xx that has not called Looper.prepare()
@@ -203,13 +207,13 @@ public class DiceFragment extends Fragment {
 				}
 			}
 			if (mRollListener != null)
-				mRollListener.accept(getDiceNumbers());
+				getActivity().runOnUiThread(() -> mRollListener.accept(getDiceNumbers()));
 		}).start();
 	}
 
 	/** 激活"Roll"按钮（重置可点击次数）、解锁骰子并掷骰子 */
 	public void activate() {
-		setLeftRollTimes(mRollTimes);
+		setLeftRollTimes(mRollTimes == 0 ? 1 : mRollTimes);
 		for (Dice dice : mDice) {
 			dice.setEnabled(true);
 			dice.setLocked(false);
@@ -220,7 +224,7 @@ public class DiceFragment extends Fragment {
 	/** 返回骰子点数的数组 */
 	public int[] getDiceNumbers() {
 		return Arrays.stream(mDice)
-				.filter(dice -> dice.getVisibility() == View.VISIBLE)
+				.limit(mDiceCount)
 				.mapToInt(Dice::getNumber)
 				.toArray();
 	}

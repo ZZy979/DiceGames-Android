@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game.yahtzee;
+package com.zzy.dicegames.game.yahtzee;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.database.ScoreDatabase;

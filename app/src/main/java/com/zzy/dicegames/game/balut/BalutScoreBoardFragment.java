@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game.balut;
+package com.zzy.dicegames.game.balut;
 
 import android.app.Fragment;
 import android.graphics.Color;

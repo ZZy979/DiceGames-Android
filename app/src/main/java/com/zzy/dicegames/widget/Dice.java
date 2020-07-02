@@ -46,6 +46,7 @@ public class Dice extends View {
 	/** 是否被锁定 */
 	private boolean mLocked;
 
+	// ----------保存和恢复状态----------
 	/** 用于保存和恢复状态：超类状态 */
 	private static final String SUPER_STATE = "superState";
 

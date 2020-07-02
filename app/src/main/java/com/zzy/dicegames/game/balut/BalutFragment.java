@@ -1,45 +1,30 @@
-package com.zzy.dicegames.fragment.game.balut;
-
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+package com.zzy.dicegames.game.balut;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.database.ScoreDatabase;
 import com.zzy.dicegames.database.dao.BalutScoreDao;
 import com.zzy.dicegames.database.entity.BalutScore;
-import com.zzy.dicegames.fragment.game.GameFragment;
+import com.zzy.dicegames.game.GameFragment;
 
 /**
  * Balut游戏Fragment
  *
  * @author 赵正阳
  */
-public class BalutFragment extends GameFragment {
-	/** 计分板 */
-	private BalutScoreBoardFragment mScoreBoardFragment;
+public class BalutFragment extends GameFragment<BalutScoreBoardFragment> {
 
 	public BalutFragment() {}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = super.onCreateView(inflater, container, savedInstanceState);
+	public BalutScoreBoardFragment createScoreBoardFragment() {
+		return new BalutScoreBoardFragment();
+	}
 
-		if (savedInstanceState == null) {
-			mScoreBoardFragment = new BalutScoreBoardFragment();
-			getChildFragmentManager().beginTransaction()
-					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
-					.commit();
-		}
-		else
-			mScoreBoardFragment = (BalutScoreBoardFragment) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
-
+	@Override
+	protected void setListeners() {
 		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
 		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activate);
 		mScoreBoardFragment.setGameOverAction(this::onGameOver);
-
-		return rootView;
 	}
 
 	@Override
@@ -60,14 +45,6 @@ public class BalutFragment extends GameFragment {
 	@Override
 	public void startNewGame() {
 		super.startNewGame();
-		mScoreBoardFragment = new BalutScoreBoardFragment();
-		getChildFragmentManager().beginTransaction()
-				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
-				.commit();
-
-		mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-		mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activate);
-		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 		mDiceFragment.activate();
 	}
 

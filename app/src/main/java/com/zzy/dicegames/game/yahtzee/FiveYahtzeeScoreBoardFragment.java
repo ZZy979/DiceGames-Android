@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game.yahtzee;
+package com.zzy.dicegames.game.yahtzee;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -87,7 +87,7 @@ public class FiveYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFrag
 		boolean yahtzee = Arrays.stream(d).allMatch(x -> x == d[0]);
 		boolean joker = yahtzee && isSelected(d[0] - 1) && isSelected(13);
 
-		int[] result = new int[mScoreButtons.size()];
+		int[] result = new int[14];
 		// 1~6
 		for (int k : d)
 			result[k - 1] += k;

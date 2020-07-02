@@ -7,6 +7,7 @@
     <string name="balut">Balut</string>
     <string name="liarDice">Liar dice</string>
     <string name="rollADice">Roll-a-dice</string>
+    <string name="farkle">Farkle</string>
 
     <string name="newGame">New Game</string>
     <string name="gameType">Game Type</string>
@@ -60,6 +61,22 @@
     <string name="gameOver">Game Over</string>
     <string name="newHighScore">New high score</string>
     <string name="nthPlace">%s place</string>
+
+    <string name="playerYou">You</string>
+    <string name="playerCPU">CPU</string>
+    <string name="currentTurnScore">Current Turn Score</string>
+    <string name="bank">Bank</string>
+    <string name="logYourTurn">Your turn</string>
+    <string name="logCPUsTurn">CPU\'s turn</string>
+    <string name="logStartingScore">Starting score: %d</string>
+    <string name="logDiceRolled">Dice rolled: %s</string>
+    <string name="logDiceKept">Dice kept: %s</string>
+    <string name="logHotDice">Hot Dice! Adding %d to current turn score. Roll dice again.</string>
+    <string name="logFarkled">Farkled!</string>
+    <string name="logFinishTurn">Finishing turn. Score for current turn: %d</string>
+    <string name="logYouWin">You win!</string>
+    <string name="logCPUWins">CPU wins</string>
+
     <string name="top10">Top 10</string>
     <string name="nothing">Nothing yet</string>
     <string name="statistics">Statistics</string>

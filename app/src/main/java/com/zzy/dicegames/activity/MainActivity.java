@@ -17,11 +17,12 @@ import com.zzy.dicegames.database.ScoreDatabase;
 import com.zzy.dicegames.database.entity.BalutScore;
 import com.zzy.dicegames.database.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.database.entity.SixYahtzeeScore;
-import com.zzy.dicegames.fragment.game.balut.BalutFragment;
-import com.zzy.dicegames.fragment.game.yahtzee.FiveYahtzeeFragment;
-import com.zzy.dicegames.fragment.game.GameFragment;
-import com.zzy.dicegames.fragment.game.rolladice.RollADiceFragment;
-import com.zzy.dicegames.fragment.game.yahtzee.SixYahtzeeFragment;
+import com.zzy.dicegames.game.balut.BalutFragment;
+import com.zzy.dicegames.game.farkle.FarkleFragment;
+import com.zzy.dicegames.game.yahtzee.FiveYahtzeeFragment;
+import com.zzy.dicegames.game.GameFragment;
+import com.zzy.dicegames.game.rolladice.RollADiceFragment;
+import com.zzy.dicegames.game.yahtzee.SixYahtzeeFragment;
 import com.zzy.dicegames.parser.ScoresParser;
 
 import org.xmlpull.v1.XmlSerializer;
@@ -36,7 +37,7 @@ import java.util.Date;
 public class MainActivity extends Activity {
 	private String[] mGameTypes;
 
-	private GameFragment mGameFragment;
+	private GameFragment<?> mGameFragment;
 
 	/** 上次按返回键的时间 */
 	private long mLastPressTime = 0;
@@ -82,7 +83,7 @@ public class MainActivity extends Activity {
 					.commit();
 		}
 		else
-			mGameFragment = (GameFragment) getFragmentManager().findFragmentById(R.id.gameFragment);
+			mGameFragment = (GameFragment<?>) getFragmentManager().findFragmentById(R.id.gameFragment);
 
 		mHandler = new MainHandler(this);
 	}
@@ -153,7 +154,7 @@ public class MainActivity extends Activity {
 		if (mGameFragment.getTitle().equals(gameTitle))
 			mGameFragment.startNewGame();
 		else {
-			GameFragment newGameFragment = null;
+			GameFragment<?> newGameFragment = null;
 			if (gameTitle.equals(getString(R.string.fiveYahtzee)))
 				newGameFragment = new FiveYahtzeeFragment();
 			else if (gameTitle.equals(getString(R.string.sixYahtzee)))
@@ -164,6 +165,8 @@ public class MainActivity extends Activity {
 //				;
 			else if (gameTitle.equals(getString(R.string.rollADice)))
 				newGameFragment = new RollADiceFragment();
+			else if (gameTitle.equals(getString(R.string.farkle)))
+				newGameFragment = new FarkleFragment();
 
 			if (newGameFragment != null) {
 				mGameFragment = newGameFragment;

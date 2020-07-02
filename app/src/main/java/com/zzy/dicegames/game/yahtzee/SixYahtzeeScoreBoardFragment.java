@@ -1,4 +1,4 @@
-package com.zzy.dicegames.fragment.game.yahtzee;
+package com.zzy.dicegames.game.yahtzee;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -102,7 +102,7 @@ public class SixYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFragm
 		for (int k : d)
 			numCount[k] += 1;
 
-		int[] result = new int[mScoreButtons.size()];
+		int[] result = new int[20];
 		// 1~6
 		for (int k : d)
 			result[k - 1] += k;

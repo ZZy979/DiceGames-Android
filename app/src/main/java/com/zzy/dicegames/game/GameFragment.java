@@ -1,5 +1,4 @@
-package com.zzy.dicegames.fragment.game;
-
+package com.zzy.dicegames.game;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -15,11 +14,15 @@ import com.zzy.dicegames.fragment.dice.DiceFragment;
 import java.util.Arrays;
 
 /**
- * 游戏Fragment基类
+ * 游戏Fragment基类，有一个{@link DiceFragment 骰子窗口}和一个计分板
  *
+ * @param <T> 计分板Fragment类
  * @author 赵正阳
  */
-public abstract class GameFragment extends Fragment {
+public abstract class GameFragment<T extends Fragment> extends Fragment {
+	/** 计分板 */
+	protected T mScoreBoardFragment;
+
 	/** 骰子窗口 */
 	protected DiceFragment mDiceFragment;
 
@@ -39,20 +42,28 @@ public abstract class GameFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.tvTitle)).setText(getTitle());
 
 		if (savedInstanceState == null) {
+			mScoreBoardFragment = createScoreBoardFragment();
+			getChildFragmentManager().beginTransaction()
+					.add(R.id.scoreBoardFragment, mScoreBoardFragment)
+					.commit();
+
 			mDiceFragment = new DiceFragment();
 			Bundle bundle = new Bundle();
 			bundle.putInt(DiceFragment.DICE_COUNT, getDiceCount());
 			bundle.putInt(DiceFragment.ROLL_TIMES, getRollTimes());
+			bundle.putBoolean(DiceFragment.ROLL_ON_CREATE_VIEW, rollOnStart());
 			mDiceFragment.setArguments(bundle);
 			getChildFragmentManager().beginTransaction()
 					.add(R.id.diceFragment, mDiceFragment)
 					.commit();
 		}
 		else {
+			mScoreBoardFragment = (T) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
 			mDiceFragment = (DiceFragment) getChildFragmentManager().findFragmentById(R.id.diceFragment);
 			mCheated = savedInstanceState.getBoolean(CHEATED);
 		}
 
+		setListeners();
 		return rootView;
 	}
 
@@ -61,6 +72,12 @@ public abstract class GameFragment extends Fragment {
 		outState.putBoolean(CHEATED, mCheated);
 		super.onSaveInstanceState(outState);
 	}
+
+	/** 创建一个新的计分板 */
+	public abstract T createScoreBoardFragment();
+
+	/** 设置计分板和骰子窗口相关的监听器 */
+	protected abstract void setListeners();
 
 	/** 返回游戏标题 */
 	public abstract String getTitle();
@@ -71,11 +88,21 @@ public abstract class GameFragment extends Fragment {
 	/** 返回游戏每轮掷骰子次数 */
 	public abstract int getRollTimes();
 
+	/** 初次创建骰子窗口后是否立即掷骰子 */
+	public boolean rollOnStart() {
+		return true;
+	}
+
 	/** 开始一次新游戏 */
 	public void startNewGame() {
+		mScoreBoardFragment = createScoreBoardFragment();
+		getChildFragmentManager().beginTransaction()
+				.replace(R.id.scoreBoardFragment, mScoreBoardFragment)
+				.commit();
 		mDiceFragment.setDiceCount(getDiceCount());
 		mDiceFragment.setRollTimes(getRollTimes());
 		mCheated = false;
+		setListeners();
 	}
 
 	/**
@@ -107,7 +134,7 @@ public abstract class GameFragment extends Fragment {
 	 * 弹出窗口，显示得分
 	 *
 	 * @param score 得分
-	 * @param rank 排名
+	 * @param rank  排名
 	 */
 	public void showScore(int score, int rank) {
 		String honor;
