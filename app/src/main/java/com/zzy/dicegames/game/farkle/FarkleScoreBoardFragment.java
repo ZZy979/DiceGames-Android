@@ -162,7 +162,6 @@ public class FarkleScoreBoardFragment extends Fragment {
 	private BotPlayer createBotPlayer() {
 		BotPlayer botPlayer = new BotPlayer();
 		botPlayer.setDiceFragment(mDiceFragment);
-		botPlayer.setScoreSupplier(() -> mScore[1]);
 		botPlayer.setCurrentTurnScoreSupplier(() ->
 				Integer.parseInt(mCurrentTurnScoreTextView.getText().toString()));
 		botPlayer.setBankScoreAction(mBankButton::callOnClick);
@@ -281,8 +280,8 @@ public class FarkleScoreBoardFragment extends Fragment {
 		else {
 			// 将上次掷骰子的得分加到本轮得分
 			mCurrentTurnScore = Integer.parseInt(mCurrentTurnScoreTextView.getText().toString());
-			if (mScore[mCurrentPlayer] + result.getScore() >= 10000)
-				onWin(mScore[mCurrentPlayer] + result.getScore());
+			if (mScore[mCurrentPlayer] + mCurrentTurnScore + result.getScore() >= 10000)
+				onWin(mScore[mCurrentPlayer] + mCurrentTurnScore + result.getScore());
 			else if (result.getScoringDiceIndices().size()
 					+ Arrays.stream(mDiceFragment.getDice()).filter(Dice::isLocked).count() == 6)
 				onHotDice(result.getScore());
@@ -292,6 +291,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 	}
 
 	private void onWin(int finalScore) {
+		mScore[mCurrentPlayer] = finalScore;
 		mScoreTextView[mCurrentPlayer].setText(String.valueOf(finalScore));
 		writeLog(getString(mCurrentPlayer == 0 ? R.string.logYouWin : R.string.logCPUWins));
 		disableAllDice();
@@ -357,16 +357,13 @@ public class FarkleScoreBoardFragment extends Fragment {
 							.map(i -> String.valueOf(mDiceFragment.getDice()[i].getNumber()))
 							.collect(Collectors.joining(","))
 			));
-			currentTurnScore = mCurrentTurnScore + result.getScore();
+			currentTurnScore = mCurrentTurnScore + result.getScore();   // 最大可能的值
 		}
 		mScore[mCurrentPlayer] += currentTurnScore;
-		if (mScore[mCurrentPlayer] >= 10000)
-			onWin(mScore[mCurrentPlayer]);
-		else {
-			mScoreTextView[mCurrentPlayer].setText(String.valueOf(mScore[mCurrentPlayer]));
-			writeLog(String.format(getString(R.string.logFinishTurn), currentTurnScore));
-			nextPlayer();
-		}
+		mScoreTextView[mCurrentPlayer].setText(String.valueOf(mScore[mCurrentPlayer]));
+		// 此处mScore[mCurrentPlayer]不可能>=10000，否则在onDiceRolled中已调用onWin
+		writeLog(String.format(getString(R.string.logFinishTurn), currentTurnScore));
+		nextPlayer();
 	}
 
 	/** 如果当前玩家是电脑则隐藏"Bank"和"Roll"按钮，否则显示 */

@@ -16,8 +16,7 @@ class BotPlayer extends Player {
 		delay(1);
 		for (int i : result.getScoringDiceIndices())
 			mDiceFragment.getDice()[i].callOnClick();
-		if (mScoreSupplier.getAsInt() + mCurrentTurnScoreSupplier.getAsInt() >= 10000
-				|| mCurrentTurnScoreSupplier.getAsInt() >= 500
+		if (mCurrentTurnScoreSupplier.getAsInt() >= 500
 				|| Arrays.stream(mDiceFragment.getDice()).filter(Dice::isLocked).count() >= 4)
 			// 为了让锁定骰子的效果立即显示，在新线程中点击Bank或Roll按钮
 			// 因此需要将这两个按钮的监听器设置为在UI线程中运行

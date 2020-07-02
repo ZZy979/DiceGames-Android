@@ -17,7 +17,7 @@
     <string name="selectGameType">请选择游戏类型</string>
     <string name="quitPrompt">再按一次退出骰子游戏</string>
 
-    <string name="roll">换</string>
+    <string name="roll">掷</string>
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
     <string name="activate">激活</string>

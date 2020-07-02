@@ -13,9 +13,6 @@ abstract class Player {
 	/** 骰子窗口 */
 	protected DiceFragment mDiceFragment;
 
-	/** “获取当前得分”动作 */
-	protected IntSupplier mScoreSupplier;
-
 	/** “获取本轮预览得分”动作 */
 	protected IntSupplier mCurrentTurnScoreSupplier;
 
@@ -30,10 +27,6 @@ abstract class Player {
 
 	public void setDiceFragment(DiceFragment diceFragment) {
 		mDiceFragment = diceFragment;
-	}
-
-	public void setScoreSupplier(IntSupplier scoreSupplier) {
-		mScoreSupplier = scoreSupplier;
 	}
 
 	public void setCurrentTurnScoreSupplier(IntSupplier currentTurnScoreSupplier) {

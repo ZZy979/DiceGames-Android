@@ -16,7 +16,7 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 /**
- * 骰子窗口，包括一些{@link Dice 骰子组件}和一个“换”(Roll)按钮<br>
+ * 骰子窗口，包括一些{@link Dice 骰子组件}和一个"Roll"按钮<br>
  * <h3>骰子</h3>
  * 通过{@code setDiceCount()}设置骰子个数；<br>
  * 通过{@code getDiceNumbers()}和{@code setDiceNumbers()}获取和设置骰子点数<br>
