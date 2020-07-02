@@ -76,6 +76,9 @@ public class FarkleScoreBoardFragment extends Fragment {
 	/** 骰子窗口 */
 	private DiceFragment mDiceFragment;
 
+	/** 本轮已锁定的骰子中得分骰子的个数，用于判断Hot Dice */
+	private int mScoringDiceCount;
+
 	// ----------保存和恢复状态----------
 	/** 用于保存和恢复状态：{@link #mCurrentPlayer} */
 	private static final String CURRENT_PLAYER = "currentPlayer";
@@ -91,6 +94,9 @@ public class FarkleScoreBoardFragment extends Fragment {
 
 	/** 用于保存和恢复状态：{@link #mNewGameButton}可见状态 */
 	private static final String NEW_GAME_BUTTON_VISIBILITY = "newGameButtonVisibility";
+
+	/** 用于保存和恢复状态：{@link #mScoringDiceCount} */
+	private static final String SCORING_DICE_COUNT = "scoringDiceCount";
 
 	public FarkleScoreBoardFragment() {}
 
@@ -147,6 +153,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 		outState.putInt(CURRENT_TURN_SCORE, mCurrentTurnScore);
 		outState.putBoolean(BANK_BUTTON_ENABLED, mBankButton.isEnabled());
 		outState.putInt(NEW_GAME_BUTTON_VISIBILITY, mNewGameButton.getVisibility());
+		outState.putInt(SCORING_DICE_COUNT, mScoringDiceCount);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -156,6 +163,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 		mCurrentTurnScore = savedInstanceState.getInt(CURRENT_TURN_SCORE);
 		mBankButton.setEnabled(savedInstanceState.getBoolean(BANK_BUTTON_ENABLED));
 		mNewGameButton.setVisibility(savedInstanceState.getInt(NEW_GAME_BUTTON_VISIBILITY));
+		mScoringDiceCount = savedInstanceState.getInt(SCORING_DICE_COUNT);
 	}
 
 	/** 返回一个新的电脑玩家，并设置相关动作 */
@@ -203,6 +211,11 @@ public class FarkleScoreBoardFragment extends Fragment {
 							.map(d -> String.valueOf(d.getNumber()))
 							.collect(Collectors.joining(","))
 			));
+			// 记录上次掷骰子后锁定的骰子中得分骰子的个数
+			mScoringDiceCount += calcScore(Arrays.stream(mDiceFragment.getDice())
+					.filter(this::isLockedAfterLastRoll)
+					.mapToInt(Dice::getNumber)
+					.toArray()).getScoringDiceIndices().size();
 			// 禁用上次掷骰子后锁定的骰子
 			Arrays.stream(mDiceFragment.getDice())
 					.filter(this::isLockedAfterLastRoll)
@@ -282,8 +295,8 @@ public class FarkleScoreBoardFragment extends Fragment {
 			mCurrentTurnScore = Integer.parseInt(mCurrentTurnScoreTextView.getText().toString());
 			if (mScore[mCurrentPlayer] + mCurrentTurnScore + result.getScore() >= 10000)
 				onWin(mScore[mCurrentPlayer] + mCurrentTurnScore + result.getScore());
-			else if (result.getScoringDiceIndices().size()
-					+ Arrays.stream(mDiceFragment.getDice()).filter(Dice::isLocked).count() == 6)
+			// 判断Hot Dice时要避免将分两次锁定的骰子合起来计算
+			else if (result.getScoringDiceIndices().size() + mScoringDiceCount == 6)
 				onHotDice(result.getScore());
 			else
 				mPlayer[mCurrentPlayer].onDiceRolled(result);
@@ -314,7 +327,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 		writeLog(getString(R.string.logFarkled));
 		disableAllDice();
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 		}
 		catch (InterruptedException ignored) {
 		}
@@ -382,6 +395,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 		mCurrentPlayer = (mCurrentPlayer + 1) % N_PLAYER;
 		mCurrentTurnScore = 0;
 		mCurrentTurnScoreTextView.setText("0");
+		mScoringDiceCount = 0;
 		changeButtonVisibility();
 		writeLog("----------------------------------------");
 		writeLog(getString(mCurrentPlayer == 0 ? R.string.logYourTurn : R.string.logCPUsTurn));
