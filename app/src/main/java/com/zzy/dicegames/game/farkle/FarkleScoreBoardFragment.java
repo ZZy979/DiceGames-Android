@@ -1,6 +1,7 @@
 package com.zzy.dicegames.game.farkle;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,9 @@ public class FarkleScoreBoardFragment extends Fragment {
 	// ----------游戏状态数据----------
 	/** 玩家 */
 	private Player[] mPlayer = new Player[N_PLAYER];
+
+	/** 玩家标签 */
+	private TextView[] mPlayerTextView = new TextView[N_PLAYER];
 
 	/** 当前玩家 */
 	private int mCurrentPlayer = 0;
@@ -104,7 +108,10 @@ public class FarkleScoreBoardFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_farkle_score_board, container, false);
 
-		mScoreTextView[0] = rootView.findViewById(R.id.tv1pScore);
+		mPlayerTextView[0] = rootView.findViewById(R.id.tvPlayerYou);
+		mPlayerTextView[1] = rootView.findViewById(R.id.tvPlayerCPU);
+
+		mScoreTextView[0] = rootView.findViewById(R.id.tvYourScore);
 		mScoreTextView[1] = rootView.findViewById(R.id.tvCPUScore);
 		mCurrentTurnScoreTextView = rootView.findViewById(R.id.tvCurrentTurnScore);
 
@@ -128,6 +135,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 		else
 			restoreState(savedInstanceState);
 
+		mPlayerTextView[mCurrentPlayer].setTextColor(Color.RED);
 		return rootView;
 	}
 
@@ -294,7 +302,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 			// 将上次掷骰子的得分加到本轮得分
 			mCurrentTurnScore = Integer.parseInt(mCurrentTurnScoreTextView.getText().toString());
 			if (mScore[mCurrentPlayer] + mCurrentTurnScore + result.getScore() >= 10000)
-				onWin(mScore[mCurrentPlayer] + mCurrentTurnScore + result.getScore());
+				onWin(result.getScore());
 			// 判断Hot Dice时要避免将分两次锁定的骰子合起来计算
 			else if (result.getScoringDiceIndices().size() + mScoringDiceCount == 6)
 				onHotDice(result.getScore());
@@ -303,20 +311,23 @@ public class FarkleScoreBoardFragment extends Fragment {
 		}
 	}
 
-	private void onWin(int finalScore) {
-		mScore[mCurrentPlayer] = finalScore;
-		mScoreTextView[mCurrentPlayer].setText(String.valueOf(finalScore));
+	private void onWin(int lastRollScore) {
 		writeLog(getString(mCurrentPlayer == 0 ? R.string.logYouWin : R.string.logCPUWins));
+		mCurrentTurnScore += lastRollScore;
+		mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore));
+		mScore[mCurrentPlayer] += mCurrentTurnScore;
+		mScoreTextView[mCurrentPlayer].setText(String.valueOf(mScore[mCurrentPlayer]));
 		disableAllDice();
 		mBankButton.setEnabled(false);
 		mDiceFragment.setLeftRollTimes(0);
 		mNewGameButton.setVisibility(View.VISIBLE);
 	}
 
-	private void onHotDice(int score) {
-		mCurrentTurnScore += score;
+	private void onHotDice(int lastRollScore) {
+		writeLog(String.format(getString(R.string.logHotDice), lastRollScore));
+		mCurrentTurnScore += lastRollScore;
 		mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore));
-		writeLog(String.format(getString(R.string.logHotDice), score));
+		mScoringDiceCount = 0;
 		disableAllDice();
 		mBankButton.setEnabled(false);
 		mDiceFragment.setLeftRollTimes(1);
@@ -392,7 +403,9 @@ public class FarkleScoreBoardFragment extends Fragment {
 	}
 
 	private void nextPlayer() {
+		mPlayerTextView[mCurrentPlayer].setTextColor(Color.BLACK);
 		mCurrentPlayer = (mCurrentPlayer + 1) % N_PLAYER;
+		mPlayerTextView[mCurrentPlayer].setTextColor(Color.RED);
 		mCurrentTurnScore = 0;
 		mCurrentTurnScoreTextView.setText("0");
 		mScoringDiceCount = 0;
