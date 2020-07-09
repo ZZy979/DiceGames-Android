@@ -288,8 +288,9 @@ public class FarkleScoreBoardFragment extends Fragment {
 
 	/** 掷骰子后的回调函数 */
 	public void onDiceRolled(int[] diceNumbers) {
+		// 每次掷骰子后所有骰子isLocked() <=> !isEnabled()
 		for (int i = 0; i < mDiceFragment.getDice().length; ++i)
-			if (mDiceFragment.getDice()[i].isLocked())
+			if (!mDiceFragment.getDice()[i].isEnabled())
 				diceNumbers[i] = 0;
 		writeLog(String.format(getString(R.string.logDiceRolled), Arrays.stream(diceNumbers)
 				.filter(x -> x != 0)
@@ -356,33 +357,19 @@ public class FarkleScoreBoardFragment extends Fragment {
 		mDiceFragment.setLeftRollTimes(allLocked || result.getScoringDiceIndices().isEmpty() ? 0 : 1);
 	}
 
-	/**
-	 * 保存本轮得分<br>
-	 * 如果上次掷骰子后未锁定任何骰子则默认选择所有得分的骰子
-	 */
+	/** 保存本轮得分，包括本轮已积累的得分和最后一次掷骰子后所有得分的骰子 */
 	private void bank() {
-		boolean anyLocked = Arrays.stream(mDiceFragment.getDice()).anyMatch(this::isLockedAfterLastRoll);
-		int currentTurnScore;
-		if (anyLocked) {
-			writeLog(String.format(getString(R.string.logDiceKept),
-					Arrays.stream(mDiceFragment.getDice())
-							.filter(this::isLockedAfterLastRoll)
-							.map(d -> String.valueOf(d.getNumber()))
-							.collect(Collectors.joining(","))
-			));
-			currentTurnScore = Integer.parseInt(mCurrentTurnScoreTextView.getText().toString());
-		}
-		else {
-			Result result = calcScore(Arrays.stream(mDiceFragment.getDice())
-					.mapToInt(d -> d.isLocked() ? 0 : d.getNumber())
-					.toArray());
-			writeLog(String.format(getString(R.string.logDiceKept),
-					result.getScoringDiceIndices().stream().sorted()
-							.map(i -> String.valueOf(mDiceFragment.getDice()[i].getNumber()))
-							.collect(Collectors.joining(","))
-			));
-			currentTurnScore = mCurrentTurnScore + result.getScore();   // 最大可能的值
-		}
+		// 本轮中最后一次掷骰子之前锁定的骰子已被onRollButtonClicked()禁用
+		// result中一定有得分的骰子，否则已经Farkle
+		Result result = calcScore(Arrays.stream(mDiceFragment.getDice())
+				.mapToInt(d -> d.isEnabled() ? d.getNumber() : 0)
+				.toArray());
+		writeLog(String.format(getString(R.string.logDiceKept),
+				result.getScoringDiceIndices().stream().sorted()
+						.map(i -> String.valueOf(mDiceFragment.getDice()[i].getNumber()))
+						.collect(Collectors.joining(","))
+		));
+		int currentTurnScore = mCurrentTurnScore + result.getScore();
 		mScore[mCurrentPlayer] += currentTurnScore;
 		mScoreTextView[mCurrentPlayer].setText(String.valueOf(mScore[mCurrentPlayer]));
 		// 此处mScore[mCurrentPlayer]不可能>=10000，否则在onDiceRolled中已调用onWin
