@@ -3,6 +3,8 @@ package com.zzy.dicegames.game.farkle;
 import android.os.Bundle;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.database.ScoreDatabase;
+import com.zzy.dicegames.database.entity.FarkleScore;
 import com.zzy.dicegames.game.GameFragment;
 
 /**
@@ -30,6 +32,7 @@ public class FarkleFragment extends GameFragment<FarkleScoreBoardFragment> {
 	@Override
 	protected void setListeners() {
 		mScoreBoardFragment.setDiceFragment(mDiceFragment);
+		mScoreBoardFragment.setGameOverAction(this::onGameOver);
 		mDiceFragment.setRollListener(mScoreBoardFragment::onDiceRolled);
 	}
 
@@ -53,6 +56,12 @@ public class FarkleFragment extends GameFragment<FarkleScoreBoardFragment> {
 		super.startNewGame();
 		mDiceFragment.activate();
 		mDiceFragment.setLeftRollTimes(0);
+	}
+
+	/** 游戏结束时的回调函数 */
+	private void onGameOver(FarkleScore score) {
+		if (!mCheated)
+			ScoreDatabase.getInstance(getContext()).farkleScoreDao().insert(score);
 	}
 
 }

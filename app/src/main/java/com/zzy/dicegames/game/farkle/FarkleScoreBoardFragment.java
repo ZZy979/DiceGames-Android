@@ -11,15 +11,18 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.database.entity.FarkleScore;
 import com.zzy.dicegames.fragment.dice.DiceFragment;
 import com.zzy.dicegames.widget.Dice;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -82,6 +85,9 @@ public class FarkleScoreBoardFragment extends Fragment {
 
 	/** 本轮已锁定的骰子中得分骰子的个数，用于判断Hot Dice */
 	private int mScoringDiceCount;
+
+	/** 游戏结束时执行的动作 */
+	private Consumer<FarkleScore> mGameOverAction;
 
 	// ----------保存和恢复状态----------
 	/** 用于保存和恢复状态：{@link #mCurrentPlayer} */
@@ -186,6 +192,10 @@ public class FarkleScoreBoardFragment extends Fragment {
 
 	public void setDiceFragment(DiceFragment diceFragment) {
 		mDiceFragment = diceFragment;
+	}
+
+	public void setGameOverAction(Consumer<FarkleScore> gameOverAction) {
+		mGameOverAction = gameOverAction;
 	}
 
 	private void writeLog(String msg) {
@@ -318,10 +328,14 @@ public class FarkleScoreBoardFragment extends Fragment {
 		mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore));
 		mScore[mCurrentPlayer] += mCurrentTurnScore;
 		mScoreTextView[mCurrentPlayer].setText(String.valueOf(mScore[mCurrentPlayer]));
+
 		disableAllDice();
 		mBankButton.setEnabled(false);
 		mDiceFragment.setLeftRollTimes(0);
 		mNewGameButton.setVisibility(View.VISIBLE);
+
+		if (mGameOverAction != null)
+			mGameOverAction.accept(new FarkleScore(LocalDate.now().toString(), mScore[0], mScore[1]));
 	}
 
 	private void onHotDice(int lastRollScore) {
@@ -329,9 +343,11 @@ public class FarkleScoreBoardFragment extends Fragment {
 		mCurrentTurnScore += lastRollScore;
 		mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore));
 		mScoringDiceCount = 0;
+
 		disableAllDice();
 		mBankButton.setEnabled(false);
 		mDiceFragment.setLeftRollTimes(1);
+
 		mPlayer[mCurrentPlayer].onHotDice();
 	}
 
@@ -396,6 +412,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 		mCurrentTurnScore = 0;
 		mCurrentTurnScoreTextView.setText("0");
 		mScoringDiceCount = 0;
+
 		changeButtonVisibility();
 		writeLog("----------------------------------------");
 		writeLog(getString(mCurrentPlayer == 0 ? R.string.logYourTurn : R.string.logCPUsTurn));

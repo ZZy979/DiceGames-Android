@@ -15,13 +15,14 @@ import android.widget.Toast;
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.database.ScoreDatabase;
 import com.zzy.dicegames.database.entity.BalutScore;
+import com.zzy.dicegames.database.entity.FarkleScore;
 import com.zzy.dicegames.database.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.database.entity.SixYahtzeeScore;
+import com.zzy.dicegames.game.GameFragment;
 import com.zzy.dicegames.game.balut.BalutFragment;
 import com.zzy.dicegames.game.farkle.FarkleFragment;
-import com.zzy.dicegames.game.yahtzee.FiveYahtzeeFragment;
-import com.zzy.dicegames.game.GameFragment;
 import com.zzy.dicegames.game.rolladice.RollADiceFragment;
+import com.zzy.dicegames.game.yahtzee.FiveYahtzeeFragment;
 import com.zzy.dicegames.game.yahtzee.SixYahtzeeFragment;
 import com.zzy.dicegames.parser.ScoresParser;
 
@@ -186,6 +187,7 @@ public class MainActivity extends Activity {
 			scoreDatabase.fiveYahtzeeScoreDao().insertAll(parser.getFiveYahtzeeScores());
 			scoreDatabase.sixYahtzeeScoreDao().insertAll(parser.getSixYahtzeeScores());
 			scoreDatabase.balutScoreDao().insertAll(parser.getBalutScores());
+			scoreDatabase.farkleScoreDao().insertAll(parser.getFarkleScores());
 			return true;
 		}
 		catch (FileNotFoundException e) {
@@ -235,6 +237,16 @@ public class MainActivity extends Activity {
 						.endTag(null, "BalutScore");
 			serializer.endTag(null, "BalutScores");
 
+			// Farkle
+			serializer.startTag(null, "FarkleScores");
+			for (FarkleScore farkleScore : scoreDatabase.farkleScoreDao().findAll())
+				serializer.startTag(null, "FarkleScore")
+						.attribute(null, "date", farkleScore.getDate())
+						.attribute(null, "score", farkleScore.getScore().toString())
+						.attribute(null, "cpu_score", farkleScore.getCpuScore().toString())
+						.endTag(null, "FarkleScore");
+			serializer.endTag(null, "FarkleScores");
+
 			serializer.endTag(null, "scores");
 			serializer.endDocument();
 			fos.close();
@@ -282,6 +294,7 @@ public class MainActivity extends Activity {
 			scoreDatabase.fiveYahtzeeScoreDao().deleteAll(scoreDatabase.fiveYahtzeeScoreDao().findAll());
 			scoreDatabase.sixYahtzeeScoreDao().deleteAll(scoreDatabase.sixYahtzeeScoreDao().findAll());
 			scoreDatabase.balutScoreDao().deleteAll(scoreDatabase.balutScoreDao().findAll());
+			scoreDatabase.farkleScoreDao().deleteAll(scoreDatabase.farkleScoreDao().findAll());
 		}
 		else if (cmd.equals("Author") && args.length == 0)
 			Toast.makeText(this, getString(R.string.zzy), Toast.LENGTH_SHORT).show();

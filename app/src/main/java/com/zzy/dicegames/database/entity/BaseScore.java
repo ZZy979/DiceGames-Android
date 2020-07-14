@@ -1,9 +1,9 @@
 package com.zzy.dicegames.database.entity;
 
-import androidx.room.PrimaryKey;
-import androidx.annotation.NonNull;
-
 import java.io.Serializable;
+
+import androidx.annotation.NonNull;
+import androidx.room.PrimaryKey;
 
 /**
  * 游戏得分实体类基类
@@ -12,14 +12,14 @@ import java.io.Serializable;
  */
 public abstract class BaseScore implements Serializable {
 	@PrimaryKey(autoGenerate = true)
-	private Integer id;
+	protected Integer id;
 
 	/** yyyy-MM-dd */
 	@NonNull
-	private String date;
+	protected String date;
 
 	@NonNull
-	private Integer score;
+	protected Integer score;
 
 	public BaseScore(@NonNull String date, @NonNull Integer score) {
 		this.date = date;

@@ -1,6 +1,7 @@
 package com.zzy.dicegames.parser;
 
 import com.zzy.dicegames.database.entity.BalutScore;
+import com.zzy.dicegames.database.entity.FarkleScore;
 import com.zzy.dicegames.database.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.database.entity.SixYahtzeeScore;
 
@@ -28,6 +29,8 @@ public class ScoresParser {
 	private List<SixYahtzeeScore> sixYahtzeeScores = new ArrayList<>();
 
 	private List<BalutScore> balutScores = new ArrayList<>();
+
+	private List<FarkleScore> farkleScores = new ArrayList<>();
 
 	public ScoresParser(File file) throws FileNotFoundException {
 		try {
@@ -68,6 +71,12 @@ public class ScoresParser {
 						int gotBalut = Integer.parseInt(parser.getAttributeValue(null, "got_balut"));
 						balutScores.add(new BalutScore(date, score, gotBalut));
 					}
+					else if (tagName.equals("FarkleScore")) {
+						String date = parser.getAttributeValue(null, "date");
+						int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
+						int cpuScore = Integer.parseInt(parser.getAttributeValue(null, "cpu_score"));
+						farkleScores.add(new FarkleScore(date, score, cpuScore));
+					}
 				}
 				eventType = parser.next();
 			}
@@ -87,6 +96,10 @@ public class ScoresParser {
 
 	public List<BalutScore> getBalutScores() {
 		return balutScores;
+	}
+
+	public List<FarkleScore> getFarkleScores() {
+		return farkleScores;
 	}
 
 }

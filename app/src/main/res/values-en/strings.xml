@@ -87,6 +87,8 @@
     <string name="gotBonus">Got bonus</string>
     <string name="gotYahtzee">Got Yahtzee</string>
     <string name="gotBalut">Got Balut</string>
+    <string name="wonGames">Won games</string>
+    <string name="winRate">Win rate</string>
 
     <string name="importScoresSuccess">Scores successfully imported</string>
     <string name="exportScoresSuccess">Scores successfully exported to %s</string>

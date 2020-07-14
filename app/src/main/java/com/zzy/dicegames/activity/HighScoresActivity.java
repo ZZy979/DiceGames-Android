@@ -11,9 +11,11 @@ import android.widget.Spinner;
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.database.ScoreDatabase;
 import com.zzy.dicegames.database.dao.BalutScoreDao;
+import com.zzy.dicegames.database.dao.FarkleScoreDao;
 import com.zzy.dicegames.database.dao.FiveYahtzeeScoreDao;
 import com.zzy.dicegames.database.dao.SixYahtzeeScoreDao;
 import com.zzy.dicegames.fragment.highscores.BalutHighScoresFragment;
+import com.zzy.dicegames.fragment.highscores.FarkleHighScoresFragment;
 import com.zzy.dicegames.fragment.highscores.YahtzeeHighScoresFragment;
 
 import java.io.Serializable;
@@ -49,7 +51,8 @@ public class HighScoresActivity extends Activity {
 		mSupportedGameTypes = Arrays.asList(
 				getString(R.string.fiveYahtzee),
 				getString(R.string.sixYahtzee),
-				getString(R.string.balut)
+				getString(R.string.balut),
+				getString(R.string.farkle)
 		);
 
 		if (savedInstanceState == null)
@@ -119,6 +122,12 @@ public class HighScoresActivity extends Activity {
 				bundle.putInt(BalutHighScoresFragment.MIN_SCORE, balutScoreDao.minScore());
 				bundle.putDouble(BalutHighScoresFragment.AVERAGE_SCORE, balutScoreDao.averageScore());
 				bundle.putInt(BalutHighScoresFragment.GOT_BALUT, balutScoreDao.sumGotBalut());
+			}
+			else if (gameTitle.equals(getString(R.string.farkle))) {
+				mHighScoresFragment = new FarkleHighScoresFragment();
+				FarkleScoreDao farkleScoreDao = scoreDatabase.farkleScoreDao();
+				bundle.putInt(FarkleHighScoresFragment.GAMES_PLAYED, farkleScoreDao.count());
+				bundle.putInt(FarkleHighScoresFragment.WON_GAMES, farkleScoreDao.winCount());
 			}
 
 			mHighScoresFragment.setArguments(bundle);

@@ -161,19 +161,19 @@ public abstract class GameFragment<T extends Fragment> extends Fragment {
 	public void executeCmd(String cmd, String[] args) {
 		if (cmd.equals("ZZyCgDice") && (args.length == 1 || args.length == 2)) {
 			try {
+				mCheated = !(args.length == 2 && (args[0].equals("-t") || args[0].equals("--trust-me")));
 				mDiceFragment.setDiceNumbers(Arrays.stream(args[args.length - 1].split(","))
 						.mapToInt(Integer::parseInt)
 						.toArray());
-				mCheated = !(args.length == 2 && (args[0].equals("-t") || args[0].equals("--trust-me")));
 			}
 			catch (IllegalArgumentException ignored) {
 			}
 		}
 		else if (cmd.equals("SetRollTimes") && (args.length == 1 || args.length == 2)) {
 			try {
+				mCheated = !(args.length == 2 && (args[0].equals("-t") || args[0].equals("--trust-me")));
 				mDiceFragment.setRollTimes(Integer.parseInt(args[args.length - 1]));
 				mDiceFragment.activate();
-				mCheated = !(args.length == 2 && (args[0].equals("-t") || args[0].equals("--trust-me")));
 			}
 			catch (NumberFormatException ignored) {
 			}

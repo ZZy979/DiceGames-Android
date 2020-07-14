@@ -1,7 +1,7 @@
 package com.zzy.dicegames.database.entity;
 
-import androidx.room.ColumnInfo;
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 
 /**
  * Yahtzee得分实体类基类
@@ -12,12 +12,12 @@ public abstract class AbstractYahtzeeScore extends BaseScore {
 	/** 是否获得奖励分 */
 	@ColumnInfo(name = "got_bonus")
 	@NonNull
-	private Integer gotBonus;
+	protected Integer gotBonus;
 
 	/** Yahtzee是否得分 */
 	@ColumnInfo(name = "got_yahtzee")
 	@NonNull
-	private Integer gotYahtzee;
+	protected Integer gotYahtzee;
 
 	public AbstractYahtzeeScore(@NonNull String date, @NonNull Integer score, @NonNull Integer gotBonus, @NonNull Integer gotYahtzee) {
 		super(date, score);
