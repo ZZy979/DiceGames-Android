@@ -98,28 +98,28 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
-		switch (item.getItemId()) {
-		case R.id.menuNewGame:
+		int itemId = item.getItemId();
+		if (itemId == R.id.menuNewGame) {
 			mGameFragment.startNewGame();
-			break;
-		case R.id.menuGameType:
+		}
+		else if (itemId == R.id.menuGameType) {
 			new AlertDialog.Builder(this)
 					.setIcon(R.mipmap.ic_launcher)
 					.setTitle(R.string.selectGameType)
 					.setItems(mGameTypes, (dialog, which) -> changeGameType(mGameTypes[which]))
 					.create().show();
-			break;
-		case R.id.menuHelp:
+		}
+		else if (itemId == R.id.menuHelp) {
 			intent = new Intent(this, HelpActivity.class);
 			intent.putExtra(HelpActivity.GAME_TITLE, mGameFragment.getTitle());
 			startActivity(intent);
-			break;
-		case R.id.menuHighScores:
+		}
+		else if (itemId == R.id.menuHighScores) {
 			intent = new Intent(this, HighScoresActivity.class);
 			intent.putExtra(HighScoresActivity.GAME_TITLE, mGameFragment.getTitle());
 			startActivity(intent);
-			break;
-		case R.id.menuCmd:
+		}
+		else if (itemId == R.id.menuCmd) {
 			final EditText editText = new EditText(this);
 			new AlertDialog.Builder(this)
 					.setIcon(R.drawable.cmd)
@@ -130,7 +130,6 @@ public class MainActivity extends Activity {
 						mHandler.sendMessage(message);
 					})
 					.create().show();
-			break;
 		}
 		return true;
 	}
