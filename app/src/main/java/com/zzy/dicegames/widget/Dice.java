@@ -22,20 +22,11 @@ import com.zzy.dicegames.R;
  * @author 赵正阳
  */
 public class Dice extends View {
-	/** 边长 */
-	private static final int SIDE_LENGTH = 140;
-
 	/** 边框宽度 */
 	private static final int BORDER_WIDTH = 10;
 
 	/** 6个点数的图片 */
 	private final Bitmap[] mPics = new Bitmap[6];
-
-	/** 绘制图片的区域 */
-	private final Rect mDrawImageRect;
-
-	/** 绘制边框的区域 */
-	private final Rect mBorderRect;
 
 	/** 绘制边框的画笔 */
 	private Paint mPaint;
@@ -81,18 +72,10 @@ public class Dice extends View {
 		mPics[4] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d5);
 		mPics[5] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d6);
 
-		mDrawImageRect = new Rect(getPaddingLeft() + BORDER_WIDTH,
-				getPaddingTop() + BORDER_WIDTH,
-				getPaddingLeft() + SIDE_LENGTH - BORDER_WIDTH,
-				getPaddingTop() + SIDE_LENGTH - BORDER_WIDTH);
-
-		mBorderRect = new Rect(getPaddingLeft(), getPaddingTop(),
-				getPaddingLeft() + SIDE_LENGTH, getPaddingTop() + SIDE_LENGTH);
-
 		mPaint = new Paint();
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setColor(Color.RED);
-		mPaint.setStrokeWidth(2 * BORDER_WIDTH);
+		mPaint.setStrokeWidth(BORDER_WIDTH);
 
 		// 获取自定义属性的值
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Dice, defStyleAttr, defStyleRes);
@@ -166,21 +149,12 @@ public class Dice extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		canvas.drawBitmap(mPics[mNumber - 1], null, mDrawImageRect, null);
+		Rect drawImageRect = new Rect(BORDER_WIDTH, BORDER_WIDTH, getWidth() - BORDER_WIDTH, getHeight() - BORDER_WIDTH);
+		canvas.drawBitmap(mPics[mNumber - 1], null, drawImageRect, null);
 		if (mLocked)
-			canvas.drawRect(mBorderRect, mPaint);
-	}
-
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-		int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-		int width = widthMode == MeasureSpec.EXACTLY ? widthSize : getPaddingStart() + SIDE_LENGTH + getPaddingEnd();
-		int height = heightMode == MeasureSpec.EXACTLY ? heightSize : getPaddingTop() + SIDE_LENGTH + getPaddingBottom();
-		setMeasuredDimension(width, height);
+			canvas.drawRect(
+					BORDER_WIDTH / 2, BORDER_WIDTH / 2,
+					getWidth() - BORDER_WIDTH / 2, getHeight() - BORDER_WIDTH / 2, mPaint);
 	}
 
 }
