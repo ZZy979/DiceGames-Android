@@ -13,6 +13,9 @@
         android:id="@+id/menuHighScores"
         android:title="@string/highScores" />
     <item
-        android:id="@+id/menuCmd"
-        android:title="@string/cmd" />
+        android:id="@+id/menuImportScores"
+        android:title="@string/importScores" />
+    <item
+        android:id="@+id/menuExportScores"
+        android:title="@string/exportScores" />
 </menu>

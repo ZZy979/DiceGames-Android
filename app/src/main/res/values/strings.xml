@@ -13,22 +13,17 @@
     <string name="gameType">Game Type</string>
     <string name="help">Help</string>
     <string name="highScores">High Scores</string>
-    <string name="cmd">\?\?\?</string>
+    <string name="importScores">Import Scores</string>
+    <string name="exportScores">Export Scores</string>
     <string name="selectGameType">Please select game type</string>
     <string name="quitPrompt">Click again to exit</string>
 
     <string name="roll">Roll</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="activate">Activate</string>
 
-    <string name="diceWindow">Dice Window</string>
-    <string name="activateRollButton">Activate \"Roll\" Button</string>
     <string name="diceCount">Number of Dice</string>
-    <string name="rollTimes">Roll Times</string>
-    <string name="diceNumbers">Numbers Shown on Dice</string>
     <string name="wrongDiceNumber">Dice number must be between 1 and 6</string>
-    <string name="wrongFormat">Wrong format</string>
 
     <string name="s1">1</string>
     <string name="s2">2</string>
@@ -93,5 +88,4 @@
     <string name="importScoresSuccess">Scores successfully imported</string>
     <string name="exportScoresSuccess">Scores successfully exported to %s</string>
     <string name="zzy">Zhao Zhengyang</string>
-    <string name="cmdList">cmd list</string>
 </resources>

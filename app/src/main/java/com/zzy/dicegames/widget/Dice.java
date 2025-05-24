@@ -119,20 +119,12 @@ public class Dice extends View {
      * @throws IllegalArgumentException 如果未锁定且设置的点数不在1~6之间
      */
     public void setNumber(int number) {
-        if (!mLocked)
-            forceSetNumber(number);
-    }
-
-    /**
-     * 设置骰子点数，无视锁定状态
-     *
-     * @throws IllegalArgumentException 如果设置的点数不在1~6之间
-     */
-    public void forceSetNumber(int number) {
-        if (number < 1 || number > 6)
-            throw new IllegalArgumentException(getContext().getString(R.string.wrongDiceNumber));
-        mNumber = number;
-        invalidate();
+        if (!mLocked) {
+            if (number < 1 || number > 6)
+                throw new IllegalArgumentException(getContext().getString(R.string.wrongDiceNumber));
+            mNumber = number;
+            invalidate();
+        }
     }
 
     /** 返回骰子是否被锁定 */

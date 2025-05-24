@@ -50,13 +50,6 @@ public class DiceUnitTest {
     }
 
     @Test
-    public void forceSetNumber() {
-        dice.setLocked(true);
-        dice.forceSetNumber(4);
-        assertEquals(4, dice.getNumber());
-    }
-
-    @Test
     public void changeLocked() {
         assertFalse(dice.isLocked());
         dice.callOnClick();
