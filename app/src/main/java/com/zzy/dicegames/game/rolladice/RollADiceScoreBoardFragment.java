@@ -18,43 +18,43 @@ import java.util.function.IntConsumer;
  * @author 赵正阳
  */
 public class RollADiceScoreBoardFragment extends Fragment {
-	// ----------游戏状态数据----------
-	/** 骰子个数选择器 */
-	private NumberPicker mDiceCountPicker;
+    // ----------游戏状态数据----------
+    /** 骰子个数选择器 */
+    private NumberPicker mDiceCountPicker;
 
-	/** 改变骰子个数时执行的动作 */
-	private IntConsumer mActionOnChangingDiceCount;
+    /** 改变骰子个数时执行的动作 */
+    private IntConsumer mActionOnChangingDiceCount;
 
-	// ----------保存和恢复状态----------
-	/** 用于保存和恢复状态：骰子个数 */
-	private static final String DICE_COUNT = "diceCount";
+    // ----------保存和恢复状态----------
+    /** 用于保存和恢复状态：骰子个数 */
+    private static final String DICE_COUNT = "diceCount";
 
-	public RollADiceScoreBoardFragment() {}
+    public RollADiceScoreBoardFragment() {}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_roll_a_dice_score_board, container, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_roll_a_dice_score_board, container, false);
 
-		mDiceCountPicker = rootView.findViewById(R.id.diceCountPicker);
-		mDiceCountPicker.setMinValue(DiceFragment.MIN_DICE_COUNT);
-		mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_COUNT);
-		if (savedInstanceState == null)
-			mDiceCountPicker.setValue(DiceFragment.MAX_DICE_COUNT);
-		else
-			mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
-		mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mActionOnChangingDiceCount.accept(newVal));
+        mDiceCountPicker = rootView.findViewById(R.id.diceCountPicker);
+        mDiceCountPicker.setMinValue(DiceFragment.MIN_DICE_COUNT);
+        mDiceCountPicker.setMaxValue(DiceFragment.MAX_DICE_COUNT);
+        if (savedInstanceState == null)
+            mDiceCountPicker.setValue(DiceFragment.MAX_DICE_COUNT);
+        else
+            mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
+        mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mActionOnChangingDiceCount.accept(newVal));
 
-		return rootView;
-	}
+        return rootView;
+    }
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt(DICE_COUNT, mDiceCountPicker.getValue());
-		super.onSaveInstanceState(outState);
-	}
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(DICE_COUNT, mDiceCountPicker.getValue());
+        super.onSaveInstanceState(outState);
+    }
 
-	public void setActionOnChangingDiceCount(IntConsumer actionOnChangingDiceCount) {
-		mActionOnChangingDiceCount = actionOnChangingDiceCount;
-	}
+    public void setActionOnChangingDiceCount(IntConsumer actionOnChangingDiceCount) {
+        mActionOnChangingDiceCount = actionOnChangingDiceCount;
+    }
 
 }

@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 @Entity(tableName = "six_yahtzee_score")
 public class SixYahtzeeScore extends AbstractYahtzeeScore {
 
-	public SixYahtzeeScore(String date, @NonNull Integer score, @NonNull Integer gotBonus, @NonNull Integer gotYahtzee) {
-		super(date, score, gotBonus, gotYahtzee);
-	}
+    public SixYahtzeeScore(String date, @NonNull Integer score, @NonNull Integer gotBonus, @NonNull Integer gotYahtzee) {
+        super(date, score, gotBonus, gotYahtzee);
+    }
 
 }

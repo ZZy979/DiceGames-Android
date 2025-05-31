@@ -17,37 +17,37 @@ import java.util.List;
 @Dao
 public interface BalutScoreDao {
 
-	@Query("SELECT * FROM balut_score")
-	List<BalutScore> findAll();
+    @Query("SELECT * FROM balut_score")
+    List<BalutScore> findAll();
 
-	@Query("SELECT * FROM balut_score ORDER BY score DESC, date DESC LIMIT 10")
-	List<BalutScore> findTop10();
+    @Query("SELECT * FROM balut_score ORDER BY score DESC, date DESC LIMIT 10")
+    List<BalutScore> findTop10();
 
-	@Query("SELECT score FROM balut_score ORDER BY score DESC LIMIT 10")
-	List<Integer> findTop10Score();
+    @Query("SELECT score FROM balut_score ORDER BY score DESC LIMIT 10")
+    List<Integer> findTop10Score();
 
-	@Query("SELECT COUNT(*) FROM balut_score")
-	int count();
+    @Query("SELECT COUNT(*) FROM balut_score")
+    int count();
 
-	@Query("SELECT MAX(score) FROM balut_score")
-	int maxScore();
+    @Query("SELECT MAX(score) FROM balut_score")
+    int maxScore();
 
-	@Query("SELECT MIN(score) FROM balut_score")
-	int minScore();
+    @Query("SELECT MIN(score) FROM balut_score")
+    int minScore();
 
-	@Query("SELECT AVG(score) FROM balut_score")
-	double averageScore();
+    @Query("SELECT AVG(score) FROM balut_score")
+    double averageScore();
 
-	@Query("SELECT SUM(got_balut) FROM balut_score")
-	int sumGotBalut();
+    @Query("SELECT SUM(got_balut) FROM balut_score")
+    int sumGotBalut();
 
-	@Insert
-	void insert(BalutScore balutScore);
+    @Insert
+    void insert(BalutScore balutScore);
 
-	@Insert
-	void insertAll(List<BalutScore> balutScores);
+    @Insert
+    void insertAll(List<BalutScore> balutScores);
 
-	@Delete
-	void deleteAll(List<BalutScore> balutScores);
+    @Delete
+    void deleteAll(List<BalutScore> balutScores);
 
 }

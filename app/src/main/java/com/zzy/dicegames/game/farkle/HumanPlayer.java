@@ -7,10 +7,10 @@ package com.zzy.dicegames.game.farkle;
  */
 class HumanPlayer extends Player {
 
-	@Override
-	public void onDiceRolled(Result result) {}
+    @Override
+    public void onDiceRolled(Result result) {}
 
-	@Override
-	public void onHotDice() {}
+    @Override
+    public void onHotDice() {}
 
 }

@@ -12,21 +12,21 @@ import java.util.List;
  * @author 赵正阳
  */
 public class Result {
-	private int score;
+    private int score;
 
-	private List<Integer> scoringDiceIndices;
+    private List<Integer> scoringDiceIndices;
 
-	public Result(int score, List<Integer> scoringDiceIndices) {
-		this.score = score;
-		this.scoringDiceIndices = scoringDiceIndices;
-	}
+    public Result(int score, List<Integer> scoringDiceIndices) {
+        this.score = score;
+        this.scoringDiceIndices = scoringDiceIndices;
+    }
 
-	public int getScore() {
-		return score;
-	}
+    public int getScore() {
+        return score;
+    }
 
-	public List<Integer> getScoringDiceIndices() {
-		return scoringDiceIndices;
-	}
+    public List<Integer> getScoringDiceIndices() {
+        return scoringDiceIndices;
+    }
 
 }

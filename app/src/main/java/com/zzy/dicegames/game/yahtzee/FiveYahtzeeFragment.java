@@ -13,33 +13,33 @@ import com.zzy.dicegames.database.entity.FiveYahtzeeScore;
  */
 public class FiveYahtzeeFragment extends AbstractYahtzeeFragment {
 
-	public FiveYahtzeeFragment() {}
+    public FiveYahtzeeFragment() {}
 
-	@Override
-	public AbstractYahtzeeScoreBoardFragment createScoreBoardFragment() {
-		return new FiveYahtzeeScoreBoardFragment();
-	}
+    @Override
+    public AbstractYahtzeeScoreBoardFragment createScoreBoardFragment() {
+        return new FiveYahtzeeScoreBoardFragment();
+    }
 
-	@Override
-	public String getTitle() {
-		return getString(R.string.fiveYahtzee);
-	}
+    @Override
+    public String getTitle() {
+        return getString(R.string.fiveYahtzee);
+    }
 
-	@Override
-	public int getDiceCount() {
-		return 5;
-	}
+    @Override
+    public int getDiceCount() {
+        return 5;
+    }
 
-	@Override
-	public int getRollTimes() {
-		return 2;
-	}
+    @Override
+    public int getRollTimes() {
+        return 2;
+    }
 
-	@Override
-	protected int saveScore(AbstractYahtzeeScore score) {
-		FiveYahtzeeScoreDao fiveYahtzeeScoreDao = ScoreDatabase.getInstance(getContext()).fiveYahtzeeScoreDao();
-		fiveYahtzeeScoreDao.insert((FiveYahtzeeScore) score);
-		return fiveYahtzeeScoreDao.findTop10Score().indexOf(score.getScore()) + 1;
-	}
+    @Override
+    protected int saveScore(AbstractYahtzeeScore score) {
+        FiveYahtzeeScoreDao fiveYahtzeeScoreDao = ScoreDatabase.getInstance(getContext()).fiveYahtzeeScoreDao();
+        fiveYahtzeeScoreDao.insert((FiveYahtzeeScore) score);
+        return fiveYahtzeeScoreDao.findTop10Score().indexOf(score.getScore()) + 1;
+    }
 
 }

@@ -10,31 +10,31 @@ import java.util.function.IntSupplier;
  * @author 赵正阳
  */
 abstract class Player {
-	/** 骰子窗口 */
-	protected DiceFragment mDiceFragment;
+    /** 骰子窗口 */
+    protected DiceFragment mDiceFragment;
 
-	/** “获取本轮预览得分”动作 */
-	protected IntSupplier mCurrentTurnScoreSupplier;
+    /** “获取本轮预览得分”动作 */
+    protected IntSupplier mCurrentTurnScoreSupplier;
 
-	/** “保存得分”动作 */
-	protected Runnable mBankScoreAction;
+    /** “保存得分”动作 */
+    protected Runnable mBankScoreAction;
 
-	/** 掷骰子后的回调函数 */
-	public abstract void onDiceRolled(Result result);
+    /** 掷骰子后的回调函数 */
+    public abstract void onDiceRolled(Result result);
 
-	/** Hot Dice后的回调函数 */
-	public abstract void onHotDice();
+    /** Hot Dice后的回调函数 */
+    public abstract void onHotDice();
 
-	public void setDiceFragment(DiceFragment diceFragment) {
-		mDiceFragment = diceFragment;
-	}
+    public void setDiceFragment(DiceFragment diceFragment) {
+        mDiceFragment = diceFragment;
+    }
 
-	public void setCurrentTurnScoreSupplier(IntSupplier currentTurnScoreSupplier) {
-		mCurrentTurnScoreSupplier = currentTurnScoreSupplier;
-	}
+    public void setCurrentTurnScoreSupplier(IntSupplier currentTurnScoreSupplier) {
+        mCurrentTurnScoreSupplier = currentTurnScoreSupplier;
+    }
 
-	public void setBankScoreAction(Runnable bankScoreAction) {
-		mBankScoreAction = bankScoreAction;
-	}
+    public void setBankScoreAction(Runnable bankScoreAction) {
+        mBankScoreAction = bankScoreAction;
+    }
 
 }
