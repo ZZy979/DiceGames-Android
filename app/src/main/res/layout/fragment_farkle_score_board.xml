@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".game.farkle.FarkleScoreBoardFragment">
+    tools:context=".ui.game.farkle.FarkleScoreBoardFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
