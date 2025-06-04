@@ -21,7 +21,7 @@ public class FarkleFragment extends GameFragment<FarkleScoreBoardFragment> {
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState == null)
-            mDiceFragment.setLeftRollTimes(0);
+            mRollDiceFragment.setLeftRollTimes(0);
     }
 
     @Override
@@ -31,9 +31,9 @@ public class FarkleFragment extends GameFragment<FarkleScoreBoardFragment> {
 
     @Override
     protected void setListeners() {
-        mScoreBoardFragment.setDiceFragment(mDiceFragment);
+        mScoreBoardFragment.setDiceFragment(mRollDiceFragment);
         mScoreBoardFragment.setGameOverAction(this::onGameOver);
-        mDiceFragment.setRollListener(mScoreBoardFragment::onDiceRolled);
+        mRollDiceFragment.setRollListener(mScoreBoardFragment::onDiceRolled);
     }
 
     @Override
@@ -54,8 +54,8 @@ public class FarkleFragment extends GameFragment<FarkleScoreBoardFragment> {
     @Override
     public void startNewGame() {
         super.startNewGame();
-        mDiceFragment.activate();
-        mDiceFragment.setLeftRollTimes(0);
+        mRollDiceFragment.activate();
+        mRollDiceFragment.setLeftRollTimes(0);
     }
 
     /** 游戏结束时的回调函数 */

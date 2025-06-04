@@ -22,8 +22,8 @@ public class BalutFragment extends GameFragment<BalutScoreBoardFragment> {
 
     @Override
     protected void setListeners() {
-        mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-        mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activate);
+        mRollDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+        mScoreBoardFragment.setActionAfterChoosing(mRollDiceFragment::activate);
         mScoreBoardFragment.setGameOverAction(this::onGameOver);
     }
 
@@ -45,7 +45,7 @@ public class BalutFragment extends GameFragment<BalutScoreBoardFragment> {
     @Override
     public void startNewGame() {
         super.startNewGame();
-        mDiceFragment.activate();
+        mRollDiceFragment.activate();
     }
 
     /**

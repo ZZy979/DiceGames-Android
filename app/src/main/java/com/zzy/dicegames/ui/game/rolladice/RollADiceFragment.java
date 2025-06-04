@@ -19,7 +19,7 @@ public class RollADiceFragment extends GameFragment<RollADiceScoreBoardFragment>
 
     @Override
     protected void setListeners() {
-        mScoreBoardFragment.setActionOnChangingDiceCount(mDiceFragment::setDiceCount);
+        mScoreBoardFragment.setActionOnChangingDiceCount(mRollDiceFragment::setDiceCount);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RollADiceFragment extends GameFragment<RollADiceScoreBoardFragment>
     @Override
     public void startNewGame() {
         super.startNewGame();
-        mDiceFragment.activate();
+        mRollDiceFragment.activate();
     }
 
 }

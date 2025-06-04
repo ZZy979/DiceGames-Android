@@ -21,7 +21,7 @@ import com.zzy.dicegames.R;
  *
  * @author 赵正阳
  */
-public class Dice extends View {
+public class DiceView extends View {
     /** 边框宽度 */
     private static final int BORDER_WIDTH = 10;
 
@@ -50,19 +50,19 @@ public class Dice extends View {
     /** 用于保存和恢复状态：{@link #isEnabled()} */
     private static final String ENABLED = "enabled";
 
-    public Dice(Context context) {
+    public DiceView(Context context) {
         this(context, null);
     }
 
-    public Dice(Context context, AttributeSet attrs) {
+    public DiceView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public Dice(Context context, AttributeSet attrs, int defStyleAttr) {
+    public DiceView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public Dice(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public DiceView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         mPics[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.d1);

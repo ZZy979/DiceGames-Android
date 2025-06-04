@@ -1,6 +1,6 @@
 package com.zzy.dicegames.ui.game.farkle;
 
-import com.zzy.dicegames.ui.dice.DiceFragment;
+import com.zzy.dicegames.ui.dice.RollDiceFragment;
 
 import java.util.function.IntSupplier;
 
@@ -11,7 +11,7 @@ import java.util.function.IntSupplier;
  */
 abstract class Player {
     /** 骰子窗口 */
-    protected DiceFragment mDiceFragment;
+    protected RollDiceFragment mRollDiceFragment;
 
     /** “获取本轮预览得分”动作 */
     protected IntSupplier mCurrentTurnScoreSupplier;
@@ -25,8 +25,8 @@ abstract class Player {
     /** Hot Dice后的回调函数 */
     public abstract void onHotDice();
 
-    public void setDiceFragment(DiceFragment diceFragment) {
-        mDiceFragment = diceFragment;
+    public void setDiceFragment(RollDiceFragment rollDiceFragment) {
+        mRollDiceFragment = rollDiceFragment;
     }
 
     public void setCurrentTurnScoreSupplier(IntSupplier currentTurnScoreSupplier) {

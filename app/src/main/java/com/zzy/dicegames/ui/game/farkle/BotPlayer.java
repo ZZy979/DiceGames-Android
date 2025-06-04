@@ -1,6 +1,6 @@
 package com.zzy.dicegames.ui.game.farkle;
 
-import com.zzy.dicegames.ui.dice.Dice;
+import com.zzy.dicegames.ui.dice.DiceView;
 
 import java.util.Arrays;
 
@@ -15,9 +15,9 @@ class BotPlayer extends Player {
     public void onDiceRolled(Result result) {
         delay(1);
         for (int i : result.getScoringDiceIndices())
-            mDiceFragment.getDice()[i].callOnClick();
+            mRollDiceFragment.getDice()[i].callOnClick();
         if (mCurrentTurnScoreSupplier.getAsInt() >= 500
-                || Arrays.stream(mDiceFragment.getDice()).filter(Dice::isLocked).count() >= 4)
+                || Arrays.stream(mRollDiceFragment.getDice()).filter(DiceView::isLocked).count() >= 4)
             // 为了让锁定骰子的效果立即显示，在新线程中点击Bank或Roll按钮
             // 因此需要将这两个按钮的监听器设置为在UI线程中运行
             new Thread(() -> {
@@ -27,7 +27,7 @@ class BotPlayer extends Player {
         else
             new Thread(() -> {
                 delay(1);
-                mDiceFragment.getRollButton().callOnClick();
+                mRollDiceFragment.getRollButton().callOnClick();
             }).start();
     }
 
@@ -35,7 +35,7 @@ class BotPlayer extends Player {
     public void onHotDice() {
         new Thread(() -> {
             delay(2);
-            mDiceFragment.getRollButton().callOnClick();
+            mRollDiceFragment.getRollButton().callOnClick();
         }).start();
     }
 

@@ -15,7 +15,7 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 /**
- * 骰子窗口，包括一些{@link Dice 骰子组件}和一个"Roll"按钮<br>
+ * 掷骰子窗口，包括一些{@link DiceView 骰子组件}和一个"Roll"按钮<br>
  * <h3>骰子</h3>
  * 通过{@code setDiceCount()}设置骰子个数；<br>
  * 通过{@code getDiceNumbers()}获取骰子点数<br>
@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  *
  * @author 赵正阳
  */
-public class DiceFragment extends Fragment {
+public class RollDiceFragment extends Fragment {
     /** 骰子个数最小值 */
     public static final int MIN_DICE_COUNT = 1;
 
@@ -56,7 +56,7 @@ public class DiceFragment extends Fragment {
     private int mDiceCount;
 
     /** 骰子数组 */
-    private Dice[] mDice = new Dice[MAX_DICE_COUNT];
+    private DiceView[] mDiceViews = new DiceView[MAX_DICE_COUNT];
 
     /** "Roll"按钮 */
     private Button mRollButton;
@@ -74,17 +74,17 @@ public class DiceFragment extends Fragment {
     /** 用于保存和恢复状态：{@link #mLeftRollTimes} */
     private static final String LEFT_ROLL_TIMES = "leftRollTimes";
 
-    public DiceFragment() {}
+    public RollDiceFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_dice, container, false);
-        mDice[0] = rootView.findViewById(R.id.dice1);
-        mDice[1] = rootView.findViewById(R.id.dice2);
-        mDice[2] = rootView.findViewById(R.id.dice3);
-        mDice[3] = rootView.findViewById(R.id.dice4);
-        mDice[4] = rootView.findViewById(R.id.dice5);
-        mDice[5] = rootView.findViewById(R.id.dice6);
+        View rootView = inflater.inflate(R.layout.fragment_roll_dice, container, false);
+        mDiceViews[0] = rootView.findViewById(R.id.dice1);
+        mDiceViews[1] = rootView.findViewById(R.id.dice2);
+        mDiceViews[2] = rootView.findViewById(R.id.dice3);
+        mDiceViews[3] = rootView.findViewById(R.id.dice4);
+        mDiceViews[4] = rootView.findViewById(R.id.dice5);
+        mDiceViews[5] = rootView.findViewById(R.id.dice6);
 
         mRollButton = rootView.findViewById(R.id.btnRoll);
         mRollButton.setOnClickListener(v -> {
@@ -92,8 +92,8 @@ public class DiceFragment extends Fragment {
                 if (mLeftRollTimes > 0) {
                     setLeftRollTimes(mLeftRollTimes - 1);
                     if (mLeftRollTimes == 0)
-                        for (Dice dice : mDice)
-                            dice.setEnabled(false);
+                        for (DiceView diceView : mDiceViews)
+                            diceView.setEnabled(false);
                     roll();
                 }
             }
@@ -128,8 +128,8 @@ public class DiceFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    public Dice[] getDice() {
-        return mDice;
+    public DiceView[] getDice() {
+        return mDiceViews;
     }
 
     public Button getRollButton() {
@@ -146,8 +146,8 @@ public class DiceFragment extends Fragment {
             throw new IllegalArgumentException(
                     String.format("骰子个数必须在%d~%d之间", MIN_DICE_COUNT, MAX_DICE_COUNT));
         mDiceCount = diceCount;
-        for (int i = 0; i < mDice.length; ++i)
-            mDice[i].setVisibility(i < diceCount ? View.VISIBLE : View.INVISIBLE);
+        for (int i = 0; i < mDiceViews.length; ++i)
+            mDiceViews[i].setVisibility(i < diceCount ? View.VISIBLE : View.INVISIBLE);
     }
 
     /**
@@ -184,8 +184,8 @@ public class DiceFragment extends Fragment {
 
     /** 掷骰子<strong>一次</strong>，锁定的骰子除外 */
     private void rollOnce() {
-        for (Dice dice : mDice)
-            dice.setNumber(new Random().nextInt(6) + 1);
+        for (DiceView diceView : mDiceViews)
+            diceView.setNumber(new Random().nextInt(6) + 1);
     }
 
     /**
@@ -213,18 +213,18 @@ public class DiceFragment extends Fragment {
     /** 激活"Roll"按钮（重置可点击次数）、解锁骰子并掷骰子 */
     public void activate() {
         setLeftRollTimes(mRollTimes == 0 ? 1 : mRollTimes);
-        for (Dice dice : mDice) {
-            dice.setEnabled(true);
-            dice.setLocked(false);
+        for (DiceView diceView : mDiceViews) {
+            diceView.setEnabled(true);
+            diceView.setLocked(false);
         }
         roll();
     }
 
     /** 返回骰子点数的数组 */
     public int[] getDiceNumbers() {
-        return Arrays.stream(mDice)
+        return Arrays.stream(mDiceViews)
                 .limit(mDiceCount)
-                .mapToInt(Dice::getNumber)
+                .mapToInt(DiceView::getNumber)
                 .toArray();
     }
 

@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.FarkleScore;
-import com.zzy.dicegames.ui.dice.DiceFragment;
-import com.zzy.dicegames.ui.dice.Dice;
+import com.zzy.dicegames.ui.dice.RollDiceFragment;
+import com.zzy.dicegames.ui.dice.DiceView;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public class FarkleScoreBoardFragment extends Fragment {
         并在该类中设置相同数量的监听器，非常麻烦，因此获取DiceFragment的引用，直接对其操作
      */
     /** 骰子窗口 */
-    private DiceFragment mDiceFragment;
+    private RollDiceFragment mRollDiceFragment;
 
     /** 本轮已锁定的骰子中得分骰子的个数，用于判断Hot Dice */
     private int mScoringDiceCount;
@@ -148,15 +148,15 @@ public class FarkleScoreBoardFragment extends Fragment {
     /*
         由于该Fragment在DiceFragment之前创建
         因此该Fragment的onActivityCreated()和onViewStateRestored()被调用时
-        DiceFragment.onCreateView()还未被调用，其骰子数组和"Roll"按钮均为空指针
+        RollDiceFragment.onCreateView()还未被调用，其骰子数组和"Roll"按钮均为空指针
         而该方法被调用时DiceFragment.onCreateView()已被调用
      */
     @Override
     public void onStart() {
         super.onStart();
-        for (Dice d : mDiceFragment.getDice())
+        for (DiceView d : mRollDiceFragment.getDice())
             d.setOnClickListener(this::onDiceClicked);
-        mDiceFragment.getRollButton().setOnClickListener(v -> getActivity().runOnUiThread(this::onRollButtonClicked));
+        mRollDiceFragment.getRollButton().setOnClickListener(v -> getActivity().runOnUiThread(this::onRollButtonClicked));
         changeButtonVisibility();
     }
 
@@ -183,15 +183,15 @@ public class FarkleScoreBoardFragment extends Fragment {
     /** 返回一个新的电脑玩家，并设置相关动作 */
     private BotPlayer createBotPlayer() {
         BotPlayer botPlayer = new BotPlayer();
-        botPlayer.setDiceFragment(mDiceFragment);
+        botPlayer.setDiceFragment(mRollDiceFragment);
         botPlayer.setCurrentTurnScoreSupplier(() ->
                 Integer.parseInt(mCurrentTurnScoreTextView.getText().toString()));
         botPlayer.setBankScoreAction(mBankButton::callOnClick);
         return botPlayer;
     }
 
-    public void setDiceFragment(DiceFragment diceFragment) {
-        mDiceFragment = diceFragment;
+    public void setDiceFragment(RollDiceFragment rollDiceFragment) {
+        mRollDiceFragment = rollDiceFragment;
     }
 
     public void setGameOverAction(Consumer<FarkleScore> gameOverAction) {
@@ -205,41 +205,41 @@ public class FarkleScoreBoardFragment extends Fragment {
 
     /** 骰子的点击事件监听器 */
     private void onDiceClicked(View v) {
-        Dice dice = (Dice) v;
-        if (dice.isEnabled())
-            dice.setLocked(!dice.isLocked());
+        DiceView diceView = (DiceView) v;
+        if (diceView.isEnabled())
+            diceView.setLocked(!diceView.isLocked());
         updateCurrentTurnScore();
     }
 
     /** "Roll"按钮的点击事件监听器 */
     private void onRollButtonClicked() {
-        mDiceFragment.setLeftRollTimes(0);
-        if (Arrays.stream(mDiceFragment.getDice()).anyMatch(d -> !d.isLocked() && !d.isEnabled())) {
+        mRollDiceFragment.setLeftRollTimes(0);
+        if (Arrays.stream(mRollDiceFragment.getDice()).anyMatch(d -> !d.isLocked() && !d.isEnabled())) {
             // 上次掷骰子后Hot Dice
-            for (Dice dice : mDiceFragment.getDice()) {
-                dice.setEnabled(true);
-                dice.setLocked(false);
+            for (DiceView diceView : mRollDiceFragment.getDice()) {
+                diceView.setEnabled(true);
+                diceView.setLocked(false);
             }
             mBankButton.setEnabled(true);
         }
         else {
             writeLog(String.format(getString(R.string.logDiceKept),
-                    Arrays.stream(mDiceFragment.getDice())
+                    Arrays.stream(mRollDiceFragment.getDice())
                             .filter(this::isLockedAfterLastRoll)
                             .map(d -> String.valueOf(d.getNumber()))
                             .collect(Collectors.joining(","))
             ));
             // 记录上次掷骰子后锁定的骰子中得分骰子的个数
-            mScoringDiceCount += calcScore(Arrays.stream(mDiceFragment.getDice())
+            mScoringDiceCount += calcScore(Arrays.stream(mRollDiceFragment.getDice())
                     .filter(this::isLockedAfterLastRoll)
-                    .mapToInt(Dice::getNumber)
+                    .mapToInt(DiceView::getNumber)
                     .toArray()).getScoringDiceIndices().size();
             // 禁用上次掷骰子后锁定的骰子
-            Arrays.stream(mDiceFragment.getDice())
+            Arrays.stream(mRollDiceFragment.getDice())
                     .filter(this::isLockedAfterLastRoll)
                     .forEach(d -> d.setEnabled(false));
         }
-        mDiceFragment.roll();
+        mRollDiceFragment.roll();
     }
 
     /**
@@ -287,20 +287,20 @@ public class FarkleScoreBoardFragment extends Fragment {
     }
 
     /** 上次掷骰子后锁定的骰子<=>已锁定且未禁用 */
-    private boolean isLockedAfterLastRoll(Dice dice) {
-        return dice.isLocked() && dice.isEnabled();
+    private boolean isLockedAfterLastRoll(DiceView diceView) {
+        return diceView.isLocked() && diceView.isEnabled();
     }
 
     /** 设置所有骰子的可用状态 */
     private void disableAllDice() {
-        Arrays.stream(mDiceFragment.getDice()).forEach(d -> d.setEnabled(false));
+        Arrays.stream(mRollDiceFragment.getDice()).forEach(d -> d.setEnabled(false));
     }
 
     /** 掷骰子后的回调函数 */
     public void onDiceRolled(int[] diceNumbers) {
         // 每次掷骰子后所有骰子isLocked() <=> !isEnabled()
-        for (int i = 0; i < mDiceFragment.getDice().length; ++i)
-            if (!mDiceFragment.getDice()[i].isEnabled())
+        for (int i = 0; i < mRollDiceFragment.getDice().length; ++i)
+            if (!mRollDiceFragment.getDice()[i].isEnabled())
                 diceNumbers[i] = 0;
         writeLog(String.format(getString(R.string.logDiceRolled), Arrays.stream(diceNumbers)
                 .filter(x -> x != 0)
@@ -331,7 +331,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 
         disableAllDice();
         mBankButton.setEnabled(false);
-        mDiceFragment.setLeftRollTimes(0);
+        mRollDiceFragment.setLeftRollTimes(0);
         mNewGameButton.setVisibility(View.VISIBLE);
 
         if (mGameOverAction != null)
@@ -346,7 +346,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 
         disableAllDice();
         mBankButton.setEnabled(false);
-        mDiceFragment.setLeftRollTimes(1);
+        mRollDiceFragment.setLeftRollTimes(1);
 
         mPlayer[mCurrentPlayer].onHotDice();
     }
@@ -364,25 +364,25 @@ public class FarkleScoreBoardFragment extends Fragment {
 
     /** 锁定/解锁骰子时更新本轮得分 */
     private void updateCurrentTurnScore() {
-        Result result = calcScore(Arrays.stream(mDiceFragment.getDice())
+        Result result = calcScore(Arrays.stream(mRollDiceFragment.getDice())
                 .filter(this::isLockedAfterLastRoll)
-                .mapToInt(Dice::getNumber)
+                .mapToInt(DiceView::getNumber)
                 .toArray());
         mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore + result.getScore()));
-        boolean allLocked = Arrays.stream(mDiceFragment.getDice()).allMatch(Dice::isLocked);
-        mDiceFragment.setLeftRollTimes(allLocked || result.getScoringDiceIndices().isEmpty() ? 0 : 1);
+        boolean allLocked = Arrays.stream(mRollDiceFragment.getDice()).allMatch(DiceView::isLocked);
+        mRollDiceFragment.setLeftRollTimes(allLocked || result.getScoringDiceIndices().isEmpty() ? 0 : 1);
     }
 
     /** 保存本轮得分，包括本轮已积累的得分和最后一次掷骰子后所有得分的骰子 */
     private void bank() {
         // 本轮中最后一次掷骰子之前锁定的骰子已被onRollButtonClicked()禁用
         // result中一定有得分的骰子，否则已经Farkle
-        Result result = calcScore(Arrays.stream(mDiceFragment.getDice())
+        Result result = calcScore(Arrays.stream(mRollDiceFragment.getDice())
                 .mapToInt(d -> d.isEnabled() ? d.getNumber() : 0)
                 .toArray());
         writeLog(String.format(getString(R.string.logDiceKept),
                 result.getScoringDiceIndices().stream().sorted()
-                        .map(i -> String.valueOf(mDiceFragment.getDice()[i].getNumber()))
+                        .map(i -> String.valueOf(mRollDiceFragment.getDice()[i].getNumber()))
                         .collect(Collectors.joining(","))
         ));
         int currentTurnScore = mCurrentTurnScore + result.getScore();
@@ -397,11 +397,11 @@ public class FarkleScoreBoardFragment extends Fragment {
     private void changeButtonVisibility() {
         if (mPlayer[mCurrentPlayer] instanceof BotPlayer) {
             mBankButton.setVisibility(View.INVISIBLE);
-            mDiceFragment.getRollButton().setVisibility(View.INVISIBLE);
+            mRollDiceFragment.getRollButton().setVisibility(View.INVISIBLE);
         }
         else {
             mBankButton.setVisibility(View.VISIBLE);
-            mDiceFragment.getRollButton().setVisibility(View.VISIBLE);
+            mRollDiceFragment.getRollButton().setVisibility(View.VISIBLE);
         }
     }
 
@@ -417,8 +417,8 @@ public class FarkleScoreBoardFragment extends Fragment {
         writeLog("----------------------------------------");
         writeLog(getString(mCurrentPlayer == 0 ? R.string.logYourTurn : R.string.logCPUsTurn));
         writeLog(String.format(getString(R.string.logStartingScore), mScore[mCurrentPlayer]));
-        mDiceFragment.activate();
-        mDiceFragment.setLeftRollTimes(0);
+        mRollDiceFragment.activate();
+        mRollDiceFragment.setLeftRollTimes(0);
     }
 
 }

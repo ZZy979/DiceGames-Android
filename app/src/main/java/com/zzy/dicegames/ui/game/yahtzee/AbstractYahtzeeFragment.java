@@ -14,15 +14,15 @@ public abstract class AbstractYahtzeeFragment extends GameFragment<AbstractYahtz
 
     @Override
     protected void setListeners() {
-        mDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-        mScoreBoardFragment.setActionAfterChoosing(mDiceFragment::activate);
+        mRollDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
+        mScoreBoardFragment.setActionAfterChoosing(mRollDiceFragment::activate);
         mScoreBoardFragment.setGameOverAction(this::onGameOver);
     }
 
     @Override
     public void startNewGame() {
         super.startNewGame();
-        mDiceFragment.activate();
+        mRollDiceFragment.activate();
     }
 
     /**

@@ -9,10 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.ui.dice.DiceFragment;
+import com.zzy.dicegames.ui.dice.RollDiceFragment;
 
 /**
- * 游戏Fragment基类，有一个{@link DiceFragment 骰子窗口}和一个计分板
+ * 游戏Fragment基类，有一个{@link RollDiceFragment 骰子窗口}和一个计分板
  *
  * @param <T> 计分板Fragment类
  * @author 赵正阳
@@ -22,7 +22,7 @@ public abstract class GameFragment<T extends Fragment> extends Fragment {
     protected T mScoreBoardFragment;
 
     /** 骰子窗口 */
-    protected DiceFragment mDiceFragment;
+    protected RollDiceFragment mRollDiceFragment;
 
     public GameFragment() {}
 
@@ -38,19 +38,19 @@ public abstract class GameFragment<T extends Fragment> extends Fragment {
                     .add(R.id.scoreBoardFragment, mScoreBoardFragment)
                     .commit();
 
-            mDiceFragment = new DiceFragment();
+            mRollDiceFragment = new RollDiceFragment();
             Bundle bundle = new Bundle();
-            bundle.putInt(DiceFragment.DICE_COUNT, getDiceCount());
-            bundle.putInt(DiceFragment.ROLL_TIMES, getRollTimes());
-            bundle.putBoolean(DiceFragment.ROLL_ON_CREATE_VIEW, rollOnStart());
-            mDiceFragment.setArguments(bundle);
+            bundle.putInt(RollDiceFragment.DICE_COUNT, getDiceCount());
+            bundle.putInt(RollDiceFragment.ROLL_TIMES, getRollTimes());
+            bundle.putBoolean(RollDiceFragment.ROLL_ON_CREATE_VIEW, rollOnStart());
+            mRollDiceFragment.setArguments(bundle);
             getChildFragmentManager().beginTransaction()
-                    .add(R.id.diceFragment, mDiceFragment)
+                    .add(R.id.diceFragment, mRollDiceFragment)
                     .commit();
         }
         else {
             mScoreBoardFragment = (T) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
-            mDiceFragment = (DiceFragment) getChildFragmentManager().findFragmentById(R.id.diceFragment);
+            mRollDiceFragment = (RollDiceFragment) getChildFragmentManager().findFragmentById(R.id.diceFragment);
         }
 
         setListeners();
@@ -83,8 +83,8 @@ public abstract class GameFragment<T extends Fragment> extends Fragment {
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.scoreBoardFragment, mScoreBoardFragment)
                 .commit();
-        mDiceFragment.setDiceCount(getDiceCount());
-        mDiceFragment.setRollTimes(getRollTimes());
+        mRollDiceFragment.setDiceCount(getDiceCount());
+        mRollDiceFragment.setRollTimes(getRollTimes());
         setListeners();
     }
 
