@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.help;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.webkit.WebView;
 
@@ -8,6 +7,8 @@ import com.zzy.dicegames.R;
 
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * 用于查看帮助信息的{@code Activity}<br>
@@ -17,7 +18,7 @@ import java.util.List;
  *
  * @author 赵正阳
  */
-public class HelpActivity extends Activity {
+public class HelpActivity extends AppCompatActivity {
     /** 传入Intent参数：游戏标题 */
     public static final String GAME_TITLE = "gameTitle";
 

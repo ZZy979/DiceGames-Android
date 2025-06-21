@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.highscores;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +18,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 /**
  * 用于展示最高分和统计数据的{@code Activity}<br>
  * 传入数据：<br>
@@ -27,7 +28,7 @@ import java.util.List;
  *
  * @author 赵正阳
  */
-public class HighScoresActivity extends Activity {
+public class HighScoresActivity extends AppCompatActivity {
     /** 用于传入参数/保存和恢复状态：游戏标题 */
     public static final String GAME_TITLE = "gameTitle";
 

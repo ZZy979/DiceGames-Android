@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +32,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-public class MainActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
     private String[] mGameTypes;
 
     private GameFragment<?> mGameFragment;
@@ -108,6 +109,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         long currentTime = new Date().getTime();
         if (currentTime - mLastPressTime < 1000) finish();
         else {
