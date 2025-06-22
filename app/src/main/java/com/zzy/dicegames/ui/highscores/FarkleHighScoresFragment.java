@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.highscores;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * 展示Farkle统计数据的Fragment<br>

@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.highscores;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * 展示5骰Yahtzee/6骰Yahtzee最高分和统计数据的Fragment<br>

@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.game.rolladice;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,10 @@ import com.zzy.dicegames.ui.dice.RollDiceFragment;
 
 import java.util.function.IntConsumer;
 
+import androidx.fragment.app.Fragment;
+
 /**
- * 掷骰子计分板Fragment，嵌套于一个{@link RollADiceFragment}
+ * 掷骰子计分板Fragment，嵌套于一个{@link RollADiceGameFragment}
  *
  * @author 赵正阳
  */

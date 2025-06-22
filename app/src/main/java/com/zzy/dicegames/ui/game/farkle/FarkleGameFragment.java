@@ -12,9 +12,9 @@ import com.zzy.dicegames.ui.game.GameFragment;
  *
  * @author 赵正阳
  */
-public class FarkleFragment extends GameFragment<FarkleScoreBoardFragment> {
+public class FarkleGameFragment extends GameFragment<FarkleScoreBoardFragment> {
 
-    public FarkleFragment() {}
+    public FarkleGameFragment() {}
 
     // 该方法被调用时DiceFragment.onCreateView()已被调用
     @Override

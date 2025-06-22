@@ -8,9 +8,9 @@ import com.zzy.dicegames.ui.game.GameFragment;
  *
  * @author 赵正阳
  */
-public class RollADiceFragment extends GameFragment<RollADiceScoreBoardFragment> {
+public class RollADiceGameFragment extends GameFragment<RollADiceScoreBoardFragment> {
 
-    public RollADiceFragment() {}
+    public RollADiceGameFragment() {}
 
     @Override
     public RollADiceScoreBoardFragment createScoreBoardFragment() {

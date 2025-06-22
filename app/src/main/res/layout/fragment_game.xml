@@ -17,14 +17,14 @@
         android:textSize="40sp"
         android:textStyle="bold" />
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/scoreBoardFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/diceFragment"
         android:layout_below="@id/tvTitle" />
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/diceFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

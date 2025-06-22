@@ -11,9 +11,9 @@ import com.zzy.dicegames.data.entity.SixYahtzeeScore;
  *
  * @author 赵正阳
  */
-public class SixYahtzeeFragment extends AbstractYahtzeeFragment {
+public class SixYahtzeeGameFragment extends AbstractYahtzeeGameFragment {
 
-    public SixYahtzeeFragment() {}
+    public SixYahtzeeGameFragment() {}
 
     @Override
     public AbstractYahtzeeScoreBoardFragment createScoreBoardFragment() {

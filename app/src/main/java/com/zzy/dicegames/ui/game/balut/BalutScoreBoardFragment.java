@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.game.balut;
 
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,8 +20,10 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import androidx.fragment.app.Fragment;
+
 /**
- * Balut计分板Fragment，嵌套于一个{@link BalutFragment}
+ * Balut计分板Fragment，嵌套于一个{@link BalutGameFragment}
  *
  * @author 赵正阳
  */

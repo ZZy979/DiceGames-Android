@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,8 +17,10 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import androidx.fragment.app.Fragment;
+
 /**
- * Yahtzee计分板Fragment，嵌套于一个{@link AbstractYahtzeeFragment}<br>
+ * Yahtzee计分板Fragment，嵌套于一个{@link AbstractYahtzeeGameFragment}<br>
  * 传入的参数：
  * <ul>
  *     <li>{@link #LAYOUT_ID}：布局资源id</li>

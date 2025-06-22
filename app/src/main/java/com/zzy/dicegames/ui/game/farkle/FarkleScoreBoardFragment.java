@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.game.farkle;
 
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,8 +25,10 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import androidx.fragment.app.Fragment;
+
 /**
- * Farkle计分板Fragment，嵌套于一个{@link FarkleFragment}
+ * Farkle计分板Fragment，嵌套于一个{@link FarkleGameFragment}
  *
  * @author 赵正阳
  */
@@ -125,7 +126,7 @@ public class FarkleScoreBoardFragment extends Fragment {
         mBankButton.setOnClickListener(v -> getActivity().runOnUiThread(this::bank));
 
         mNewGameButton = rootView.findViewById(R.id.btnNewGame);
-        mNewGameButton.setOnClickListener(v -> ((FarkleFragment) getParentFragment()).startNewGame());
+        mNewGameButton.setOnClickListener(v -> ((FarkleGameFragment) getParentFragment()).startNewGame());
         mNewGameButton.setVisibility(View.GONE);
 
         mPlayer[0] = new HumanPlayer();

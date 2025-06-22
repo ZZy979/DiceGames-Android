@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.highscores;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 /**
  * 用于展示最高分和统计数据的{@code Activity}<br>
@@ -57,7 +57,7 @@ public class HighScoresActivity extends AppCompatActivity {
             changeGameType(getIntent().getStringExtra(GAME_TITLE));
         else {
             mGameTitleIndex = savedInstanceState.getInt(GAME_TITLE);
-            mHighScoresFragment = getFragmentManager().findFragmentById(R.id.highScoresFragment);
+            mHighScoresFragment = getSupportFragmentManager().findFragmentById(R.id.highScoresFragment);
         }
 
         Spinner spnGameType = findViewById(R.id.spnGameType);
@@ -129,7 +129,7 @@ public class HighScoresActivity extends AppCompatActivity {
             }
 
             mHighScoresFragment.setArguments(bundle);
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.highScoresFragment, mHighScoresFragment)
                     .commit();
         }

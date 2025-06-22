@@ -1,6 +1,5 @@
 package com.zzy.dicegames.ui.dice;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -13,6 +12,8 @@ import com.zzy.dicegames.R;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Consumer;
+
+import androidx.fragment.app.Fragment;
 
 /**
  * 掷骰子窗口，包括一些{@link DiceView 骰子组件}和一个"Roll"按钮<br>

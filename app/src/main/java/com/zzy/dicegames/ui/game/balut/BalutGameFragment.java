@@ -11,9 +11,9 @@ import com.zzy.dicegames.ui.game.GameFragment;
  *
  * @author 赵正阳
  */
-public class BalutFragment extends GameFragment<BalutScoreBoardFragment> {
+public class BalutGameFragment extends GameFragment<BalutScoreBoardFragment> {
 
-    public BalutFragment() {}
+    public BalutGameFragment() {}
 
     @Override
     public BalutScoreBoardFragment createScoreBoardFragment() {

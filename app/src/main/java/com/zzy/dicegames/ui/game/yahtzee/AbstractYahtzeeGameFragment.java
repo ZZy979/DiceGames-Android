@@ -8,9 +8,9 @@ import com.zzy.dicegames.ui.game.GameFragment;
  *
  * @author 赵正阳
  */
-public abstract class AbstractYahtzeeFragment extends GameFragment<AbstractYahtzeeScoreBoardFragment> {
+public abstract class AbstractYahtzeeGameFragment extends GameFragment<AbstractYahtzeeScoreBoardFragment> {
 
-    public AbstractYahtzeeFragment() {}
+    public AbstractYahtzeeGameFragment() {}
 
     @Override
     protected void setListeners() {

@@ -17,11 +17,11 @@ import com.zzy.dicegames.data.entity.FarkleScore;
 import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.data.entity.SixYahtzeeScore;
 import com.zzy.dicegames.ui.game.GameFragment;
-import com.zzy.dicegames.ui.game.balut.BalutFragment;
-import com.zzy.dicegames.ui.game.farkle.FarkleFragment;
-import com.zzy.dicegames.ui.game.rolladice.RollADiceFragment;
-import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeFragment;
-import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeFragment;
+import com.zzy.dicegames.ui.game.balut.BalutGameFragment;
+import com.zzy.dicegames.ui.game.farkle.FarkleGameFragment;
+import com.zzy.dicegames.ui.game.rolladice.RollADiceGameFragment;
+import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeGameFragment;
+import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeGameFragment;
 import com.zzy.dicegames.utils.ScoresParser;
 
 import org.xmlpull.v1.XmlSerializer;
@@ -52,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
 
         mGameTypes = getResources().getStringArray(R.array.gameTypes);
         if (savedInstanceState == null) {
-            mGameFragment = new FiveYahtzeeFragment();
-            getFragmentManager().beginTransaction()
+            mGameFragment = new FiveYahtzeeGameFragment();
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.gameFragment, mGameFragment)
                     .commit();
         }
         else
-            mGameFragment = (GameFragment<?>) getFragmentManager().findFragmentById(R.id.gameFragment);
+            mGameFragment = (GameFragment<?>) getSupportFragmentManager().findFragmentById(R.id.gameFragment);
     }
 
     @Override
@@ -130,21 +130,21 @@ public class MainActivity extends AppCompatActivity {
         else {
             GameFragment<?> newGameFragment = null;
             if (gameTitle.equals(getString(R.string.fiveYahtzee)))
-                newGameFragment = new FiveYahtzeeFragment();
+                newGameFragment = new FiveYahtzeeGameFragment();
             else if (gameTitle.equals(getString(R.string.sixYahtzee)))
-                newGameFragment = new SixYahtzeeFragment();
+                newGameFragment = new SixYahtzeeGameFragment();
             else if (gameTitle.equals(getString(R.string.balut)))
-                newGameFragment = new BalutFragment();
+                newGameFragment = new BalutGameFragment();
 //            else if (gameTitle.equals(getString(R.string.liarDice)))
 //                ;
             else if (gameTitle.equals(getString(R.string.rollADice)))
-                newGameFragment = new RollADiceFragment();
+                newGameFragment = new RollADiceGameFragment();
             else if (gameTitle.equals(getString(R.string.farkle)))
-                newGameFragment = new FarkleFragment();
+                newGameFragment = new FarkleGameFragment();
 
             if (newGameFragment != null) {
                 mGameFragment = newGameFragment;
-                getFragmentManager().beginTransaction()
+                getSupportFragmentManager().beginTransaction()
                         .replace(R.id.gameFragment, mGameFragment)
                         .commit();
             }
