@@ -22,8 +22,14 @@ import com.zzy.dicegames.R;
  * @author 赵正阳
  */
 public class DiceView extends View {
+    /** 最小点数 */
+    public static final int MIN_NUMBER = 1;
+
+    /** 最大点数 */
+    public static final int MAX_NUMBER = 6;
+
     /** 边框宽度 */
-    private static final int BORDER_WIDTH = 10;
+    protected static final int BORDER_WIDTH = 10;
 
     /** 6个点数的图片 */
     private final Bitmap[] mPics = new Bitmap[6];
@@ -39,16 +45,13 @@ public class DiceView extends View {
 
     // ----------保存和恢复状态----------
     /** 用于保存和恢复状态：超类状态 */
-    private static final String SUPER_STATE = "superState";
+    protected static final String SUPER_STATE = "superState";
 
     /** 用于保存和恢复状态：{@link #mNumber} */
-    private static final String NUMBER = "number";
+    protected static final String NUMBER = "number";
 
     /** 用于保存和恢复状态：{@link #mLocked} */
-    private static final String LOCKED = "locked";
-
-    /** 用于保存和恢复状态：{@link #isEnabled()} */
-    private static final String ENABLED = "enabled";
+    protected static final String LOCKED = "locked";
 
     public DiceView(Context context) {
         this(context, null);
@@ -78,15 +81,10 @@ public class DiceView extends View {
         mPaint.setStrokeWidth(BORDER_WIDTH);
 
         // 获取自定义属性的值
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Dice, defStyleAttr, defStyleRes);
-        mNumber = a.getInteger(R.styleable.Dice_number, 6);
-        mLocked = a.getBoolean(R.styleable.Dice_locked, false);
-        a.recycle();
-
-        setOnClickListener(v -> {
-            if (isEnabled())
-                setLocked(!mLocked);
-        });
+        try (TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DiceView, defStyleAttr, defStyleRes)) {
+            mNumber = a.getInteger(R.styleable.DiceView_number, MAX_NUMBER);
+            mLocked = a.getBoolean(R.styleable.DiceView_locked, false);
+        }
     }
 
     @Override
@@ -95,7 +93,6 @@ public class DiceView extends View {
         bundle.putParcelable(SUPER_STATE, super.onSaveInstanceState());
         bundle.putInt(NUMBER, mNumber);
         bundle.putBoolean(LOCKED, mLocked);
-        bundle.putBoolean(ENABLED, isEnabled());
         return bundle;
     }
 
@@ -105,7 +102,6 @@ public class DiceView extends View {
         super.onRestoreInstanceState(bundle.getParcelable(SUPER_STATE));
         mNumber = bundle.getInt(NUMBER);
         mLocked = bundle.getBoolean(LOCKED);
-        setEnabled(bundle.getBoolean(ENABLED));
     }
 
     /** 返回骰子点数 */
@@ -120,7 +116,7 @@ public class DiceView extends View {
      */
     public void setNumber(int number) {
         if (!mLocked) {
-            if (number < 1 || number > 6)
+            if (number < MIN_NUMBER || number > MAX_NUMBER)
                 throw new IllegalArgumentException(getContext().getString(R.string.wrongDiceNumber));
             mNumber = number;
             invalidate();
@@ -136,6 +132,11 @@ public class DiceView extends View {
     public void setLocked(boolean locked) {
         mLocked = locked;
         invalidate();
+    }
+
+    /** 翻转锁定状态 */
+    public void toggleLocked() {
+        setLocked(!mLocked);
     }
 
     @Override

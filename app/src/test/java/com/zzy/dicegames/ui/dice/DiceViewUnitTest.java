@@ -1,6 +1,7 @@
 package com.zzy.dicegames.ui.dice;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,12 +13,11 @@ import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class DiceViewUnitTest {
-    private Context context;
     private DiceView diceView;
 
     @Before
     public void setUp() {
-        context = RuntimeEnvironment.getApplication();
+        Context context = RuntimeEnvironment.getApplication();
         diceView = new DiceView(context);
     }
 
@@ -43,26 +43,39 @@ public class DiceViewUnitTest {
     }
 
     @Test
-    public void setNumberWhenLocked() {
+    public void testSetNumberWhenLocked() {
         diceView.setLocked(true);
         diceView.setNumber(4);
         assertEquals(6, diceView.getNumber());
     }
 
     @Test
-    public void changeLocked() {
+    public void testToggleLocked() {
         assertFalse(diceView.isLocked());
-        diceView.callOnClick();
+        diceView.toggleLocked();
         assertTrue(diceView.isLocked());
-        diceView.callOnClick();
+        diceView.toggleLocked();
         assertFalse(diceView.isLocked());
     }
 
     @Test
-    public void changeLockedWhenDisabled() {
-        assertFalse(diceView.isLocked());
-        diceView.setEnabled(false);
-        diceView.callOnClick();
-        assertFalse(diceView.isLocked());
+    public void testSaveInstanceState() {
+        diceView.setNumber(4);
+        diceView.setLocked(true);
+        Bundle state = (Bundle) diceView.onSaveInstanceState();
+        assertTrue(state.containsKey(DiceView.SUPER_STATE));
+        assertEquals(4, state.getInt(DiceView.NUMBER));
+        assertTrue(state.getBoolean(DiceView.LOCKED));
+    }
+
+    @Test
+    public void testRestoreInstanceState() {
+        Bundle state = new Bundle();
+        state.putParcelable(DiceView.SUPER_STATE, null);
+        state.putInt(DiceView.NUMBER, 4);
+        state.putBoolean(DiceView.LOCKED, true);
+        diceView.onRestoreInstanceState(state);
+        assertEquals(4, diceView.getNumber());
+        assertTrue(diceView.isLocked());
     }
 }
