@@ -12,6 +12,7 @@ import com.zzy.dicegames.ui.game.GameFragment;
  *
  * @author 赵正阳
  */
+// fixme 暂时不可用，实现一个FarkleRollDiceFragment类
 public class FarkleGameFragment extends GameFragment<FarkleScoreBoardFragment> {
 
     public FarkleGameFragment() {}

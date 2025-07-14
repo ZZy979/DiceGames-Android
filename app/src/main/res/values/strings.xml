@@ -19,6 +19,7 @@
     <string name="quitPrompt">Click again to exit</string>
 
     <string name="roll">Roll</string>
+    <string name="rollRemaining">Roll(%d)</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 

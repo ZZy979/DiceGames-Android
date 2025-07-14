@@ -32,7 +32,7 @@ public class FiveYahtzeeGameFragment extends AbstractYahtzeeGameFragment {
 
     @Override
     public int getRollTimes() {
-        return 2;
+        return 3;
     }
 
     @Override

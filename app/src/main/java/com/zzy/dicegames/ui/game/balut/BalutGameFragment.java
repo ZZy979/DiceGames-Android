@@ -39,7 +39,7 @@ public class BalutGameFragment extends GameFragment<BalutScoreBoardFragment> {
 
     @Override
     public int getRollTimes() {
-        return 2;
+        return 3;
     }
 
     @Override

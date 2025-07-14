@@ -19,6 +19,7 @@ public class RollADiceGameFragment extends GameFragment<RollADiceScoreBoardFragm
 
     @Override
     protected void setListeners() {
+        // fixme 暂时无效
         mScoreBoardFragment.setActionOnChangingDiceCount(mRollDiceFragment::setDiceCount);
     }
 
@@ -32,6 +33,7 @@ public class RollADiceGameFragment extends GameFragment<RollADiceScoreBoardFragm
         return 6;
     }
 
+    // fixme RollDiceFragment不支持无限次数
     @Override
     public int getRollTimes() {
         return 0;

@@ -39,12 +39,7 @@ public abstract class GameFragment<T extends Fragment> extends Fragment {
                     .add(R.id.scoreBoardFragment, mScoreBoardFragment)
                     .commit();
 
-            mRollDiceFragment = new RollDiceFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt(RollDiceFragment.DICE_COUNT, getDiceCount());
-            bundle.putInt(RollDiceFragment.ROLL_TIMES, getRollTimes());
-            bundle.putBoolean(RollDiceFragment.ROLL_ON_CREATE_VIEW, rollOnStart());
-            mRollDiceFragment.setArguments(bundle);
+            mRollDiceFragment = RollDiceFragment.newInstance(getDiceCount(), getRollTimes(), rollOnStart());
             getChildFragmentManager().beginTransaction()
                     .add(R.id.diceFragment, mRollDiceFragment)
                     .commit();
@@ -80,12 +75,12 @@ public abstract class GameFragment<T extends Fragment> extends Fragment {
 
     /** 开始一次新游戏 */
     public void startNewGame() {
+        // fixme 目前开始新游戏时无法正确更新得分，因为掷骰子时计分板还未初始化完成
+        // TODO 计分板改为使用ViewModel
         mScoreBoardFragment = createScoreBoardFragment();
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.scoreBoardFragment, mScoreBoardFragment)
                 .commit();
-        mRollDiceFragment.setDiceCount(getDiceCount());
-        mRollDiceFragment.setRollTimes(getRollTimes());
         setListeners();
     }
 
