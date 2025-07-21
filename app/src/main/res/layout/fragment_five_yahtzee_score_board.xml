@@ -14,13 +14,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="@string/score"
                 android:textSize="18sp" />
@@ -33,7 +33,7 @@
                 android:id="@+id/btn1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s1" />
 
@@ -41,7 +41,7 @@
                 android:id="@+id/tv1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -54,7 +54,7 @@
                 android:id="@+id/btn2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s2" />
 
@@ -62,7 +62,7 @@
                 android:id="@+id/tv2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -75,7 +75,7 @@
                 android:id="@+id/btn3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s3" />
 
@@ -83,7 +83,7 @@
                 android:id="@+id/tv3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -96,7 +96,7 @@
                 android:id="@+id/btn4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s4" />
 
@@ -104,7 +104,7 @@
                 android:id="@+id/tv4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -117,7 +117,7 @@
                 android:id="@+id/btn5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s5" />
 
@@ -125,7 +125,7 @@
                 android:id="@+id/tv5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -138,7 +138,7 @@
                 android:id="@+id/btn6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s6" />
 
@@ -146,7 +146,7 @@
                 android:id="@+id/tv6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -160,7 +160,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/total"
                 android:textAlignment="center"
@@ -170,7 +170,7 @@
                 android:id="@+id/tvUpperTotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -184,7 +184,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/bonus"
                 android:textAlignment="center"
@@ -194,7 +194,7 @@
                 android:id="@+id/tvBonus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -207,7 +207,7 @@
                 android:id="@+id/btn2p"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s2p" />
 
@@ -215,7 +215,7 @@
                 android:id="@+id/tv2p"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -228,7 +228,7 @@
                 android:id="@+id/btn3e"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s3e" />
 
@@ -236,7 +236,7 @@
                 android:id="@+id/tv3e"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -249,7 +249,7 @@
                 android:id="@+id/btn4e"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s4e" />
 
@@ -257,7 +257,7 @@
                 android:id="@+id/tv4e"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -270,7 +270,7 @@
                 android:id="@+id/btnFullHouse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/fullHouse" />
 
@@ -278,7 +278,7 @@
                 android:id="@+id/tvFullHouse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -291,7 +291,7 @@
                 android:id="@+id/btnSmallStraight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/smallStraight" />
 
@@ -299,7 +299,7 @@
                 android:id="@+id/tvSmallStraight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -312,7 +312,7 @@
                 android:id="@+id/btnLargeStraight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/largeStraight" />
 
@@ -320,7 +320,7 @@
                 android:id="@+id/tvLargeStraight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -333,7 +333,7 @@
                 android:id="@+id/btnChance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/chance" />
 
@@ -341,7 +341,7 @@
                 android:id="@+id/tvChance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -354,7 +354,7 @@
                 android:id="@+id/btnYahtzee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/yahtzee" />
 
@@ -362,7 +362,7 @@
                 android:id="@+id/tvYahtzee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />
@@ -376,7 +376,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/gameTotal"
                 android:textAlignment="center"
@@ -386,7 +386,7 @@
                 android:id="@+id/tvGameTotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
+                android:layout_marginStart="20dp"
                 android:layout_weight="1"
                 android:text="0"
                 android:textSize="18sp" />

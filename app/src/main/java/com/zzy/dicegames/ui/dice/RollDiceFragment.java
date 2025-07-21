@@ -8,10 +8,10 @@ import android.widget.Button;
 
 import com.zzy.dicegames.R;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
 /**
@@ -29,18 +29,17 @@ public class RollDiceFragment extends Fragment {
     /** 默认最大掷骰子次数 */
     public static final int DEFAULT_MAX_ROLLS = 2;
 
-    // ----------传入参数----------
-    /** 骰子个数，默认{@link #MAX_DICE_COUNT} */
+    /** 传入参数：骰子个数，默认{@link #MAX_DICE_COUNT} */
     private static final String ARG_DICE_COUNT = "diceCount";
 
-    /** 最大掷骰子次数，默认{@link #DEFAULT_MAX_ROLLS} */
+    /** 传入参数：最大掷骰子次数，默认{@link #DEFAULT_MAX_ROLLS} */
     private static final String ARG_MAX_ROLLS = "maxRolls";
 
-    /** 创建视图后是否立即掷骰子，默认{@code true} */
+    /** 传入参数：创建视图后是否立即掷骰子，默认{@code true} */
     private static final String ARG_ROLL_ON_CREATE_VIEW = "rollOnCreateView";
 
     /** 骰子数组 */
-    protected DiceView[] mDiceViews = new DiceView[MAX_DICE_COUNT];
+    protected DiceView[] mDiceViews;
 
     /** "Roll"按钮 */
     protected Button mRollButton;
@@ -74,31 +73,33 @@ public class RollDiceFragment extends Fragment {
         int maxRolls = args.getInt(ARG_MAX_ROLLS, DEFAULT_MAX_ROLLS);
         boolean rollOnCreateView = args.getBoolean(ARG_ROLL_ON_CREATE_VIEW, true);
 
-        mViewModel = new ViewModelProvider(this).get(RollDiceViewModel.class);
-        mViewModel.init(diceCount, maxRolls);
+        mViewModel = new ViewModelProvider(this, new RollDiceViewModelFactory(diceCount, maxRolls))
+                .get(RollDiceViewModel.class);
+        initViews(view);
 
-        mDiceViews[0] = view.findViewById(R.id.dice1);
-        mDiceViews[1] = view.findViewById(R.id.dice2);
-        mDiceViews[2] = view.findViewById(R.id.dice3);
-        mDiceViews[3] = view.findViewById(R.id.dice4);
-        mDiceViews[4] = view.findViewById(R.id.dice5);
-        mDiceViews[5] = view.findViewById(R.id.dice6);
-        for (int i = 0; i < mDiceViews.length; i++) {
-            final int position = i;
-            mDiceViews[i].setOnClickListener(v -> mViewModel.toggleLocked(position));
-            mDiceViews[i].setVisibility(i < diceCount ? View.VISIBLE : View.INVISIBLE);
-        }
-
-        mRollButton = view.findViewById(R.id.btnRoll);
-        mRollButton.setOnClickListener(v -> mViewModel.rollDice());
-
-        mViewModel.getRemainingRolls().observe(getViewLifecycleOwner(), this::onRemainingRollsChanged);
-        mViewModel.getDiceNumbers().observe(getViewLifecycleOwner(), this::onDiceNumbersChanged);
-        mViewModel.getDiceLocked().observe(getViewLifecycleOwner(), this::onDiceLockedChanged);
+        LifecycleOwner owner = getViewLifecycleOwner();
+        mViewModel.getRemainingRolls().observe(owner, this::onRemainingRollsChanged);
+        mViewModel.getDiceNumbers().observe(owner, this::onDiceNumbersChanged);
+        mViewModel.getDiceLocked().observe(owner, this::onDiceLockedChanged);
 
         if (savedInstanceState == null && rollOnCreateView) {
-            mViewModel.rollDice();
+            rollDice();
         }
+    }
+
+    /** 获取骰子和Roll按钮 */
+    protected void initViews(View rootView) {
+        int[] diceViewIds = {R.id.dice1, R.id.dice2, R.id.dice3, R.id.dice4, R.id.dice5, R.id.dice6};
+        mDiceViews = new DiceView[MAX_DICE_COUNT];
+        for (int i = 0; i < mDiceViews.length; i++) {
+            final int position = i;
+            mDiceViews[i] = rootView.findViewById(diceViewIds[i]);
+            mDiceViews[i].setOnClickListener(v -> mViewModel.toggleLocked(position));
+            mDiceViews[i].setVisibility(i < mViewModel.getDiceCount() ? View.VISIBLE : View.INVISIBLE);
+        }
+
+        mRollButton = rootView.findViewById(R.id.btnRoll);
+        mRollButton.setOnClickListener(v -> rollDice());
     }
 
     /** 剩余掷骰子次数更新时的回调 */
@@ -115,7 +116,7 @@ public class RollDiceFragment extends Fragment {
         for (int i = 0; i < numbers.length; i++)
             mDiceViews[i].setNumber(numbers[i]);
         if (mRollListener != null)
-            mRollListener.accept(Arrays.copyOf(numbers, numbers.length));
+            mRollListener.accept(numbers);
     }
 
     /** 骰子锁定状态更新时的回调 */
@@ -129,6 +130,7 @@ public class RollDiceFragment extends Fragment {
         return mDiceViews;
     }
 
+    // TODO 实现FarkleRollDiceFragment后删除
     public Button getRollButton() {
         return mRollButton;
     }
@@ -150,9 +152,15 @@ public class RollDiceFragment extends Fragment {
     public void roll() {
     }
 
+    /** 掷骰子并调用监听器 */
+    protected void rollDice() {
+        // TODO 动画效果
+        mViewModel.rollDice();
+    }
+
     /** 激活"Roll"按钮（重置可点击次数）、解锁骰子并掷骰子 */
     public void activate() {
         mViewModel.reset();
-        mViewModel.rollDice();
+        rollDice();
     }
 }

@@ -11,7 +11,7 @@ import androidx.lifecycle.Observer;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class RollDiceViewModelUnitTest {
+public class RollDiceViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
@@ -19,12 +19,12 @@ public class RollDiceViewModelUnitTest {
 
     @Before
     public void setUp() {
-        viewModel = new RollDiceViewModel();
+        viewModel = new RollDiceViewModel(5, 2);
     }
 
     @Test
     public void testInitialization() {
-        viewModel.init(4, 3);
+        viewModel = new RollDiceViewModel(4, 3);
         assertEquals(4, viewModel.getDiceCount());
         assertEquals(3, viewModel.getMaxRolls());
         assertEquals(3, viewModel.getRemainingRolls().getValue().intValue());
@@ -43,7 +43,6 @@ public class RollDiceViewModelUnitTest {
 
     @Test
     public void testToggleLocked() {
-        viewModel.init(5, 2);
         viewModel.toggleLocked(2);
         assertTrue(viewModel.getDiceLocked().getValue()[2]);
         viewModel.toggleLocked(2);
@@ -52,7 +51,6 @@ public class RollDiceViewModelUnitTest {
 
     @Test
     public void testRollDice() {
-        viewModel.init(5, 2);
         Observer<Integer> remainingRollsObserver = mock(Observer.class);
         Observer<int[]> diceNumbersObserver = mock(Observer.class);
         viewModel.getRemainingRolls().observeForever(remainingRollsObserver);
@@ -60,6 +58,8 @@ public class RollDiceViewModelUnitTest {
 
         viewModel.rollDice();
         assertEquals(1, viewModel.getRemainingRolls().getValue().intValue());
+        for (int n : viewModel.getDiceNumbers().getValue())
+            assertTrue(n >= 1 && n <= 6);
 
         viewModel.rollDice();
         assertEquals(0, viewModel.getRemainingRolls().getValue().intValue());
@@ -76,13 +76,24 @@ public class RollDiceViewModelUnitTest {
 
     @Test
     public void testRollDiceDoesNotChangeLockedDice() {
-        viewModel.init(5, 2);
-
         viewModel.rollDice();
         int firstDictNumber = viewModel.getDiceNumbers().getValue()[0];
         viewModel.toggleLocked(0);
 
         viewModel.rollDice();
         assertEquals(firstDictNumber, viewModel.getDiceNumbers().getValue()[0]);
+    }
+
+    @Test
+    public void testReset() {
+        viewModel.toggleLocked(3);
+        viewModel.rollDice();
+        assertTrue(viewModel.getDiceLocked().getValue()[3]);
+        viewModel.rollDice();
+        assertEquals(0, viewModel.getRemainingRolls().getValue().intValue());
+
+        viewModel.reset();
+        assertFalse(viewModel.getDiceLocked().getValue()[3]);
+        assertEquals(2, viewModel.getRemainingRolls().getValue().intValue());
     }
 }

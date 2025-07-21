@@ -27,7 +27,7 @@ public class RollDiceViewModel extends ViewModel {
 
     private Random random = new Random();
 
-    public void init(int diceCount, int maxRolls) {
+    public RollDiceViewModel(int diceCount, int maxRolls) {
         // TODO 支持无限次数
         this.diceCount = diceCount;
         this.maxRolls = maxRolls;
@@ -81,7 +81,6 @@ public class RollDiceViewModel extends ViewModel {
         if (numbers == null || locked == null)
             return;
 
-        // TODO 动画效果
         for (int i = 0; i < numbers.length; i++) {
             if (!locked[i])
                 numbers[i] = random.nextInt(6) + 1;

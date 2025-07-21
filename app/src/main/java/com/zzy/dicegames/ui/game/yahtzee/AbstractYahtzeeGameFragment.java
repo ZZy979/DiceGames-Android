@@ -15,18 +15,18 @@ public abstract class AbstractYahtzeeGameFragment extends GameFragment<AbstractY
     @Override
     protected void setListeners() {
         mRollDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-        mScoreBoardFragment.setActionAfterChoosing(mRollDiceFragment::activate);
+        mScoreBoardFragment.setSelectAction(mRollDiceFragment::activate);
         mScoreBoardFragment.setGameOverAction(this::onGameOver);
     }
 
     @Override
     public void startNewGame() {
-        super.startNewGame();
+        mScoreBoardFragment.reset();
         mRollDiceFragment.activate();
     }
 
     /**
-     * 游戏结束时的回调函数，保存得分并开始新游戏（如果作弊则不保存得分）<br>
+     * 游戏结束时的回调函数，保存得分并开始新游戏<br>
      * 将该方法设置为计分板的监听器，游戏结束时计分板将以本局得分为参数调用该监听器
      */
     protected void onGameOver(AbstractYahtzeeScore score) {

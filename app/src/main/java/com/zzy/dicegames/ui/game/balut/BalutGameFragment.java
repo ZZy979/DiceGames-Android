@@ -49,7 +49,7 @@ public class BalutGameFragment extends GameFragment<BalutScoreBoardFragment> {
     }
 
     /**
-     * 游戏结束时的回调函数，保存得分并开始新游戏（如果作弊则不保存得分）<br>
+     * 游戏结束时的回调函数，保存得分并开始新游戏<br>
      * 将该方法设置为计分板的监听器，游戏结束时计分板将以本局得分为参数调用该监听器
      */
     private void onGameOver(BalutScore score) {

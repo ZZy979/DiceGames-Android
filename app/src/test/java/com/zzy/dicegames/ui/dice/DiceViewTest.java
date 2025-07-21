@@ -12,7 +12,7 @@ import org.robolectric.RuntimeEnvironment;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-public class DiceViewUnitTest {
+public class DiceViewTest {
     private DiceView diceView;
 
     @Before
