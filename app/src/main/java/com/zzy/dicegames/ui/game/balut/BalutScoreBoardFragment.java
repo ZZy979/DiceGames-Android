@@ -11,16 +11,14 @@ import android.widget.TextView;
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.BalutScore;
 
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
+
+import static com.zzy.dicegames.ui.game.balut.BalutScoreBoardViewModel.*;
 
 /**
  * Balut计分板Fragment，嵌套于一个{@link BalutGameFragment}
@@ -28,233 +26,148 @@ import androidx.fragment.app.Fragment;
  * @author 赵正阳
  */
 public class BalutScoreBoardFragment extends Fragment {
-    // ----------游戏参数----------
-    /** 每个得分项可选择的次数 */
-    private static final int TIMES_PER_ITEM = 4;
-
-    // ----------游戏状态数据----------
     /** 得分项按钮 */
-    private List<Button> mScoreButtons = new ArrayList<>();
+    private Button[] mScoreButtons;
 
     /** 得分标签 */
-    private List<List<TextView>> mScoreTextViews = new ArrayList<>();
-
-    /** 游戏总分 */
-    private int mGameTotal = 0;
+    private TextView[][] mScoreTextViews;
 
     /** 游戏总分标签 */
-    private TextView mGameTotalTextView;
+    private TextView mTotalScoreTextView;
 
-    /** 已选择得分项的个数 */
-    private int mSelected = 0;
-
-    /** 每个得分项已选择的次数 */
-    private List<Integer> mItemSelected = new ArrayList<>();
+    private BalutScoreBoardViewModel mViewModel;
 
     /** 每次选择一项后执行的动作 */
-    private Runnable mActionAfterChoosing;
+    private Runnable mSelectAction;
 
     /** 游戏结束时执行的动作 */
     private Consumer<BalutScore> mGameOverAction;
 
-    // ----------保存和恢复状态----------
-    /** 用于保存和恢复状态：每个得分项是否已选择 */
-    private static final String CATEGORY_SELECTED = "categorySelected";
-
-    /** 用于保存和恢复状态：每个得分项的得分 */
-    private static final String CATEGORY_SCORE = "categoryScore";
-
-    public BalutScoreBoardFragment() {}
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_balut_score_board, container, false);
-        initViews(rootView);
-        for (int i = 0; i < mScoreButtons.size(); ++i)
-            mItemSelected.add(0);
+        return inflater.inflate(R.layout.fragment_balut_score_board, container, false);
+    }
 
-        if (savedInstanceState != null)
-            restoreState(savedInstanceState);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        return rootView;
+        mViewModel = new ViewModelProvider(this).get(BalutScoreBoardViewModel.class);
+        initViews(view);
+
+        LifecycleOwner owner = getViewLifecycleOwner();
+        mViewModel.getScores().observe(owner, this::onScoresChanged);
+        mViewModel.getSelectCount().observe(owner, this::onSelectCountChanged);
+        mViewModel.getTotalScore().observe(owner, this::onTotalScoreChanged);
     }
 
     /** 获取得分按钮和标签 */
     private void initViews(View rootView) {
-        mScoreButtons.add(rootView.findViewById(R.id.btn4));
-        mScoreButtons.add(rootView.findViewById(R.id.btn5));
-        mScoreButtons.add(rootView.findViewById(R.id.btn6));
-        mScoreButtons.add(rootView.findViewById(R.id.btnStraight));
-        mScoreButtons.add(rootView.findViewById(R.id.btnFullHouse));
-        mScoreButtons.add(rootView.findViewById(R.id.btnChoice));
-        mScoreButtons.add(rootView.findViewById(R.id.btnBalut));
-        for (int i = 0; i < mScoreButtons.size(); ++i) {
-            int finalI = i;
-            mScoreButtons.get(i).setOnClickListener(v -> choose(finalI));
+        int[] scoreButtonIds = new int[] {
+                R.id.btn4, R.id.btn5, R.id.btn6, R.id.btnStraight,
+                R.id.btnFullHouse, R.id.btnChoice, R.id.btnBalut
+        };
+        mScoreButtons = new Button[scoreButtonIds.length];
+        for (int i = 0; i < mScoreButtons.length; i++) {
+            int category = i;
+            mScoreButtons[i] = rootView.findViewById(scoreButtonIds[i]);
+            mScoreButtons[i].setOnClickListener(v -> select(category));
         }
 
-        mScoreTextViews.add(Arrays.asList(
-                rootView.findViewById(R.id.tv41),
-                rootView.findViewById(R.id.tv42),
-                rootView.findViewById(R.id.tv43),
-                rootView.findViewById(R.id.tv44)
-        ));
-        mScoreTextViews.add(Arrays.asList(
-                rootView.findViewById(R.id.tv51),
-                rootView.findViewById(R.id.tv52),
-                rootView.findViewById(R.id.tv53),
-                rootView.findViewById(R.id.tv54)
-        ));
-        mScoreTextViews.add(Arrays.asList(
-                rootView.findViewById(R.id.tv61),
-                rootView.findViewById(R.id.tv62),
-                rootView.findViewById(R.id.tv63),
-                rootView.findViewById(R.id.tv64)
-        ));
-        mScoreTextViews.add(Arrays.asList(
-                rootView.findViewById(R.id.tvStraight1),
-                rootView.findViewById(R.id.tvStraight2),
-                rootView.findViewById(R.id.tvStraight3),
-                rootView.findViewById(R.id.tvStraight4)
-        ));
-        mScoreTextViews.add(Arrays.asList(
-                rootView.findViewById(R.id.tvFullHouse1),
-                rootView.findViewById(R.id.tvFullHouse2),
-                rootView.findViewById(R.id.tvFullHouse3),
-                rootView.findViewById(R.id.tvFullHouse4)
-        ));
-        mScoreTextViews.add(Arrays.asList(
-                rootView.findViewById(R.id.tvChoice1),
-                rootView.findViewById(R.id.tvChoice2),
-                rootView.findViewById(R.id.tvChoice3),
-                rootView.findViewById(R.id.tvChoice4)
-        ));
-        mScoreTextViews.add(Arrays.asList(
-                rootView.findViewById(R.id.tvBalut1),
-                rootView.findViewById(R.id.tvBalut2),
-                rootView.findViewById(R.id.tvBalut3),
-                rootView.findViewById(R.id.tvBalut4)
-        ));
+        int[][] scoreTextViewIds = new int[][] {
+                {R.id.tv41, R.id.tv42, R.id.tv43, R.id.tv44},
+                {R.id.tv51, R.id.tv52, R.id.tv53, R.id.tv54},
+                {R.id.tv61, R.id.tv62, R.id.tv63, R.id.tv64},
+                {R.id.tvStraight1, R.id.tvStraight2, R.id.tvStraight3, R.id.tvStraight4},
+                {R.id.tvFullHouse1, R.id.tvFullHouse2, R.id.tvFullHouse3, R.id.tvFullHouse4},
+                {R.id.tvChoice1, R.id.tvChoice2, R.id.tvChoice3, R.id.tvChoice4},
+                {R.id.tvBalut1, R.id.tvBalut2, R.id.tvBalut3, R.id.tvBalut4}
+        };
+        mScoreTextViews = new TextView[scoreTextViewIds.length][scoreTextViewIds[0].length];
+        for (int i = 0; i < mScoreTextViews.length; ++i) {
+            for (int j = 0; j < mScoreTextViews[i].length; j++)
+                mScoreTextViews[i][j] = rootView.findViewById(scoreTextViewIds[i][j]);
+        }
 
-        mGameTotalTextView = rootView.findViewById(R.id.tvGameTotal);
+        mTotalScoreTextView = rootView.findViewById(R.id.tvGameTotal);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        List<List<Boolean>> categorySelected = new ArrayList<>();
-        for (int i = 0; i < mItemSelected.size(); ++i) {
-            int finalI = i;
-            categorySelected.add(IntStream.range(0, TIMES_PER_ITEM)
-                    .mapToObj(x -> x < mItemSelected.get(finalI))
-                    .collect(Collectors.toList())
-            );
-        }
-        outState.putSerializable(CATEGORY_SELECTED, (Serializable) categorySelected);
+    /** 得分项的得分更新时的回调 */
+    private void onScoresChanged(int[][] scores) {
+        int[] selectCount = mViewModel.getSelectCount().getValue();
+        if (selectCount == null)
+            return;
 
-        List<List<Integer>> categoryScore = new ArrayList<>();
-        for (int i = 0; i < mScoreTextViews.size(); ++i)
-            categoryScore.add(mScoreTextViews.get(i).stream()
-                    .map(t -> Integer.parseInt(t.getText().toString()))
-                    .collect(Collectors.toList())
-            );
-        outState.putSerializable(CATEGORY_SCORE, (Serializable) categoryScore);
-
-        super.onSaveInstanceState(outState);
-    }
-
-    private void restoreState(Bundle savedInstanceState) {
-        List<List<Boolean>> categorySelected = (List<List<Boolean>>) savedInstanceState.getSerializable(CATEGORY_SELECTED);
-        List<List<Integer>> categoryScore = (List<List<Integer>>) savedInstanceState.getSerializable(CATEGORY_SCORE);
-        if (categorySelected != null && categoryScore != null) {
-            for (int i = 0; i < categorySelected.size(); ++i) {
-                for (int j = 0; j < TIMES_PER_ITEM; ++j) {
-                    mScoreTextViews.get(i).get(j).setText(String.valueOf(categoryScore.get(i).get(j)));
-                    if (categorySelected.get(i).get(j)) {
-                        mScoreTextViews.get(i).get(j).setTextColor(Color.RED);
-                        mItemSelected.set(i, mItemSelected.get(i) + 1);
-                        mGameTotal += categoryScore.get(i).get(j);
-                    }
-                }
-                if (mItemSelected.get(i) == TIMES_PER_ITEM) {
-                    mScoreButtons.get(i).setEnabled(false);
-                    ++mSelected;
-                }
-            }
-            mGameTotalTextView.setText(String.valueOf(mGameTotal));
-        }
-    }
-
-    /** 选择第{@code index}项，更新得分并激活"Roll"按钮 */
-    private void choose(int index) {
-        int score = Integer.parseInt(mScoreTextViews.get(index).get(mItemSelected.get(index)).getText().toString());
-        mGameTotal += score;
-        mGameTotalTextView.setText(String.valueOf(mGameTotal));
-
-        mScoreTextViews.get(index).get(mItemSelected.get(index)).setTextColor(Color.RED);
-        mItemSelected.set(index, mItemSelected.get(index) + 1);
-        if (mItemSelected.get(index) == TIMES_PER_ITEM) {
-            mScoreButtons.get(index).setEnabled(false);
-            ++mSelected;
-        }
-
-        if (mSelected == mScoreButtons.size()) {
-            if (mGameOverAction != null) {
-                int gotBalut = (int) mScoreTextViews.get(6).stream()
-                        .filter(t -> !t.getText().toString().equals("0"))
-                        .count();
-                mGameOverAction.accept(new BalutScore(LocalDate.now().toString(), mGameTotal, gotBalut));
+        for (int i = 0; i < scores.length; i++) {
+            for (int j = 0; j < scores[i].length; j++) {
+                if (j < selectCount[i])
+                    mScoreTextViews[i][j].setText(Integer.toString(scores[i][j]));
             }
         }
-        else if (mActionAfterChoosing != null)
-            mActionAfterChoosing.run();
     }
 
-    public void setActionAfterChoosing(Runnable actionAfterChoosing) {
-        mActionAfterChoosing = actionAfterChoosing;
+    /** 得分项已选择次数更新时的回调 */
+    private void onSelectCountChanged(int[] selectCount) {
+        for (int i = 0; i < selectCount.length; i++) {
+            mScoreButtons[i].setEnabled(selectCount[i] < MAX_SELECTIONS);
+            for (int j = 0; j < mScoreTextViews[i].length; j++)
+                mScoreTextViews[i][j].setTextColor(j < selectCount[i] ? Color.RED : Color.BLACK);
+        }
+    }
+
+    /** 游戏总分更新时的回调 */
+    private void onTotalScoreChanged(int totalScore) {
+        mTotalScoreTextView.setText(Integer.toString(totalScore));
+    }
+
+    public void setSelectAction(Runnable selectAction) {
+        mSelectAction = selectAction;
     }
 
     public void setGameOverAction(Consumer<BalutScore> gameOverAction) {
         mGameOverAction = gameOverAction;
     }
 
-    /**
-     * 根据骰子点数计算所有得分项的得分
-     *
-     * @param d 骰子点数
-     * @return 长度为{@code mScoreButtons.size()}的数组，表示d在每个得分项的得分
-     */
-    public int[] calcScores(int[] d) {
-        Arrays.sort(d);
-        int sum = Arrays.stream(d).sum();
-
-        int[] result = new int[mScoreButtons.size()];
-        // 4~6
-        for (int k : d)
-            if (k >= 4 && k <= 6)
-                result[k - 4] += k;
-        // 连顺
-        if (d[0] == 1 && d[1] == 2 && d[2] == 3 && d[3] == 4 && d[4] == 5)
-            result[3] = 15;
-        else if (d[0] == 2 && d[1] == 3 && d[2] == 4 && d[3] == 5 && d[4] == 6)
-            result[3] = 20;
-        // 葫芦
-        if ((d[0] == d[1] && d[1] == d[2] && d[3] == d[4] && d[0] != d[3])
-                || (d[0] == d[1] && d[2] == d[3] && d[3] == d[4] && d[0] != d[2]))
-            result[4] = sum;
-        // 选择
-        result[5] = sum;
-        // Balut
-        if (Arrays.stream(d).allMatch(x -> x == d[0]))
-            result[6] = 20 + 5 * d[0];
-        return result;
-    }
-
     /** 根据骰子点数更新得分 */
     public void updateScores(int[] diceNumbers) {
-        int[] scores = calcScores(diceNumbers);
-        for (int i = 0; i < mScoreButtons.size(); ++i)
-            if (mItemSelected.get(i) < TIMES_PER_ITEM)
-                mScoreTextViews.get(i).get(mItemSelected.get(i)).setText(String.valueOf(scores[i]));
+        int[] selectCount = mViewModel.getSelectCount().getValue();
+        if (selectCount == null)
+            return;
+
+        mViewModel.setDiceNumbers(diceNumbers);
+        for (int i = 0; i < mScoreTextViews.length; ++i)
+            if (selectCount[i] < mScoreTextViews[i].length)
+                mScoreTextViews[i][selectCount[i]].setText(Integer.toString(mViewModel.calculateScore(i)));
     }
 
+    /** 选择指定的得分项 */
+    private void select(int category) {
+        mViewModel.select(category);
+        if (mViewModel.getNumSelected() == NUM_CATEGORIES) {
+            if (mGameOverAction != null)
+                mGameOverAction.accept(getScore());
+        }
+        else if (mSelectAction != null)
+            mSelectAction.run();
+    }
+
+    /** 游戏结束时获取得分 */
+    private BalutScore getScore() {
+        int[][] scores = mViewModel.getScores().getValue();
+        if (mViewModel.getTotalScore().getValue() == null || scores == null)
+            return null;
+
+        int gotBalut = 0;
+        for (int j = 0; j < scores[BALUT].length; j++) {
+            if (scores[BALUT][j] > 0)
+                gotBalut++;
+        }
+        return new BalutScore(LocalDate.now().toString(),
+                mViewModel.getTotalScore().getValue(), gotBalut);
+    }
+
+    /** 重置得分 */
+    public void reset() {
+        mViewModel.reset();
+    }
 }

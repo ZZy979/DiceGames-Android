@@ -1,12 +1,11 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
-import java.util.Arrays;
+import com.zzy.dicegames.ui.game.BaseScoreBoardViewModel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public abstract class AbstractYahtzeeScoreBoardViewModel extends ViewModel {
+public abstract class AbstractYahtzeeScoreBoardViewModel extends BaseScoreBoardViewModel {
     /** 上区得分项个数 */
     public static final int NUM_UPPER_CATEGORIES = 6;
 
@@ -18,15 +17,6 @@ public abstract class AbstractYahtzeeScoreBoardViewModel extends ViewModel {
 
     /** 奖励分值 */
     protected int bonusValue;
-
-    /** 骰子点数 */
-    protected int[] diceNumbers;
-
-    /** 每个点数的出现次数 */
-    protected int[] diceCounts = new int[7];
-
-    /** 骰子点数总和 */
-    protected int sumOfDice;
 
     /** 每个得分项的得分 */
     protected final MutableLiveData<int[]> scores = new MutableLiveData<>();
@@ -91,18 +81,6 @@ public abstract class AbstractYahtzeeScoreBoardViewModel extends ViewModel {
         return totalScore;
     }
 
-    public void setDiceNumbers(int... diceNumbers) {
-        this.diceNumbers = Arrays.copyOf(diceNumbers, diceNumbers.length);
-        Arrays.sort(this.diceNumbers);
-
-        sumOfDice = 0;
-        Arrays.fill(diceCounts, 0);
-        for (int n : diceNumbers) {
-            sumOfDice += n;
-            diceCounts[n]++;
-        }
-    }
-
     /** 计算指定得分项的得分，调用该方法前必须先调用{@link #setDiceNumbers} */
     public abstract int calculateScore(int category);
 
@@ -131,8 +109,6 @@ public abstract class AbstractYahtzeeScoreBoardViewModel extends ViewModel {
         currentScores[category] = calculateScore(category);
         currentSelected[category] = true;
 
-        // 注意调用顺序，存在依赖关系：
-        // onNumSelectedChanged() -> onGameOver() -> getScore() -> scores, totalScore和bonusScore
         selected.setValue(currentSelected);
         scores.setValue(currentScores);
         updateBonusAndTotalScore();
@@ -158,7 +134,7 @@ public abstract class AbstractYahtzeeScoreBoardViewModel extends ViewModel {
         totalScore.setValue(total);
     }
 
-    /** 重置所有得分 */
+    /** 重置计分板 */
     public void reset() {
         scores.setValue(new int[numCategories]);
         selected.setValue(new boolean[numCategories]);

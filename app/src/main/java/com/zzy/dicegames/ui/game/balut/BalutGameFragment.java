@@ -12,9 +12,6 @@ import com.zzy.dicegames.ui.game.GameFragment;
  * @author 赵正阳
  */
 public class BalutGameFragment extends GameFragment<BalutScoreBoardFragment> {
-
-    public BalutGameFragment() {}
-
     @Override
     public BalutScoreBoardFragment createScoreBoardFragment() {
         return new BalutScoreBoardFragment();
@@ -23,7 +20,7 @@ public class BalutGameFragment extends GameFragment<BalutScoreBoardFragment> {
     @Override
     protected void setListeners() {
         mRollDiceFragment.setRollListener(mScoreBoardFragment::updateScores);
-        mScoreBoardFragment.setActionAfterChoosing(mRollDiceFragment::activate);
+        mScoreBoardFragment.setSelectAction(mRollDiceFragment::activate);
         mScoreBoardFragment.setGameOverAction(this::onGameOver);
     }
 
@@ -44,7 +41,7 @@ public class BalutGameFragment extends GameFragment<BalutScoreBoardFragment> {
 
     @Override
     public void startNewGame() {
-        super.startNewGame();
+        mScoreBoardFragment.reset();
         mRollDiceFragment.activate();
     }
 

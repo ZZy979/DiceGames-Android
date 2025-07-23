@@ -29,10 +29,6 @@ public class SixYahtzeeScoreBoardViewModel extends AbstractYahtzeeScoreBoardView
 
     @Override
     public int calculateScore(int category) {
-        boolean[] isSelected = selected.getValue();
-        if (isSelected == null)
-            return 0;
-
         boolean isJoker = isJoker();
         int score = 0;
         switch (category) {

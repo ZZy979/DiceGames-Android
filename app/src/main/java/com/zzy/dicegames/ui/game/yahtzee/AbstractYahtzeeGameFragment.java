@@ -9,9 +9,6 @@ import com.zzy.dicegames.ui.game.GameFragment;
  * @author 赵正阳
  */
 public abstract class AbstractYahtzeeGameFragment extends GameFragment<AbstractYahtzeeScoreBoardFragment> {
-
-    public AbstractYahtzeeGameFragment() {}
-
     @Override
     protected void setListeners() {
         mRollDiceFragment.setRollListener(mScoreBoardFragment::updateScores);

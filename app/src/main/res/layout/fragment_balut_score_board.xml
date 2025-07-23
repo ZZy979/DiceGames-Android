@@ -28,7 +28,7 @@
                 android:id="@+id/btn4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s4" />
 
@@ -72,7 +72,7 @@
                 android:id="@+id/btn5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s5" />
 
@@ -116,7 +116,7 @@
                 android:id="@+id/btn6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/s6" />
 
@@ -160,7 +160,7 @@
                 android:id="@+id/btnStraight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/straight" />
 
@@ -204,7 +204,7 @@
                 android:id="@+id/btnFullHouse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/fullHouse" />
 
@@ -248,7 +248,7 @@
                 android:id="@+id/btnChoice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/choice" />
 
@@ -292,7 +292,7 @@
                 android:id="@+id/btnBalut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/balut" />
 
@@ -337,7 +337,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20sp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:text="@string/gameTotal"
                 android:textAlignment="center"
