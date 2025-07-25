@@ -16,7 +16,7 @@ public class BaseScoreBoardViewModelTest {
 
     @Before
     public void setUp() {
-        viewModel = new BaseScoreBoardViewModel();
+        viewModel = new BaseScoreBoardViewModel() {};
     }
 
     @Test

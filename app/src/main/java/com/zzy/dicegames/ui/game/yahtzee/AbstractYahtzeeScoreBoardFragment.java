@@ -1,17 +1,16 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
 import android.graphics.Color;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
+import com.zzy.dicegames.ui.game.BaseScoreBoardFragment;
 
 import java.util.function.Consumer;
 
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
 /**
@@ -19,7 +18,7 @@ import androidx.lifecycle.LifecycleOwner;
  *
  * @author 赵正阳
  */
-public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
+public abstract class AbstractYahtzeeScoreBoardFragment extends BaseScoreBoardFragment<AbstractYahtzeeScoreBoardViewModel> {
     /** 得分项按钮 */
     protected Button[] mScoreButtons;
 
@@ -35,8 +34,6 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
     /** 游戏总分标签 */
     protected TextView mTotalScoreTextView;
 
-    protected AbstractYahtzeeScoreBoardViewModel mViewModel;
-
     /** 每次选择一项后执行的动作 */
     protected Runnable mSelectAction;
 
@@ -44,12 +41,7 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
     protected Consumer<AbstractYahtzeeScore> mGameOverAction;
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mViewModel = createViewModel();
-        initViews(view);
-
+    protected void setObservers() {
         LifecycleOwner owner = getViewLifecycleOwner();
         mViewModel.getScores().observe(owner, this::onScoresChanged);
         mViewModel.getSelected().observe(owner, this::onSelectedChanged);
@@ -156,9 +148,4 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends Fragment {
 
     /** 游戏结束时获取得分 */
     protected abstract AbstractYahtzeeScore getScore();
-
-    /** 重置得分 */
-    public void reset() {
-        mViewModel.reset();
-    }
 }

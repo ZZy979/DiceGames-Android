@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import androidx.lifecycle.ViewModel;
 
-public class BaseScoreBoardViewModel extends ViewModel {
+public abstract class BaseScoreBoardViewModel extends ViewModel {
     /** 骰子点数 */
     protected int[] diceNumbers;
 
@@ -25,4 +25,7 @@ public class BaseScoreBoardViewModel extends ViewModel {
             diceCounts[n]++;
         }
     }
+
+    /** 重置计分板 */
+    public void reset() {}
 }

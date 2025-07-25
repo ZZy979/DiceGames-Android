@@ -10,11 +10,11 @@ import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.BalutScore;
+import com.zzy.dicegames.ui.game.BaseScoreBoardFragment;
 
 import java.time.LocalDate;
 import java.util.function.Consumer;
 
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -25,7 +25,7 @@ import static com.zzy.dicegames.ui.game.balut.BalutScoreBoardViewModel.*;
  *
  * @author 赵正阳
  */
-public class BalutScoreBoardFragment extends Fragment {
+public class BalutScoreBoardFragment extends BaseScoreBoardFragment<BalutScoreBoardViewModel> {
     /** 得分项按钮 */
     private Button[] mScoreButtons;
 
@@ -34,8 +34,6 @@ public class BalutScoreBoardFragment extends Fragment {
 
     /** 游戏总分标签 */
     private TextView mTotalScoreTextView;
-
-    private BalutScoreBoardViewModel mViewModel;
 
     /** 每次选择一项后执行的动作 */
     private Runnable mSelectAction;
@@ -49,12 +47,12 @@ public class BalutScoreBoardFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected BalutScoreBoardViewModel createViewModel() {
+        return new ViewModelProvider(this).get(BalutScoreBoardViewModel.class);
+    }
 
-        mViewModel = new ViewModelProvider(this).get(BalutScoreBoardViewModel.class);
-        initViews(view);
-
+    @Override
+    protected void setObservers() {
         LifecycleOwner owner = getViewLifecycleOwner();
         mViewModel.getScores().observe(owner, this::onScoresChanged);
         mViewModel.getSelectCount().observe(owner, this::onSelectCountChanged);
@@ -62,7 +60,8 @@ public class BalutScoreBoardFragment extends Fragment {
     }
 
     /** 获取得分按钮和标签 */
-    private void initViews(View rootView) {
+    @Override
+    protected void initViews(View rootView) {
         int[] scoreButtonIds = new int[] {
                 R.id.btn4, R.id.btn5, R.id.btn6, R.id.btnStraight,
                 R.id.btnFullHouse, R.id.btnChoice, R.id.btnBalut
@@ -164,10 +163,5 @@ public class BalutScoreBoardFragment extends Fragment {
         }
         return new BalutScore(LocalDate.now().toString(),
                 mViewModel.getTotalScore().getValue(), gotBalut);
-    }
-
-    /** 重置得分 */
-    public void reset() {
-        mViewModel.reset();
     }
 }
