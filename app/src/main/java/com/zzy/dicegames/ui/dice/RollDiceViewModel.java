@@ -9,6 +9,15 @@ import androidx.lifecycle.ViewModel;
 
 /** {@link RollDiceFragment}的ViewModel */
 public class RollDiceViewModel extends ViewModel {
+    /** 骰子个数最小值 */
+    public static final int MIN_DICE_COUNT = 1;
+
+    /** 骰子个数最大值 */
+    public static final int MAX_DICE_COUNT = 6;
+
+    /** 无限次数 */
+    public static final int UNLIMITED_ROLLS = Integer.MAX_VALUE;
+
     /** 骰子个数 */
     private int diceCount;
 
@@ -27,8 +36,14 @@ public class RollDiceViewModel extends ViewModel {
 
     private Random random = new Random();
 
+    /**
+     * @param diceCount 骰子个数，1~6之间
+     * @param maxRolls 最大掷骰子次数，{@link #UNLIMITED_ROLLS}表示无限次数
+     */
     public RollDiceViewModel(int diceCount, int maxRolls) {
-        // TODO 支持无限次数
+        if (diceCount < MIN_DICE_COUNT || diceCount > MAX_DICE_COUNT)
+            throw new IllegalArgumentException("骰子个数必须在1~6之间");
+
         this.diceCount = diceCount;
         this.maxRolls = maxRolls;
         this.remainingRolls.setValue(maxRolls);
@@ -71,7 +86,7 @@ public class RollDiceViewModel extends ViewModel {
         diceLocked.setValue(locked);
     }
 
-    /** 掷一次骰子，更新未锁定骰子的点数，并将剩余次数减1 */
+    /** 掷一次骰子，更新未锁定骰子的点数，并将剩余次数减1（除非无限次数） */
     public void rollDice() {
         if (remainingRolls.getValue() == null || remainingRolls.getValue() <= 0)
             return;
@@ -86,7 +101,8 @@ public class RollDiceViewModel extends ViewModel {
                 numbers[i] = random.nextInt(6) + 1;
         }
         diceNumbers.setValue(numbers);
-        remainingRolls.setValue(remainingRolls.getValue() - 1);
+        if (maxRolls != UNLIMITED_ROLLS)
+            remainingRolls.setValue(remainingRolls.getValue() - 1);
     }
 
     /** 重置掷骰子次数，解锁骰子 */

@@ -14,28 +14,21 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
+import static com.zzy.dicegames.ui.dice.RollDiceViewModel.*;
+
 /**
  * 掷骰子窗口，包括一些{@link DiceView 骰子组件}和一个"Roll"按钮
  *
  * @author 赵正阳
  */
 public class RollDiceFragment extends Fragment {
-    /** 骰子个数最小值 */
-    public static final int MIN_DICE_COUNT = 1;
-
-    /** 骰子个数最大值 */
-    public static final int MAX_DICE_COUNT = 6;
-
-    /** 默认最大掷骰子次数 */
-    public static final int DEFAULT_MAX_ROLLS = 2;
-
-    /** 传入参数：骰子个数，默认{@link #MAX_DICE_COUNT} */
+    /** 传入参数：骰子个数 */
     private static final String ARG_DICE_COUNT = "diceCount";
 
-    /** 传入参数：最大掷骰子次数，默认{@link #DEFAULT_MAX_ROLLS} */
+    /** 传入参数：最大掷骰子次数 */
     private static final String ARG_MAX_ROLLS = "maxRolls";
 
-    /** 传入参数：创建视图后是否立即掷骰子，默认{@code true} */
+    /** 传入参数：创建视图后是否立即掷骰子 */
     private static final String ARG_ROLL_ON_CREATE_VIEW = "rollOnCreateView";
 
     /** 骰子数组 */
@@ -69,9 +62,9 @@ public class RollDiceFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle args = requireArguments();
-        int diceCount = args.getInt(ARG_DICE_COUNT, MAX_DICE_COUNT);
-        int maxRolls = args.getInt(ARG_MAX_ROLLS, DEFAULT_MAX_ROLLS);
-        boolean rollOnCreateView = args.getBoolean(ARG_ROLL_ON_CREATE_VIEW, true);
+        int diceCount = args.getInt(ARG_DICE_COUNT);
+        int maxRolls = args.getInt(ARG_MAX_ROLLS);
+        boolean rollOnCreateView = args.getBoolean(ARG_ROLL_ON_CREATE_VIEW);
 
         mViewModel = new ViewModelProvider(this, new RollDiceViewModelFactory(diceCount, maxRolls))
                 .get(RollDiceViewModel.class);
@@ -90,7 +83,7 @@ public class RollDiceFragment extends Fragment {
     /** 获取骰子和Roll按钮 */
     protected void initViews(View rootView) {
         int[] diceViewIds = {R.id.dice1, R.id.dice2, R.id.dice3, R.id.dice4, R.id.dice5, R.id.dice6};
-        mDiceViews = new DiceView[MAX_DICE_COUNT];
+        mDiceViews = new DiceView[diceViewIds.length];
         for (int i = 0; i < mDiceViews.length; i++) {
             final int position = i;
             mDiceViews[i] = rootView.findViewById(diceViewIds[i]);
@@ -104,7 +97,11 @@ public class RollDiceFragment extends Fragment {
 
     /** 剩余掷骰子次数更新时的回调 */
     protected void onRemainingRollsChanged(int remaining) {
-        mRollButton.setText(getString(R.string.rollRemaining, remaining));
+        if (remaining == UNLIMITED_ROLLS)
+            mRollButton.setText(getString(R.string.roll));
+        else
+            mRollButton.setText(getString(R.string.rollRemaining, remaining));
+
         boolean enabled = remaining > 0;
         mRollButton.setEnabled(enabled);
         for (DiceView diceView : mDiceViews)

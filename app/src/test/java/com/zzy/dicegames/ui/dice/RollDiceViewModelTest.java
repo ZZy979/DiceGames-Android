@@ -8,6 +8,7 @@ import org.mockito.InOrder;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 
+import static com.zzy.dicegames.ui.dice.RollDiceViewModel.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -39,6 +40,12 @@ public class RollDiceViewModelTest {
             assertEquals(DiceView.MAX_NUMBER, diceNumbers[i]);
             assertFalse(diceLocked[i]);
         }
+    }
+
+    @Test
+    public void testIllegalArgument() {
+        assertThrows(IllegalArgumentException.class, () -> new RollDiceViewModel(0, 3));
+        assertThrows(IllegalArgumentException.class, () -> new RollDiceViewModel(7, 3));
     }
 
     @Test
@@ -82,6 +89,15 @@ public class RollDiceViewModelTest {
 
         viewModel.rollDice();
         assertEquals(firstDictNumber, viewModel.getDiceNumbers().getValue()[0]);
+    }
+
+    @Test
+    public void testUnlimitedRolls() {
+        viewModel = new RollDiceViewModel(5, UNLIMITED_ROLLS);
+        assertEquals(UNLIMITED_ROLLS, viewModel.getRemainingRolls().getValue().intValue());
+
+        viewModel.rollDice();
+        assertEquals(UNLIMITED_ROLLS, viewModel.getRemainingRolls().getValue().intValue());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.zzy.dicegames.ui.game.rolladice;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.ui.dice.RollDiceViewModel;
 import com.zzy.dicegames.ui.game.GameFragment;
 
 /**
@@ -33,10 +34,9 @@ public class RollADiceGameFragment extends GameFragment<RollADiceScoreBoardFragm
         return 6;
     }
 
-    // fixme RollDiceFragment不支持无限次数
     @Override
     public int getRollTimes() {
-        return 0;
+        return RollDiceViewModel.UNLIMITED_ROLLS;
     }
 
     @Override

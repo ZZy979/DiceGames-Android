@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.ui.dice.RollDiceFragment;
+import com.zzy.dicegames.ui.dice.RollDiceViewModel;
 
 import java.util.function.IntConsumer;
 
@@ -37,10 +37,10 @@ public class RollADiceScoreBoardFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_roll_a_dice_score_board, container, false);
 
         mDiceCountPicker = rootView.findViewById(R.id.diceCountPicker);
-        mDiceCountPicker.setMinValue(RollDiceFragment.MIN_DICE_COUNT);
-        mDiceCountPicker.setMaxValue(RollDiceFragment.MAX_DICE_COUNT);
+        mDiceCountPicker.setMinValue(RollDiceViewModel.MIN_DICE_COUNT);
+        mDiceCountPicker.setMaxValue(RollDiceViewModel.MAX_DICE_COUNT);
         if (savedInstanceState == null)
-            mDiceCountPicker.setValue(RollDiceFragment.MAX_DICE_COUNT);
+            mDiceCountPicker.setValue(RollDiceViewModel.MAX_DICE_COUNT);
         else
             mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
         mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mActionOnChangingDiceCount.accept(newVal));
