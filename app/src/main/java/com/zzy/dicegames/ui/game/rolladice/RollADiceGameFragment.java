@@ -10,19 +10,13 @@ import com.zzy.dicegames.ui.game.GameFragment;
  * @author 赵正阳
  */
 public class RollADiceGameFragment extends GameFragment<RollADiceScoreBoardFragment> {
-
-    public RollADiceGameFragment() {}
-
     @Override
     public RollADiceScoreBoardFragment createScoreBoardFragment() {
         return new RollADiceScoreBoardFragment();
     }
 
     @Override
-    protected void setListeners() {
-        // fixme 暂时无效
-        mScoreBoardFragment.setActionOnChangingDiceCount(mRollDiceFragment::setDiceCount);
-    }
+    protected void setListeners() {}
 
     @Override
     public String getTitle() {
@@ -46,7 +40,7 @@ public class RollADiceGameFragment extends GameFragment<RollADiceScoreBoardFragm
 
     @Override
     public void startNewGame() {
-        super.startNewGame();
+        mScoreBoardFragment.reset();
         mRollDiceFragment.activate();
     }
 

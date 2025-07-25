@@ -23,9 +23,6 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
-    <string name="diceCount">Number of Dice</string>
-    <string name="wrongDiceNumber">Dice number must be between 1 and 6</string>
-
     <string name="s1">1</string>
     <string name="s2">2</string>
     <string name="s3">3</string>

@@ -4,58 +4,31 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumberPicker;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.ui.dice.RollDiceViewModel;
+import com.zzy.dicegames.ui.game.BaseScoreBoardFragment;
 
-import java.util.function.IntConsumer;
-
-import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 /**
  * 掷骰子计分板Fragment，嵌套于一个{@link RollADiceGameFragment}
  *
  * @author 赵正阳
  */
-public class RollADiceScoreBoardFragment extends Fragment {
-    // ----------游戏状态数据----------
-    /** 骰子个数选择器 */
-    private NumberPicker mDiceCountPicker;
-
-    /** 改变骰子个数时执行的动作 */
-    private IntConsumer mActionOnChangingDiceCount;
-
-    // ----------保存和恢复状态----------
-    /** 用于保存和恢复状态：骰子个数 */
-    private static final String DICE_COUNT = "diceCount";
-
-    public RollADiceScoreBoardFragment() {}
-
+public class RollADiceScoreBoardFragment extends BaseScoreBoardFragment<RollADiceScoreBoardViewModel> {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_roll_a_dice_score_board, container, false);
-
-        mDiceCountPicker = rootView.findViewById(R.id.diceCountPicker);
-        mDiceCountPicker.setMinValue(RollDiceViewModel.MIN_DICE_COUNT);
-        mDiceCountPicker.setMaxValue(RollDiceViewModel.MAX_DICE_COUNT);
-        if (savedInstanceState == null)
-            mDiceCountPicker.setValue(RollDiceViewModel.MAX_DICE_COUNT);
-        else
-            mDiceCountPicker.setValue(savedInstanceState.getInt(DICE_COUNT));
-        mDiceCountPicker.setOnValueChangedListener((picker, oldVal, newVal) -> mActionOnChangingDiceCount.accept(newVal));
-
-        return rootView;
+        return inflater.inflate(R.layout.fragment_roll_a_dice_score_board, container, false);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(DICE_COUNT, mDiceCountPicker.getValue());
-        super.onSaveInstanceState(outState);
+    protected RollADiceScoreBoardViewModel createViewModel() {
+        return new ViewModelProvider(this).get(RollADiceScoreBoardViewModel.class);
     }
 
-    public void setActionOnChangingDiceCount(IntConsumer actionOnChangingDiceCount) {
-        mActionOnChangingDiceCount = actionOnChangingDiceCount;
-    }
+    @Override
+    protected void setObservers() {}
 
+    @Override
+    protected void initViews(View rootView) {}
 }

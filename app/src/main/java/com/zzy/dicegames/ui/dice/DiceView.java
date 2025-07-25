@@ -117,7 +117,7 @@ public class DiceView extends View {
     public void setNumber(int number) {
         if (!mLocked) {
             if (number < MIN_NUMBER || number > MAX_NUMBER)
-                throw new IllegalArgumentException(getContext().getString(R.string.wrongDiceNumber));
+                throw new IllegalArgumentException("骰子点数必须在1~6之间");
             mNumber = number;
             invalidate();
         }

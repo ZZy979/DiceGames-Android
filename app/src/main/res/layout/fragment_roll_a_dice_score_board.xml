@@ -7,17 +7,4 @@
     android:orientation="vertical"
     tools:context=".ui.game.rolladice.RollADiceScoreBoardFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/diceCount"
-        android:textSize="30sp" />
-
-    <NumberPicker
-        android:id="@+id/diceCountPicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
-
 </LinearLayout>

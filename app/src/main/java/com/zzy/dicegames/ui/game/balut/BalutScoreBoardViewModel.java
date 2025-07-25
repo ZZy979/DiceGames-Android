@@ -131,6 +131,7 @@ public class BalutScoreBoardViewModel extends BaseScoreBoardViewModel {
     }
 
     /** 重置计分板 */
+    @Override
     public void reset() {
         scores.setValue(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
         selectCount.setValue(new int[NUM_CATEGORIES]);

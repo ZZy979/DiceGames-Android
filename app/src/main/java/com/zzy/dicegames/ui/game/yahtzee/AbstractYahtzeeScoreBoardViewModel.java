@@ -135,6 +135,7 @@ public abstract class AbstractYahtzeeScoreBoardViewModel extends BaseScoreBoardV
     }
 
     /** 重置计分板 */
+    @Override
     public void reset() {
         scores.setValue(new int[numCategories]);
         selected.setValue(new boolean[numCategories]);
