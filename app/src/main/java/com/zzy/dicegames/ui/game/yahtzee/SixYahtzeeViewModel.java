@@ -1,6 +1,6 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
-public class SixYahtzeeScoreBoardViewModel extends AbstractYahtzeeScoreBoardViewModel {
+public class SixYahtzeeViewModel extends BaseYahtzeeViewModel {
     // 得分项编号
     public static final int ONES = 0;
     public static final int TWOS = 1;
@@ -23,7 +23,7 @@ public class SixYahtzeeScoreBoardViewModel extends AbstractYahtzeeScoreBoardView
     public static final int CHANCE = 18;
     public static final int YAHTZEE = 19;
 
-    public SixYahtzeeScoreBoardViewModel() {
+    public SixYahtzeeViewModel() {
         super.init(20, 84, 100);
     }
 

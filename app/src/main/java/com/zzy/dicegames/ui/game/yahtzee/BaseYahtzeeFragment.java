@@ -1,24 +1,24 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
-import com.zzy.dicegames.ui.game.BaseScoreBoardFragment;
-
-import java.util.function.Consumer;
+import com.zzy.dicegames.ui.dice.RollDiceFragment;
+import com.zzy.dicegames.ui.game.BaseGameFragment;
 
 import androidx.lifecycle.LifecycleOwner;
 
 /**
- * Yahtzee计分板Fragment，嵌套于一个{@link AbstractYahtzeeGameFragment}
+ * Yahtzee游戏Fragment基类
  *
  * @author 赵正阳
  */
-public abstract class AbstractYahtzeeScoreBoardFragment extends BaseScoreBoardFragment<AbstractYahtzeeScoreBoardViewModel> {
+public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeViewModel> {
     /** 得分项按钮 */
     protected Button[] mScoreButtons;
 
@@ -37,11 +37,34 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends BaseScoreBoardFr
     /** 每次选择一项后执行的动作 */
     protected Runnable mSelectAction;
 
-    /** 游戏结束时执行的动作 */
-    protected Consumer<AbstractYahtzeeScore> mGameOverAction;
-
     @Override
-    protected void setObservers() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // 获取得分按钮和标签
+        int[] scoreButtonIds = getScoreButtonIds();
+        mScoreButtons = new Button[scoreButtonIds.length];
+        for (int i = 0; i < mScoreButtons.length; i++) {
+            int category = i;
+            mScoreButtons[i] = view.findViewById(scoreButtonIds[i]);
+            mScoreButtons[i].setOnClickListener(v -> select(category));
+        }
+
+        int[] scoreTextViewIds = getScoreTextViewIds();
+        mScoreTextViews = new TextView[scoreTextViewIds.length];
+        for (int i = 0; i < mScoreTextViews.length; i++) {
+            mScoreTextViews[i] = view.findViewById(scoreTextViewIds[i]);
+        }
+
+        mUpperTotalScoreTextView = view.findViewById(R.id.tvUpperTotal);
+        mBonusScoreTextView = view.findViewById(R.id.tvBonus);
+        mTotalScoreTextView = view.findViewById(R.id.tvGameTotal);
+
+        // 设置计分板和骰子窗口相关的监听器
+        mRollDiceFragment.setRollListener(this::updateScores);
+        mSelectAction = mRollDiceFragment::activate;
+
+        // 设置ViewModel观察者
         LifecycleOwner owner = getViewLifecycleOwner();
         mViewModel.getScores().observe(owner, this::onScoresChanged);
         mViewModel.getSelected().observe(owner, this::onSelectedChanged);
@@ -50,28 +73,18 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends BaseScoreBoardFr
         mViewModel.getTotalScore().observe(owner, this::onTotalScoreChanged);
     }
 
-    /** 获取得分按钮和标签 */
-    protected void initViews(View rootView) {
-        int[] scoreButtonIds = getScoreButtonIds();
-        mScoreButtons = new Button[scoreButtonIds.length];
-        for (int i = 0; i < mScoreButtons.length; i++) {
-            int category = i;
-            mScoreButtons[i] = rootView.findViewById(scoreButtonIds[i]);
-            mScoreButtons[i].setOnClickListener(v -> select(category));
-        }
-
-        int[] scoreTextViewIds = getScoreTextViewIds();
-        mScoreTextViews = new TextView[scoreTextViewIds.length];
-        for (int i = 0; i < mScoreTextViews.length; i++) {
-            mScoreTextViews[i] = rootView.findViewById(scoreTextViewIds[i]);
-        }
-
-        mUpperTotalScoreTextView = rootView.findViewById(R.id.tvUpperTotal);
-        mBonusScoreTextView = rootView.findViewById(R.id.tvBonus);
-        mTotalScoreTextView = rootView.findViewById(R.id.tvGameTotal);
+    @Override
+    protected RollDiceFragment createRollDiceFragment() {
+        return RollDiceFragment.newInstance(getDiceCount(), getMaxRolls(), true);
     }
 
-    protected abstract AbstractYahtzeeScoreBoardViewModel createViewModel();
+    protected abstract BaseYahtzeeViewModel createViewModel();
+
+    /** 返回游戏使用的骰子个数 */
+    public abstract int getDiceCount();
+
+    /** 返回游戏每轮最大掷骰子次数 */
+    public abstract int getMaxRolls();
 
     /** 得分项按钮id */
     protected abstract int[] getScoreButtonIds();
@@ -114,14 +127,6 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends BaseScoreBoardFr
         mTotalScoreTextView.setText(Integer.toString(totalScore));
     }
 
-    public void setSelectAction(Runnable selectAction) {
-        mSelectAction = selectAction;
-    }
-
-    public void setGameOverAction(Consumer<AbstractYahtzeeScore> gameOverAction) {
-        mGameOverAction = gameOverAction;
-    }
-
     /** 根据骰子点数更新得分 */
     public void updateScores(int[] diceNumbers) {
         boolean[] selected = mViewModel.getSelected().getValue();
@@ -139,8 +144,7 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends BaseScoreBoardFr
     protected void select(int category) {
         mViewModel.select(category);
         if (mViewModel.getNumSelected() == mViewModel.getNumCategories()) {
-            if (mGameOverAction != null)
-                mGameOverAction.accept(getScore());
+            onGameOver(getScore());
         }
         else if (mSelectAction != null)
             mSelectAction.run();
@@ -148,4 +152,17 @@ public abstract class AbstractYahtzeeScoreBoardFragment extends BaseScoreBoardFr
 
     /** 游戏结束时获取得分 */
     protected abstract AbstractYahtzeeScore getScore();
+
+    /**
+     * 游戏结束时的回调函数，保存得分并开始新游戏<br>
+     * 将该方法设置为计分板的监听器，游戏结束时计分板将以本局得分为参数调用该监听器
+     */
+    protected void onGameOver(AbstractYahtzeeScore score) {
+        int rank = saveScore(score);
+        showScore(score.getScore(), rank);
+    }
+
+    /** 保存得分，返回该得分在前10名中的名次，0表示不在前10名中 */
+    protected abstract int saveScore(AbstractYahtzeeScore score);
+
 }

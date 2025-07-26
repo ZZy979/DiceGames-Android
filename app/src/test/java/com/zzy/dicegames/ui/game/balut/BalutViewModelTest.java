@@ -10,19 +10,19 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 import androidx.lifecycle.Observer;
 
-import static com.zzy.dicegames.ui.game.balut.BalutScoreBoardViewModel.*;
+import static com.zzy.dicegames.ui.game.balut.BalutViewModel.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class BalutScoreBoardViewModelTest {
+public class BalutViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    private BalutScoreBoardViewModel viewModel;
+    private BalutViewModel viewModel;
 
     @Before
     public void setUp() {
-        viewModel = new BalutScoreBoardViewModel();
+        viewModel = new BalutViewModel();
     }
 
     private static int[] arr(int... a) {

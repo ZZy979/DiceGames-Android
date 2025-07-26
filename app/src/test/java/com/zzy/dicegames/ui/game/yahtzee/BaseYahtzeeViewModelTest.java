@@ -10,15 +10,15 @@ import androidx.lifecycle.Observer;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class AbstractYahtzeeScoreBoardViewModelTest {
+public class BaseYahtzeeViewModelTest {
    @Rule
    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-   private AbstractYahtzeeScoreBoardViewModel viewModel;
+   private BaseYahtzeeViewModel viewModel;
 
    @Before
    public void setUp() {
-      viewModel = new AbstractYahtzeeScoreBoardViewModel() {
+      viewModel = new BaseYahtzeeViewModel() {
          @Override
          public int calculateScore(int category) {
             return sumOfDice;

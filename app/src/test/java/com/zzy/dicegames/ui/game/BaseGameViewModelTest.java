@@ -8,15 +8,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
 import static org.junit.Assert.*;
 
-public class BaseScoreBoardViewModelTest {
+public class BaseGameViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    private BaseScoreBoardViewModel viewModel;
+    private BaseGameViewModel viewModel;
 
     @Before
     public void setUp() {
-        viewModel = new BaseScoreBoardViewModel() {};
+        viewModel = new BaseGameViewModel() {};
     }
 
     @Test

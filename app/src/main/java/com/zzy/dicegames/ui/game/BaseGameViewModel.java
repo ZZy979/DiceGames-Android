@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import androidx.lifecycle.ViewModel;
 
-public abstract class BaseScoreBoardViewModel extends ViewModel {
+public abstract class BaseGameViewModel extends ViewModel {
     /** 骰子点数 */
     protected int[] diceNumbers;
 

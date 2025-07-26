@@ -9,18 +9,18 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
-import static com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeScoreBoardViewModel.*;
+import static com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeViewModel.*;
 import static org.junit.Assert.*;
 
 public class FiveYahtzeeScoreBoardViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    private FiveYahtzeeScoreBoardViewModel viewModel;
+    private FiveYahtzeeViewModel viewModel;
 
     @Before
     public void setUp() {
-        viewModel = new FiveYahtzeeScoreBoardViewModel();
+        viewModel = new FiveYahtzeeViewModel();
     }
 
     private static int[] arr(int... a) {

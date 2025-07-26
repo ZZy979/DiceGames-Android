@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.data.ScoreDatabase;
+import com.zzy.dicegames.data.dao.SixYahtzeeScoreDao;
 import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
 import com.zzy.dicegames.data.entity.SixYahtzeeScore;
 
@@ -14,20 +16,29 @@ import java.time.LocalDate;
 import androidx.lifecycle.ViewModelProvider;
 
 /**
- * 6骰Yahtzee计分板Fragment
+ * 6骰Yahtzee游戏Fragment
  *
  * @author 赵正阳
  */
-public class SixYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFragment {
-
+public class SixYahtzeeFragment extends BaseYahtzeeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_six_yahtzee_score_board, container, false);
+        return inflater.inflate(R.layout.fragment_six_yahtzee, container, false);
     }
 
     @Override
-    protected AbstractYahtzeeScoreBoardViewModel createViewModel() {
-        return new ViewModelProvider(this).get(SixYahtzeeScoreBoardViewModel.class);
+    protected BaseYahtzeeViewModel createViewModel() {
+        return new ViewModelProvider(this).get(SixYahtzeeViewModel.class);
+    }
+
+    @Override
+    public int getDiceCount() {
+        return 6;
+    }
+
+    @Override
+    public int getMaxRolls() {
+        return 3;
     }
 
     @Override
@@ -64,6 +75,13 @@ public class SixYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFragm
                 mViewModel.getTotalScore().getValue(),
                 mViewModel.getBonusScore().getValue() == 0 ? 0 : 1,
                 scores[scores.length - 1] == 0 ? 0 : 1);
+    }
+
+    @Override
+    protected int saveScore(AbstractYahtzeeScore score) {
+        SixYahtzeeScoreDao sixYahtzeeScoreDao = ScoreDatabase.getInstance(getContext()).sixYahtzeeScoreDao();
+        sixYahtzeeScoreDao.insert((SixYahtzeeScore) score);
+        return sixYahtzeeScoreDao.findTop10Score().indexOf(score.getScore()) + 1;
     }
 
 }

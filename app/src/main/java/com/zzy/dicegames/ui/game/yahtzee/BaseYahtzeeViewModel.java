@@ -1,11 +1,11 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
-import com.zzy.dicegames.ui.game.BaseScoreBoardViewModel;
+import com.zzy.dicegames.ui.game.BaseGameViewModel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public abstract class AbstractYahtzeeScoreBoardViewModel extends BaseScoreBoardViewModel {
+public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
     /** 上区得分项个数 */
     public static final int NUM_UPPER_CATEGORIES = 6;
 

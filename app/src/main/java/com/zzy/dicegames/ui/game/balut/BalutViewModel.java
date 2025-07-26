@@ -1,11 +1,11 @@
 package com.zzy.dicegames.ui.game.balut;
 
-import com.zzy.dicegames.ui.game.BaseScoreBoardViewModel;
+import com.zzy.dicegames.ui.game.BaseGameViewModel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class BalutScoreBoardViewModel extends BaseScoreBoardViewModel {
+public class BalutViewModel extends BaseGameViewModel {
     /** 得分项个数 */
     public static final int NUM_CATEGORIES = 7;
 
@@ -33,7 +33,7 @@ public class BalutScoreBoardViewModel extends BaseScoreBoardViewModel {
     /** 获得的游戏总分 */
     private final MutableLiveData<Integer> totalScore = new MutableLiveData<>(0);
 
-    public BalutScoreBoardViewModel() {
+    public BalutViewModel() {
         scores.setValue(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
         selectCount.setValue(new int[NUM_CATEGORIES]);
     }

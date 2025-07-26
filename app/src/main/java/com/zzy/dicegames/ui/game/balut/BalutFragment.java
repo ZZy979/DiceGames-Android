@@ -9,23 +9,25 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.data.ScoreDatabase;
+import com.zzy.dicegames.data.dao.BalutScoreDao;
 import com.zzy.dicegames.data.entity.BalutScore;
-import com.zzy.dicegames.ui.game.BaseScoreBoardFragment;
+import com.zzy.dicegames.ui.dice.RollDiceFragment;
+import com.zzy.dicegames.ui.game.BaseGameFragment;
 
 import java.time.LocalDate;
-import java.util.function.Consumer;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
-import static com.zzy.dicegames.ui.game.balut.BalutScoreBoardViewModel.*;
+import static com.zzy.dicegames.ui.game.balut.BalutViewModel.*;
 
 /**
- * Balut计分板Fragment，嵌套于一个{@link BalutGameFragment}
+ * Balut游戏Fragment
  *
  * @author 赵正阳
  */
-public class BalutScoreBoardFragment extends BaseScoreBoardFragment<BalutScoreBoardViewModel> {
+public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     /** 得分项按钮 */
     private Button[] mScoreButtons;
 
@@ -38,30 +40,16 @@ public class BalutScoreBoardFragment extends BaseScoreBoardFragment<BalutScoreBo
     /** 每次选择一项后执行的动作 */
     private Runnable mSelectAction;
 
-    /** 游戏结束时执行的动作 */
-    private Consumer<BalutScore> mGameOverAction;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_balut_score_board, container, false);
+        return inflater.inflate(R.layout.fragment_balut, container, false);
     }
 
     @Override
-    protected BalutScoreBoardViewModel createViewModel() {
-        return new ViewModelProvider(this).get(BalutScoreBoardViewModel.class);
-    }
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-    @Override
-    protected void setObservers() {
-        LifecycleOwner owner = getViewLifecycleOwner();
-        mViewModel.getScores().observe(owner, this::onScoresChanged);
-        mViewModel.getSelectCount().observe(owner, this::onSelectCountChanged);
-        mViewModel.getTotalScore().observe(owner, this::onTotalScoreChanged);
-    }
-
-    /** 获取得分按钮和标签 */
-    @Override
-    protected void initViews(View rootView) {
+        // 获取得分按钮和标签
         int[] scoreButtonIds = new int[] {
                 R.id.btn4, R.id.btn5, R.id.btn6, R.id.btnStraight,
                 R.id.btnFullHouse, R.id.btnChoice, R.id.btnBalut
@@ -69,7 +57,7 @@ public class BalutScoreBoardFragment extends BaseScoreBoardFragment<BalutScoreBo
         mScoreButtons = new Button[scoreButtonIds.length];
         for (int i = 0; i < mScoreButtons.length; i++) {
             int category = i;
-            mScoreButtons[i] = rootView.findViewById(scoreButtonIds[i]);
+            mScoreButtons[i] = view.findViewById(scoreButtonIds[i]);
             mScoreButtons[i].setOnClickListener(v -> select(category));
         }
 
@@ -85,10 +73,30 @@ public class BalutScoreBoardFragment extends BaseScoreBoardFragment<BalutScoreBo
         mScoreTextViews = new TextView[scoreTextViewIds.length][scoreTextViewIds[0].length];
         for (int i = 0; i < mScoreTextViews.length; ++i) {
             for (int j = 0; j < mScoreTextViews[i].length; j++)
-                mScoreTextViews[i][j] = rootView.findViewById(scoreTextViewIds[i][j]);
+                mScoreTextViews[i][j] = view.findViewById(scoreTextViewIds[i][j]);
         }
 
-        mTotalScoreTextView = rootView.findViewById(R.id.tvGameTotal);
+        mTotalScoreTextView = view.findViewById(R.id.tvGameTotal);
+
+        // 设置计分板和骰子窗口相关的监听器
+        mRollDiceFragment.setRollListener(this::updateScores);
+        mSelectAction = mRollDiceFragment::activate;
+
+        // 设置ViewModel观察者
+        LifecycleOwner owner = getViewLifecycleOwner();
+        mViewModel.getScores().observe(owner, this::onScoresChanged);
+        mViewModel.getSelectCount().observe(owner, this::onSelectCountChanged);
+        mViewModel.getTotalScore().observe(owner, this::onTotalScoreChanged);
+    }
+
+    @Override
+    protected RollDiceFragment createRollDiceFragment() {
+        return RollDiceFragment.newInstance(5, 3, true);
+    }
+
+    @Override
+    protected BalutViewModel createViewModel() {
+        return new ViewModelProvider(this).get(BalutViewModel.class);
     }
 
     /** 得分项的得分更新时的回调 */
@@ -119,14 +127,6 @@ public class BalutScoreBoardFragment extends BaseScoreBoardFragment<BalutScoreBo
         mTotalScoreTextView.setText(Integer.toString(totalScore));
     }
 
-    public void setSelectAction(Runnable selectAction) {
-        mSelectAction = selectAction;
-    }
-
-    public void setGameOverAction(Consumer<BalutScore> gameOverAction) {
-        mGameOverAction = gameOverAction;
-    }
-
     /** 根据骰子点数更新得分 */
     public void updateScores(int[] diceNumbers) {
         int[] selectCount = mViewModel.getSelectCount().getValue();
@@ -143,8 +143,7 @@ public class BalutScoreBoardFragment extends BaseScoreBoardFragment<BalutScoreBo
     private void select(int category) {
         mViewModel.select(category);
         if (mViewModel.getNumSelected() == NUM_CATEGORIES) {
-            if (mGameOverAction != null)
-                mGameOverAction.accept(getScore());
+            onGameOver(getScore());
         }
         else if (mSelectAction != null)
             mSelectAction.run();
@@ -164,4 +163,21 @@ public class BalutScoreBoardFragment extends BaseScoreBoardFragment<BalutScoreBo
         return new BalutScore(LocalDate.now().toString(),
                 mViewModel.getTotalScore().getValue(), gotBalut);
     }
+
+    /**
+     * 游戏结束时的回调函数，保存得分并开始新游戏<br>
+     * 将该方法设置为计分板的监听器，游戏结束时计分板将以本局得分为参数调用该监听器
+     */
+    private void onGameOver(BalutScore score) {
+        int rank = saveScore(score);
+        showScore(score.getScore(), rank);
+    }
+
+    /** 保存得分，返回该得分在前10名中的名次，0表示不在前10名中 */
+    private int saveScore(BalutScore score) {
+        BalutScoreDao balutScoreDao = ScoreDatabase.getInstance(getContext()).balutScoreDao();
+        balutScoreDao.insert(score);
+        return balutScoreDao.findTop10Score().indexOf(score.getScore()) + 1;
+    }
+
 }

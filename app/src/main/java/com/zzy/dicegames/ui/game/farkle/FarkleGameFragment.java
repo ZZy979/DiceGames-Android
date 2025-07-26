@@ -5,7 +5,9 @@ import android.os.Bundle;
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.data.entity.FarkleScore;
-import com.zzy.dicegames.ui.game.GameFragment;
+import com.zzy.dicegames.ui.dice.RollDiceFragment;
+import com.zzy.dicegames.ui.game.BaseGameFragment;
+import com.zzy.dicegames.ui.game.BaseGameViewModel;
 
 /**
  * Farkle游戏Fragment
@@ -13,7 +15,7 @@ import com.zzy.dicegames.ui.game.GameFragment;
  * @author 赵正阳
  */
 // fixme 暂时不可用，实现一个FarkleRollDiceFragment类
-public class FarkleGameFragment extends GameFragment<FarkleScoreBoardFragment> {
+public class FarkleGameFragment extends BaseGameFragment<BaseGameViewModel> {
 
     public FarkleGameFragment() {}
 
@@ -25,29 +27,34 @@ public class FarkleGameFragment extends GameFragment<FarkleScoreBoardFragment> {
             mRollDiceFragment.setLeftRollTimes(0);
     }
 
-    @Override
+//    @Override
     public FarkleScoreBoardFragment createScoreBoardFragment() {
         return new FarkleScoreBoardFragment();
     }
 
-    @Override
+//    @Override
     protected void setListeners() {
-        mScoreBoardFragment.setDiceFragment(mRollDiceFragment);
-        mScoreBoardFragment.setGameOverAction(this::onGameOver);
-        mRollDiceFragment.setRollListener(mScoreBoardFragment::onDiceRolled);
+//        mScoreBoardFragment.setDiceFragment(mRollDiceFragment);
+//        mScoreBoardFragment.setGameOverAction(this::onGameOver);
+//        mRollDiceFragment.setRollListener(mScoreBoardFragment::onDiceRolled);
     }
 
     @Override
-    public String getTitle() {
-        return getString(R.string.farkle);
+    protected RollDiceFragment createRollDiceFragment() {
+        return null;
     }
 
     @Override
+    protected BaseGameViewModel createViewModel() {
+        return null;
+    }
+
+    //    @Override
     public int getDiceCount() {
         return 6;
     }
 
-    @Override
+//    @Override
     public int getRollTimes() {
         return 0;
     }

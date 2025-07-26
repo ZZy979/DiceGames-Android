@@ -16,12 +16,12 @@ import com.zzy.dicegames.data.entity.BalutScore;
 import com.zzy.dicegames.data.entity.FarkleScore;
 import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.data.entity.SixYahtzeeScore;
-import com.zzy.dicegames.ui.game.GameFragment;
-import com.zzy.dicegames.ui.game.balut.BalutGameFragment;
+import com.zzy.dicegames.ui.game.BaseGameFragment;
+import com.zzy.dicegames.ui.game.balut.BalutFragment;
 import com.zzy.dicegames.ui.game.farkle.FarkleGameFragment;
-import com.zzy.dicegames.ui.game.rolladice.RollADiceGameFragment;
-import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeGameFragment;
-import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeGameFragment;
+import com.zzy.dicegames.ui.game.rolladice.RollADiceFragment;
+import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeFragment;
+import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeFragment;
 import com.zzy.dicegames.utils.ScoresParser;
 
 import org.xmlpull.v1.XmlSerializer;
@@ -37,7 +37,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
     private String[] mGameTypes;
 
-    private GameFragment<?> mGameFragment;
+    private BaseGameFragment<?> mGameFragment;
 
     /** 上次按返回键的时间 */
     private long mLastPressTime = 0;
@@ -52,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
 
         mGameTypes = getResources().getStringArray(R.array.gameTypes);
         if (savedInstanceState == null) {
-            mGameFragment = new FiveYahtzeeGameFragment();
+            mGameFragment = new FiveYahtzeeFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.gameFragment, mGameFragment)
                     .commit();
         }
         else
-            mGameFragment = (GameFragment<?>) getSupportFragmentManager().findFragmentById(R.id.gameFragment);
+            mGameFragment = (BaseGameFragment<?>) getSupportFragmentManager().findFragmentById(R.id.gameFragment);
     }
 
     @Override
@@ -128,17 +128,17 @@ public class MainActivity extends AppCompatActivity {
         if (mGameFragment.getTitle().equals(gameTitle))
             mGameFragment.startNewGame();
         else {
-            GameFragment<?> newGameFragment = null;
+            BaseGameFragment<?> newGameFragment = null;
             if (gameTitle.equals(getString(R.string.fiveYahtzee)))
-                newGameFragment = new FiveYahtzeeGameFragment();
+                newGameFragment = new FiveYahtzeeFragment();
             else if (gameTitle.equals(getString(R.string.sixYahtzee)))
-                newGameFragment = new SixYahtzeeGameFragment();
+                newGameFragment = new SixYahtzeeFragment();
             else if (gameTitle.equals(getString(R.string.balut)))
-                newGameFragment = new BalutGameFragment();
+                newGameFragment = new BalutFragment();
 //            else if (gameTitle.equals(getString(R.string.liarDice)))
 //                ;
             else if (gameTitle.equals(getString(R.string.rollADice)))
-                newGameFragment = new RollADiceGameFragment();
+                newGameFragment = new RollADiceFragment();
             else if (gameTitle.equals(getString(R.string.farkle)))
                 newGameFragment = new FarkleGameFragment();
 

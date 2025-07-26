@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.data.ScoreDatabase;
+import com.zzy.dicegames.data.dao.FiveYahtzeeScoreDao;
 import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
 import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
 
@@ -14,20 +16,29 @@ import java.time.LocalDate;
 import androidx.lifecycle.ViewModelProvider;
 
 /**
- * 5骰Yahtzee计分板Fragment
+ * 5骰Yahtzee游戏Fragment
  *
  * @author 赵正阳
  */
-public class FiveYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFragment {
-
+public class FiveYahtzeeFragment extends BaseYahtzeeFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_five_yahtzee_score_board, container, false);
+        return inflater.inflate(R.layout.fragment_five_yahtzee, container, false);
     }
 
     @Override
-    protected AbstractYahtzeeScoreBoardViewModel createViewModel() {
-        return new ViewModelProvider(this).get(FiveYahtzeeScoreBoardViewModel.class);
+    protected BaseYahtzeeViewModel createViewModel() {
+        return new ViewModelProvider(this).get(FiveYahtzeeViewModel.class);
+    }
+
+    @Override
+    public int getDiceCount() {
+        return 5;
+    }
+
+    @Override
+    public int getMaxRolls() {
+        return 3;
     }
 
     @Override
@@ -60,6 +71,13 @@ public class FiveYahtzeeScoreBoardFragment extends AbstractYahtzeeScoreBoardFrag
                 mViewModel.getTotalScore().getValue(),
                 mViewModel.getBonusScore().getValue() == 0 ? 0 : 1,
                 scores[scores.length - 1] == 0 ? 0 : 1);
+    }
+
+    @Override
+    protected int saveScore(AbstractYahtzeeScore score) {
+        FiveYahtzeeScoreDao fiveYahtzeeScoreDao = ScoreDatabase.getInstance(getContext()).fiveYahtzeeScoreDao();
+        fiveYahtzeeScoreDao.insert((FiveYahtzeeScore) score);
+        return fiveYahtzeeScoreDao.findTop10Score().indexOf(score.getScore()) + 1;
     }
 
 }

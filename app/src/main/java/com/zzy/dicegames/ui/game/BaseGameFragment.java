@@ -2,9 +2,7 @@ package com.zzy.dicegames.ui.game;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
@@ -15,73 +13,51 @@ import androidx.fragment.app.Fragment;
 /**
  * 游戏Fragment基类，有一个{@link RollDiceFragment 骰子窗口}和一个计分板
  *
- * @param <T> 计分板Fragment类
+ * @param <V> ViewModel类
  * @author 赵正阳
  */
-public abstract class GameFragment<T extends Fragment> extends Fragment {
-    /** 计分板 */
-    protected T mScoreBoardFragment;
+public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Fragment {
+    /** 标题标签*/
+    protected TextView mTitleTextView;
 
     /** 骰子窗口 */
     protected RollDiceFragment mRollDiceFragment;
 
-    public GameFragment() {}
+    protected V mViewModel;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_game, container, false);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        ((TextView) rootView.findViewById(R.id.tvTitle)).setText(getTitle());
-
+        mTitleTextView = view.findViewById(R.id.tvTitle);
         if (savedInstanceState == null) {
-            mScoreBoardFragment = createScoreBoardFragment();
-            getChildFragmentManager().beginTransaction()
-                    .add(R.id.scoreBoardFragment, mScoreBoardFragment)
-                    .commit();
-
-            mRollDiceFragment = RollDiceFragment.newInstance(getDiceCount(), getRollTimes(), rollOnStart());
+            mRollDiceFragment = createRollDiceFragment();
             getChildFragmentManager().beginTransaction()
                     .add(R.id.diceFragment, mRollDiceFragment)
                     .commit();
         }
         else {
-            mScoreBoardFragment = (T) getChildFragmentManager().findFragmentById(R.id.scoreBoardFragment);
             mRollDiceFragment = (RollDiceFragment) getChildFragmentManager().findFragmentById(R.id.diceFragment);
         }
 
-        setListeners();
-        return rootView;
+        mViewModel = createViewModel();
     }
-
-    /** 创建一个新的计分板 */
-    public abstract T createScoreBoardFragment();
-
-    /** 设置计分板和骰子窗口相关的监听器 */
-    protected abstract void setListeners();
 
     /** 返回游戏标题 */
-    public abstract String getTitle();
-
-    /** 返回游戏使用的骰子个数 */
-    public abstract int getDiceCount();
-
-    /** 返回游戏每轮掷骰子次数 */
-    public abstract int getRollTimes();
-
-    /** 初次创建骰子窗口后是否立即掷骰子 */
-    public boolean rollOnStart() {
-        return true;
+    public String getTitle() {
+        return mTitleTextView.getText().toString();
     }
+
+    /** 创建骰子窗口 */
+    protected abstract RollDiceFragment createRollDiceFragment();
+
+    /** 创建游戏ViewModel */
+    protected abstract V createViewModel();
 
     /** 开始一次新游戏 */
     public void startNewGame() {
-        // fixme 目前开始新游戏时无法正确更新得分，因为掷骰子时计分板还未初始化完成
-        // TODO 计分板改为使用ViewModel
-        mScoreBoardFragment = createScoreBoardFragment();
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.scoreBoardFragment, mScoreBoardFragment)
-                .commit();
-        setListeners();
+        mViewModel.reset();
+        mRollDiceFragment.activate();
     }
 
     /**
