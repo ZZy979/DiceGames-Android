@@ -23,7 +23,7 @@ import static com.zzy.dicegames.ui.dice.RollDiceViewModel.*;
  */
 public class RollDiceFragment extends Fragment {
     /** 传入参数：骰子个数 */
-    private static final String ARG_DICE_COUNT = "diceCount";
+    private static final String ARG_NUM_DICE = "numDice";
 
     /** 传入参数：最大掷骰子次数 */
     private static final String ARG_MAX_ROLLS = "maxRolls";
@@ -42,10 +42,10 @@ public class RollDiceFragment extends Fragment {
     /** 掷骰子监听器 */
     protected Consumer<int[]> mRollListener;
 
-    public static RollDiceFragment newInstance(int diceCount, int maxRolls, boolean rollOnCreateView) {
+    public static RollDiceFragment newInstance(int numDice, int maxRolls, boolean rollOnCreateView) {
         RollDiceFragment fragment = new RollDiceFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_DICE_COUNT, diceCount);
+        args.putInt(ARG_NUM_DICE, numDice);
         args.putInt(ARG_MAX_ROLLS, maxRolls);
         args.putBoolean(ARG_ROLL_ON_CREATE_VIEW, rollOnCreateView);
         fragment.setArguments(args);
@@ -62,11 +62,11 @@ public class RollDiceFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Bundle args = requireArguments();
-        int diceCount = args.getInt(ARG_DICE_COUNT);
+        int numDice = args.getInt(ARG_NUM_DICE);
         int maxRolls = args.getInt(ARG_MAX_ROLLS);
         boolean rollOnCreateView = args.getBoolean(ARG_ROLL_ON_CREATE_VIEW);
 
-        mViewModel = new ViewModelProvider(this, new RollDiceViewModelFactory(diceCount, maxRolls))
+        mViewModel = new ViewModelProvider(this, new RollDiceViewModelFactory(numDice, maxRolls))
                 .get(RollDiceViewModel.class);
         initViews(view);
 
@@ -81,17 +81,17 @@ public class RollDiceFragment extends Fragment {
     }
 
     /** 获取骰子和Roll按钮 */
-    protected void initViews(View rootView) {
+    protected void initViews(View view) {
         int[] diceViewIds = {R.id.dice1, R.id.dice2, R.id.dice3, R.id.dice4, R.id.dice5, R.id.dice6};
         mDiceViews = new DiceView[diceViewIds.length];
         for (int i = 0; i < mDiceViews.length; i++) {
             final int position = i;
-            mDiceViews[i] = rootView.findViewById(diceViewIds[i]);
+            mDiceViews[i] = view.findViewById(diceViewIds[i]);
             mDiceViews[i].setOnClickListener(v -> mViewModel.toggleLocked(position));
-            mDiceViews[i].setVisibility(i < mViewModel.getDiceCount() ? View.VISIBLE : View.INVISIBLE);
+            mDiceViews[i].setVisibility(i < mViewModel.getNumDice() ? View.VISIBLE : View.INVISIBLE);
         }
 
-        mRollButton = rootView.findViewById(R.id.btnRoll);
+        mRollButton = view.findViewById(R.id.btnRoll);
         mRollButton.setOnClickListener(v -> rollDice());
     }
 

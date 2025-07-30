@@ -26,7 +26,7 @@ public class RollDiceViewModelTest {
     @Test
     public void testInitialization() {
         viewModel = new RollDiceViewModel(4, 3);
-        assertEquals(4, viewModel.getDiceCount());
+        assertEquals(4, viewModel.getNumDice());
         assertEquals(3, viewModel.getMaxRolls());
         assertEquals(3, viewModel.getRemainingRolls().getValue().intValue());
 

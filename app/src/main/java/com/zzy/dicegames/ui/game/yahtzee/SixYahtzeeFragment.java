@@ -32,7 +32,7 @@ public class SixYahtzeeFragment extends BaseYahtzeeFragment {
     }
 
     @Override
-    public int getDiceCount() {
+    public int getNumDice() {
         return 6;
     }
 

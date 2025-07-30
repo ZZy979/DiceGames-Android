@@ -75,13 +75,13 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
 
     @Override
     protected RollDiceFragment createRollDiceFragment() {
-        return RollDiceFragment.newInstance(getDiceCount(), getMaxRolls(), true);
+        return RollDiceFragment.newInstance(getNumDice(), getMaxRolls(), true);
     }
 
     protected abstract BaseYahtzeeViewModel createViewModel();
 
     /** 返回游戏使用的骰子个数 */
-    public abstract int getDiceCount();
+    public abstract int getNumDice();
 
     /** 返回游戏每轮最大掷骰子次数 */
     public abstract int getMaxRolls();
@@ -128,7 +128,7 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     }
 
     /** 根据骰子点数更新得分 */
-    public void updateScores(int[] diceNumbers) {
+    protected void updateScores(int[] diceNumbers) {
         boolean[] selected = mViewModel.getSelected().getValue();
         if (selected == null)
             return;

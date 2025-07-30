@@ -50,7 +50,7 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
         super.onViewCreated(view, savedInstanceState);
 
         // 获取得分按钮和标签
-        int[] scoreButtonIds = new int[] {
+        int[] scoreButtonIds = {
                 R.id.btn4, R.id.btn5, R.id.btn6, R.id.btnStraight,
                 R.id.btnFullHouse, R.id.btnChoice, R.id.btnBalut
         };
@@ -61,7 +61,7 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
             mScoreButtons[i].setOnClickListener(v -> select(category));
         }
 
-        int[][] scoreTextViewIds = new int[][] {
+        int[][] scoreTextViewIds = {
                 {R.id.tv41, R.id.tv42, R.id.tv43, R.id.tv44},
                 {R.id.tv51, R.id.tv52, R.id.tv53, R.id.tv54},
                 {R.id.tv61, R.id.tv62, R.id.tv63, R.id.tv64},
@@ -128,7 +128,7 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     }
 
     /** 根据骰子点数更新得分 */
-    public void updateScores(int[] diceNumbers) {
+    private void updateScores(int[] diceNumbers) {
         int[] selectCount = mViewModel.getSelectCount().getValue();
         if (selectCount == null)
             return;

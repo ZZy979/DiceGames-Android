@@ -22,21 +22,16 @@ public class BalutViewModel extends BaseGameViewModel {
     public static final int BALUT = 6;
 
     /** 每个得分项的得分 */
-    private final MutableLiveData<int[][]> scores = new MutableLiveData<>();
+    private final MutableLiveData<int[][]> scores = new MutableLiveData<>(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
 
     /** 每个得分项已选择次数 */
-    private final MutableLiveData<int[]> selectCount = new MutableLiveData<>();
+    private final MutableLiveData<int[]> selectCount = new MutableLiveData<>(new int[NUM_CATEGORIES]);
 
     /** 已达到最大选择次数的得分项个数 */
     private int numSelected = 0;
 
     /** 获得的游戏总分 */
     private final MutableLiveData<Integer> totalScore = new MutableLiveData<>(0);
-
-    public BalutViewModel() {
-        scores.setValue(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
-        selectCount.setValue(new int[NUM_CATEGORIES]);
-    }
 
     public LiveData<int[][]> getScores() {
         return scores;
