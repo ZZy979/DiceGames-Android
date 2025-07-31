@@ -33,6 +33,10 @@ public class BalutViewModel extends BaseGameViewModel {
     /** 获得的游戏总分 */
     private final MutableLiveData<Integer> totalScore = new MutableLiveData<>(0);
 
+    public BalutViewModel() {
+        super(5, 3);
+    }
+
     public LiveData<int[][]> getScores() {
         return scores;
     }
@@ -49,7 +53,7 @@ public class BalutViewModel extends BaseGameViewModel {
         return totalScore;
     }
 
-    /** 计算指定得分项的得分，调用该方法前必须先调用{@link #setDiceNumbers} */
+    /** 计算指定得分项的得分 */
     public int calculateScore(int category) {
         int score = 0;
         switch (category) {
@@ -89,8 +93,12 @@ public class BalutViewModel extends BaseGameViewModel {
 
     /** 判断是否满足Balut：所有骰子点数都相同 */
     private boolean isBalut() {
-        for (int i = 1; i < diceNumbers.length; i++) {
-            if (diceNumbers[i] != diceNumbers[0])
+        int[] numbers = diceNumbers.getValue();
+        if (numbers == null)
+            return false;
+
+        for (int i = 1; i < numbers.length; i++) {
+            if (numbers[i] != numbers[0])
                 return false;
         }
         return true;
@@ -125,11 +133,12 @@ public class BalutViewModel extends BaseGameViewModel {
         totalScore.setValue(total);
     }
 
-    /** 重置计分板 */
     @Override
     public void reset() {
-        scores.setValue(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
+        super.reset();
+        // scores的观察者依赖selectCount，因此先更新selectCount
         selectCount.setValue(new int[NUM_CATEGORIES]);
+        scores.setValue(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
         numSelected = 0;
         totalScore.setValue(0);
     }

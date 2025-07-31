@@ -32,16 +32,6 @@ public class SixYahtzeeFragment extends BaseYahtzeeFragment {
     }
 
     @Override
-    public int getNumDice() {
-        return 6;
-    }
-
-    @Override
-    public int getMaxRolls() {
-        return 3;
-    }
-
-    @Override
     protected int[] getScoreButtonIds() {
         return new int[] {
                 R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6,

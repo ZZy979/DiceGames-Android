@@ -18,7 +18,7 @@ public class FiveYahtzeeViewModel extends BaseYahtzeeViewModel {
     public static final int YAHTZEE = 13;
 
     public FiveYahtzeeViewModel() {
-        super.init(14, 63, 50);
+        super(5, 3, 14, 63, 50);
     }
 
     @Override

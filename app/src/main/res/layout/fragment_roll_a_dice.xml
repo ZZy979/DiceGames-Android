@@ -17,11 +17,11 @@
         android:textSize="40sp"
         android:textStyle="bold" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/diceFragment"
+    <include
+        android:id="@+id/diceWindow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        tools:layout="@layout/fragment_roll_dice" />
+        layout="@layout/roll_dice_window" />
 
 </RelativeLayout>

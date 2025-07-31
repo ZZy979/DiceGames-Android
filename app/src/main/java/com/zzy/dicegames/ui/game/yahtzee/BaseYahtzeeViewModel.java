@@ -37,7 +37,9 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
     /** 获得的游戏总分 */
     protected final MutableLiveData<Integer> totalScore = new MutableLiveData<>(0);
 
-    protected void init(int numCategories, int bonusThreshold, int bonusValue) {
+    protected BaseYahtzeeViewModel(
+            int numDice, int maxRolls, int numCategories, int bonusThreshold, int bonusValue) {
+        super(numDice, maxRolls);
         this.numCategories = numCategories;
         this.bonusThreshold = bonusThreshold;
         this.bonusValue = bonusValue;
@@ -81,13 +83,17 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
         return totalScore;
     }
 
-    /** 计算指定得分项的得分，调用该方法前必须先调用{@link #setDiceNumbers} */
+    /** 计算指定得分项的得分 */
     public abstract int calculateScore(int category);
 
     /** 判断是否满足Yahtzee：所有骰子点数都相同 */
     protected boolean isYahtzee() {
-        for (int i = 1; i < diceNumbers.length; i++) {
-            if (diceNumbers[i] != diceNumbers[0])
+        int[] numbers = diceNumbers.getValue();
+        if (numbers == null)
+            return false;
+
+        for (int i = 1; i < numbers.length; i++) {
+            if (numbers[i] != numbers[0])
                 return false;
         }
         return true;
@@ -95,8 +101,12 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
 
     /** 是否满足Joker规则：满足Yahtzee，且Yahtzee和上区对应的数字已经选过 */
     protected boolean isJoker() {
+        int[] numbers = diceNumbers.getValue();
         boolean[] isSelected = selected.getValue();
-        return isSelected != null && isYahtzee() && isSelected[diceNumbers[0] - 1] && isSelected[numCategories - 1];
+        if (numbers == null || isSelected == null)
+            return false;
+
+        return isYahtzee() && isSelected[numbers[0] - 1] && isSelected[numCategories - 1];
     }
 
     /** 选择指定的得分项，更新得分 */
@@ -134,9 +144,9 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
         totalScore.setValue(total);
     }
 
-    /** 重置计分板 */
     @Override
     public void reset() {
+        super.reset();
         scores.setValue(new int[numCategories]);
         selected.setValue(new boolean[numCategories]);
         numSelected = 0;

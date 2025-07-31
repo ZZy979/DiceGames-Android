@@ -2,10 +2,8 @@ package com.zzy.dicegames.ui.game.farkle;
 
 import android.os.Bundle;
 
-import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.data.entity.FarkleScore;
-import com.zzy.dicegames.ui.dice.RollDiceFragment;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
 
@@ -23,8 +21,8 @@ public class FarkleGameFragment extends BaseGameFragment<BaseGameViewModel> {
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState == null)
-            mRollDiceFragment.setLeftRollTimes(0);
+//        if (savedInstanceState == null)
+//            mRollDiceFragment.setLeftRollTimes(0);
     }
 
 //    @Override
@@ -37,11 +35,6 @@ public class FarkleGameFragment extends BaseGameFragment<BaseGameViewModel> {
 //        mScoreBoardFragment.setDiceFragment(mRollDiceFragment);
 //        mScoreBoardFragment.setGameOverAction(this::onGameOver);
 //        mRollDiceFragment.setRollListener(mScoreBoardFragment::onDiceRolled);
-    }
-
-    @Override
-    protected RollDiceFragment createRollDiceFragment() {
-        return null;
     }
 
     @Override
@@ -62,8 +55,8 @@ public class FarkleGameFragment extends BaseGameFragment<BaseGameViewModel> {
     @Override
     public void startNewGame() {
         super.startNewGame();
-        mRollDiceFragment.activate();
-        mRollDiceFragment.setLeftRollTimes(0);
+//        mRollDiceFragment.activate();
+//        mRollDiceFragment.setLeftRollTimes(0);
     }
 
     /** 游戏结束时的回调函数 */

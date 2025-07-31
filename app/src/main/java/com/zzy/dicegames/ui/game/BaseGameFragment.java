@@ -3,15 +3,19 @@ package com.zzy.dicegames.ui.game;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.ui.dice.RollDiceFragment;
+import com.zzy.dicegames.ui.dice.DiceView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.*;
 
 /**
- * 游戏Fragment基类，有一个{@link RollDiceFragment 骰子窗口}和一个计分板
+ * 游戏Fragment基类
  *
  * @param <V> ViewModel类
  * @author 赵正阳
@@ -20,8 +24,11 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     /** 标题标签*/
     protected TextView mTitleTextView;
 
-    /** 骰子窗口 */
-    protected RollDiceFragment mRollDiceFragment;
+    /** 骰子 */
+    protected DiceView[] mDiceViews;
+
+    /** Roll按钮 */
+    protected Button mRollButton;
 
     protected V mViewModel;
 
@@ -29,18 +36,72 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mViewModel = createViewModel();
+        setupObservers(getViewLifecycleOwner());
+        initViews(view);
+    }
+
+    /** 初始化视图 */
+    protected void initViews(View view) {
         mTitleTextView = view.findViewById(R.id.tvTitle);
-        if (savedInstanceState == null) {
-            mRollDiceFragment = createRollDiceFragment();
-            getChildFragmentManager().beginTransaction()
-                    .add(R.id.diceFragment, mRollDiceFragment)
-                    .commit();
-        }
-        else {
-            mRollDiceFragment = (RollDiceFragment) getChildFragmentManager().findFragmentById(R.id.diceFragment);
+
+        int[] diceViewIds = {R.id.dice1, R.id.dice2, R.id.dice3, R.id.dice4, R.id.dice5, R.id.dice6};
+        mDiceViews = new DiceView[diceViewIds.length];
+        for (int i = 0; i < mDiceViews.length; i++) {
+            final int position = i;
+            mDiceViews[i] = view.findViewById(diceViewIds[i]);
+            mDiceViews[i].setOnClickListener(v -> mViewModel.toggleLocked(position));
+            mDiceViews[i].setVisibility(i < mViewModel.getNumDice() ? View.VISIBLE : View.INVISIBLE);
         }
 
-        mViewModel = createViewModel();
+        mRollButton = view.findViewById(R.id.btnRoll);
+        mRollButton.setOnClickListener(v -> rollDice());
+    }
+
+    /** 创建游戏ViewModel */
+    protected abstract V createViewModel();
+
+    /** 设置ViewModel观察者 */
+    protected void setupObservers(LifecycleOwner owner) {
+        mViewModel.getRemainingRolls().observe(owner, this::onRemainingRollsChanged);
+        mViewModel.getDiceNumbers().observe(owner, this::onDiceNumbersChanged);
+        mViewModel.getDiceLocked().observe(owner, this::onDiceLockedChanged);
+    }
+
+    /** 剩余掷骰子次数更新时的回调 */
+    protected void onRemainingRollsChanged(int remaining) {
+        if (remaining == UNLIMITED_ROLLS)
+            mRollButton.setText(getString(R.string.roll));
+        else
+            mRollButton.setText(getString(R.string.rollRemaining, remaining));
+
+        boolean enabled = remaining > 0;
+        mRollButton.setEnabled(enabled);
+        for (DiceView diceView : mDiceViews)
+            diceView.setEnabled(enabled);
+    }
+
+    /** 骰子点数更新时的回调 */
+    protected void onDiceNumbersChanged(int[] numbers) {
+        for (int i = 0; i < numbers.length; i++)
+            mDiceViews[i].setNumber(numbers[i]);
+    }
+
+    /** 骰子锁定状态更新时的回调 */
+    protected void onDiceLockedChanged(boolean[] locked) {
+        for (int i = 0; i < locked.length; i++)
+            mDiceViews[i].setLocked(locked[i]);
+    }
+
+    /** 掷骰子并调用监听器 */
+    protected void rollDice() {
+        // TODO 动画效果
+        mViewModel.rollDice();
+    }
+
+    /** 重置骰子窗口 */
+    protected void resetDiceWindow() {
+        mViewModel.resetDiceWindow();
     }
 
     /** 返回游戏标题 */
@@ -48,16 +109,9 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         return mTitleTextView.getText().toString();
     }
 
-    /** 创建骰子窗口 */
-    protected abstract RollDiceFragment createRollDiceFragment();
-
-    /** 创建游戏ViewModel */
-    protected abstract V createViewModel();
-
     /** 开始一次新游戏 */
     public void startNewGame() {
         mViewModel.reset();
-        mRollDiceFragment.activate();
     }
 
     /**

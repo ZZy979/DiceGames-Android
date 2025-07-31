@@ -20,7 +20,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/diceFragment"
+        android:layout_above="@id/diceWindow"
         android:layout_below="@id/tvTitle">
 
         <TableLayout
@@ -393,11 +393,11 @@
 
     </ScrollView>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/diceFragment"
+    <include
+        android:id="@+id/diceWindow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        tools:layout="@layout/fragment_roll_dice" />
+        layout="@layout/roll_dice_window" />
 
 </RelativeLayout>

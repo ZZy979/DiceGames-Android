@@ -12,7 +12,6 @@ import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.data.dao.BalutScoreDao;
 import com.zzy.dicegames.data.entity.BalutScore;
-import com.zzy.dicegames.ui.dice.RollDiceFragment;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 
 import java.time.LocalDate;
@@ -37,9 +36,6 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     /** 游戏总分标签 */
     private TextView mTotalScoreTextView;
 
-    /** 每次选择一项后执行的动作 */
-    private Runnable mSelectAction;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_balut, container, false);
@@ -48,6 +44,13 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null)
+            rollDice();
+    }
+
+    @Override
+    protected void initViews(View view) {
+        super.initViews(view);
 
         // 获取得分按钮和标签
         int[] scoreButtonIds = {
@@ -77,26 +80,25 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
         }
 
         mTotalScoreTextView = view.findViewById(R.id.tvGameTotal);
+    }
 
-        // 设置计分板和骰子窗口相关的监听器
-        mRollDiceFragment.setRollListener(this::updateScores);
-        mSelectAction = mRollDiceFragment::activate;
+    @Override
+    protected BalutViewModel createViewModel() {
+        return new ViewModelProvider(this).get(BalutViewModel.class);
+    }
 
-        // 设置ViewModel观察者
-        LifecycleOwner owner = getViewLifecycleOwner();
+    @Override
+    protected void setupObservers(LifecycleOwner owner) {
+        super.setupObservers(owner);
         mViewModel.getScores().observe(owner, this::onScoresChanged);
         mViewModel.getSelectCount().observe(owner, this::onSelectCountChanged);
         mViewModel.getTotalScore().observe(owner, this::onTotalScoreChanged);
     }
 
     @Override
-    protected RollDiceFragment createRollDiceFragment() {
-        return RollDiceFragment.newInstance(5, 3, true);
-    }
-
-    @Override
-    protected BalutViewModel createViewModel() {
-        return new ViewModelProvider(this).get(BalutViewModel.class);
+    protected void onDiceNumbersChanged(int[] numbers) {
+        super.onDiceNumbersChanged(numbers);
+        updateScores();
     }
 
     /** 得分项的得分更新时的回调 */
@@ -109,6 +111,8 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
             for (int j = 0; j < scores[i].length; j++) {
                 if (j < selectCount[i])
                     mScoreTextViews[i][j].setText(Integer.toString(scores[i][j]));
+                else if (j > selectCount[i])
+                    mScoreTextViews[i][j].setText("0");
             }
         }
     }
@@ -128,12 +132,11 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     }
 
     /** 根据骰子点数更新得分 */
-    private void updateScores(int[] diceNumbers) {
+    private void updateScores() {
         int[] selectCount = mViewModel.getSelectCount().getValue();
         if (selectCount == null)
             return;
 
-        mViewModel.setDiceNumbers(diceNumbers);
         for (int i = 0; i < mScoreTextViews.length; ++i)
             if (selectCount[i] < mScoreTextViews[i].length)
                 mScoreTextViews[i][selectCount[i]].setText(Integer.toString(mViewModel.calculateScore(i)));
@@ -142,11 +145,22 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     /** 选择指定的得分项 */
     private void select(int category) {
         mViewModel.select(category);
-        if (mViewModel.getNumSelected() == NUM_CATEGORIES) {
+        if (mViewModel.getNumSelected() == NUM_CATEGORIES)
             onGameOver(getScore());
-        }
-        else if (mSelectAction != null)
-            mSelectAction.run();
+        else
+            resetDiceWindow();
+    }
+
+    @Override
+    protected void resetDiceWindow() {
+        super.resetDiceWindow();
+        rollDice();
+    }
+
+    @Override
+    public void startNewGame() {
+        super.startNewGame();
+        rollDice();
     }
 
     /** 游戏结束时获取得分 */

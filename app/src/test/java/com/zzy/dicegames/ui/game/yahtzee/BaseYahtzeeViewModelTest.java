@@ -18,13 +18,12 @@ public class BaseYahtzeeViewModelTest {
 
    @Before
    public void setUp() {
-      viewModel = new BaseYahtzeeViewModel() {
+      viewModel = new BaseYahtzeeViewModel(5, 3, 10, 20, 8) {
          @Override
          public int calculateScore(int category) {
             return sumOfDice;
          }
       };
-      viewModel.init(10, 20, 8);
    }
 
    @Test

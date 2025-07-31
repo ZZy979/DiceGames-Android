@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
-import com.zzy.dicegames.ui.dice.RollDiceFragment;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 
 import androidx.lifecycle.LifecycleOwner;
@@ -34,12 +33,16 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     /** 游戏总分标签 */
     protected TextView mTotalScoreTextView;
 
-    /** 每次选择一项后执行的动作 */
-    protected Runnable mSelectAction;
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null)
+            rollDice();
+    }
+
+    @Override
+    protected void initViews(View view) {
+        super.initViews(view);
 
         // 获取得分按钮和标签
         int[] scoreButtonIds = getScoreButtonIds();
@@ -59,13 +62,19 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
         mUpperTotalScoreTextView = view.findViewById(R.id.tvUpperTotal);
         mBonusScoreTextView = view.findViewById(R.id.tvBonus);
         mTotalScoreTextView = view.findViewById(R.id.tvGameTotal);
+    }
 
-        // 设置计分板和骰子窗口相关的监听器
-        mRollDiceFragment.setRollListener(this::updateScores);
-        mSelectAction = mRollDiceFragment::activate;
+    /** 得分项按钮id */
+    protected abstract int[] getScoreButtonIds();
 
-        // 设置ViewModel观察者
-        LifecycleOwner owner = getViewLifecycleOwner();
+    /** 得分项标签id */
+    protected abstract int[] getScoreTextViewIds();
+
+    protected abstract BaseYahtzeeViewModel createViewModel();
+
+    @Override
+    protected void setupObservers(LifecycleOwner owner) {
+        super.setupObservers(owner);
         mViewModel.getScores().observe(owner, this::onScoresChanged);
         mViewModel.getSelected().observe(owner, this::onSelectedChanged);
         mViewModel.getUpperTotalScore().observe(owner, this::onUpperTotalScoreChanged);
@@ -74,23 +83,10 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     }
 
     @Override
-    protected RollDiceFragment createRollDiceFragment() {
-        return RollDiceFragment.newInstance(getNumDice(), getMaxRolls(), true);
+    protected void onDiceNumbersChanged(int[] numbers) {
+        super.onDiceNumbersChanged(numbers);
+        updateScores();
     }
-
-    protected abstract BaseYahtzeeViewModel createViewModel();
-
-    /** 返回游戏使用的骰子个数 */
-    public abstract int getNumDice();
-
-    /** 返回游戏每轮最大掷骰子次数 */
-    public abstract int getMaxRolls();
-
-    /** 得分项按钮id */
-    protected abstract int[] getScoreButtonIds();
-
-    /** 得分项标签id */
-    protected abstract int[] getScoreTextViewIds();
 
     /** 得分项的得分更新时的回调 */
     protected void onScoresChanged(int[] scores) {
@@ -128,12 +124,11 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     }
 
     /** 根据骰子点数更新得分 */
-    protected void updateScores(int[] diceNumbers) {
+    protected void updateScores() {
         boolean[] selected = mViewModel.getSelected().getValue();
         if (selected == null)
             return;
 
-        mViewModel.setDiceNumbers(diceNumbers);
         for (int i = 0; i < mScoreTextViews.length; ++i) {
             if (!selected[i])
                 mScoreTextViews[i].setText(Integer.toString(mViewModel.calculateScore(i)));
@@ -143,11 +138,22 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     /** 选择指定的得分项 */
     protected void select(int category) {
         mViewModel.select(category);
-        if (mViewModel.getNumSelected() == mViewModel.getNumCategories()) {
+        if (mViewModel.getNumSelected() == mViewModel.getNumCategories())
             onGameOver(getScore());
-        }
-        else if (mSelectAction != null)
-            mSelectAction.run();
+        else
+            resetDiceWindow();
+    }
+
+    @Override
+    protected void resetDiceWindow() {
+        super.resetDiceWindow();
+        rollDice();
+    }
+
+    @Override
+    public void startNewGame() {
+        super.startNewGame();
+        rollDice();
     }
 
     /** 游戏结束时获取得分 */

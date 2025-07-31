@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.FarkleScore;
-import com.zzy.dicegames.ui.dice.RollDiceFragment;
 import com.zzy.dicegames.ui.dice.DiceView;
 
 import java.time.LocalDate;
@@ -42,7 +41,7 @@ public class FarkleScoreBoardFragment extends Fragment {
 
     // ----------游戏状态数据----------
     /** 玩家 */
-    private Player[] mPlayer = new Player[N_PLAYER];
+//    private Player[] mPlayer = new Player[N_PLAYER];
 
     /** 玩家标签 */
     private TextView[] mPlayerTextView = new TextView[N_PLAYER];
@@ -82,7 +81,7 @@ public class FarkleScoreBoardFragment extends Fragment {
         并在该类中设置相同数量的监听器，非常麻烦，因此获取DiceFragment的引用，直接对其操作
      */
     /** 骰子窗口 */
-    private RollDiceFragment mRollDiceFragment;
+//    private RollDiceFragment mRollDiceFragment;
 
     /** 本轮已锁定的骰子中得分骰子的个数，用于判断Hot Dice */
     private int mScoringDiceCount;
@@ -115,34 +114,34 @@ public class FarkleScoreBoardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_farkle_score_board, container, false);
 
-        mPlayerTextView[0] = rootView.findViewById(R.id.tvPlayerYou);
-        mPlayerTextView[1] = rootView.findViewById(R.id.tvPlayerCPU);
-
-        mScoreTextView[0] = rootView.findViewById(R.id.tvYourScore);
-        mScoreTextView[1] = rootView.findViewById(R.id.tvCPUScore);
-        mCurrentTurnScoreTextView = rootView.findViewById(R.id.tvCurrentTurnScore);
-
-        mBankButton = rootView.findViewById(R.id.btnBank);
-        mBankButton.setOnClickListener(v -> getActivity().runOnUiThread(this::bank));
-
-        mNewGameButton = rootView.findViewById(R.id.btnNewGame);
-        mNewGameButton.setOnClickListener(v -> ((FarkleGameFragment) getParentFragment()).startNewGame());
-        mNewGameButton.setVisibility(View.GONE);
-
-        mPlayer[0] = new HumanPlayer();
-        mPlayer[1] = createBotPlayer();
-
-        mLogScrollView = rootView.findViewById(R.id.svLog);
-        mLogText = rootView.findViewById(R.id.tvLog);
-
-        if (savedInstanceState == null) {
-            writeLog(getString(R.string.logYourTurn));
-            writeLog(String.format(getString(R.string.logStartingScore), mScore[0]));
-        }
-        else
-            restoreState(savedInstanceState);
-
-        mPlayerTextView[mCurrentPlayer].setTextColor(Color.RED);
+//        mPlayerTextView[0] = rootView.findViewById(R.id.tvPlayerYou);
+//        mPlayerTextView[1] = rootView.findViewById(R.id.tvPlayerCPU);
+//
+//        mScoreTextView[0] = rootView.findViewById(R.id.tvYourScore);
+//        mScoreTextView[1] = rootView.findViewById(R.id.tvCPUScore);
+//        mCurrentTurnScoreTextView = rootView.findViewById(R.id.tvCurrentTurnScore);
+//
+//        mBankButton = rootView.findViewById(R.id.btnBank);
+//        mBankButton.setOnClickListener(v -> getActivity().runOnUiThread(this::bank));
+//
+//        mNewGameButton = rootView.findViewById(R.id.btnNewGame);
+//        mNewGameButton.setOnClickListener(v -> ((FarkleGameFragment) getParentFragment()).startNewGame());
+//        mNewGameButton.setVisibility(View.GONE);
+//
+//        mPlayer[0] = new HumanPlayer();
+//        mPlayer[1] = createBotPlayer();
+//
+//        mLogScrollView = rootView.findViewById(R.id.svLog);
+//        mLogText = rootView.findViewById(R.id.tvLog);
+//
+//        if (savedInstanceState == null) {
+//            writeLog(getString(R.string.logYourTurn));
+//            writeLog(String.format(getString(R.string.logStartingScore), mScore[0]));
+//        }
+//        else
+//            restoreState(savedInstanceState);
+//
+//        mPlayerTextView[mCurrentPlayer].setTextColor(Color.RED);
         return rootView;
     }
 
@@ -155,10 +154,10 @@ public class FarkleScoreBoardFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        for (DiceView d : mRollDiceFragment.getDice())
-            d.setOnClickListener(this::onDiceClicked);
-        mRollDiceFragment.getRollButton().setOnClickListener(v -> getActivity().runOnUiThread(this::onRollButtonClicked));
-        changeButtonVisibility();
+//        for (DiceView d : mRollDiceFragment.getDice())
+//            d.setOnClickListener(this::onDiceClicked);
+//        mRollDiceFragment.getRollButton().setOnClickListener(v -> getActivity().runOnUiThread(this::onRollButtonClicked));
+//        changeButtonVisibility();
     }
 
     @Override
@@ -182,18 +181,18 @@ public class FarkleScoreBoardFragment extends Fragment {
     }
 
     /** 返回一个新的电脑玩家，并设置相关动作 */
-    private BotPlayer createBotPlayer() {
-        BotPlayer botPlayer = new BotPlayer();
-        botPlayer.setDiceFragment(mRollDiceFragment);
-        botPlayer.setCurrentTurnScoreSupplier(() ->
-                Integer.parseInt(mCurrentTurnScoreTextView.getText().toString()));
-        botPlayer.setBankScoreAction(mBankButton::callOnClick);
-        return botPlayer;
-    }
+//    private BotPlayer createBotPlayer() {
+//        BotPlayer botPlayer = new BotPlayer();
+//        botPlayer.setDiceFragment(mRollDiceFragment);
+//        botPlayer.setCurrentTurnScoreSupplier(() ->
+//                Integer.parseInt(mCurrentTurnScoreTextView.getText().toString()));
+//        botPlayer.setBankScoreAction(mBankButton::callOnClick);
+//        return botPlayer;
+//    }
 
-    public void setDiceFragment(RollDiceFragment rollDiceFragment) {
-        mRollDiceFragment = rollDiceFragment;
-    }
+//    public void setDiceFragment(RollDiceFragment rollDiceFragment) {
+//        mRollDiceFragment = rollDiceFragment;
+//    }
 
     public void setGameOverAction(Consumer<FarkleScore> gameOverAction) {
         mGameOverAction = gameOverAction;
@@ -214,33 +213,33 @@ public class FarkleScoreBoardFragment extends Fragment {
 
     /** "Roll"按钮的点击事件监听器 */
     private void onRollButtonClicked() {
-        mRollDiceFragment.setLeftRollTimes(0);
-        if (Arrays.stream(mRollDiceFragment.getDice()).anyMatch(d -> !d.isLocked() && !d.isEnabled())) {
-            // 上次掷骰子后Hot Dice
-            for (DiceView diceView : mRollDiceFragment.getDice()) {
-                diceView.setEnabled(true);
-                diceView.setLocked(false);
-            }
-            mBankButton.setEnabled(true);
-        }
-        else {
-            writeLog(String.format(getString(R.string.logDiceKept),
-                    Arrays.stream(mRollDiceFragment.getDice())
-                            .filter(this::isLockedAfterLastRoll)
-                            .map(d -> String.valueOf(d.getNumber()))
-                            .collect(Collectors.joining(","))
-            ));
-            // 记录上次掷骰子后锁定的骰子中得分骰子的个数
-            mScoringDiceCount += calcScore(Arrays.stream(mRollDiceFragment.getDice())
-                    .filter(this::isLockedAfterLastRoll)
-                    .mapToInt(DiceView::getNumber)
-                    .toArray()).getScoringDiceIndices().size();
-            // 禁用上次掷骰子后锁定的骰子
-            Arrays.stream(mRollDiceFragment.getDice())
-                    .filter(this::isLockedAfterLastRoll)
-                    .forEach(d -> d.setEnabled(false));
-        }
-        mRollDiceFragment.roll();
+//        mRollDiceFragment.setLeftRollTimes(0);
+//        if (Arrays.stream(mRollDiceFragment.getDice()).anyMatch(d -> !d.isLocked() && !d.isEnabled())) {
+//            // 上次掷骰子后Hot Dice
+//            for (DiceView diceView : mRollDiceFragment.getDice()) {
+//                diceView.setEnabled(true);
+//                diceView.setLocked(false);
+//            }
+//            mBankButton.setEnabled(true);
+//        }
+//        else {
+//            writeLog(String.format(getString(R.string.logDiceKept),
+//                    Arrays.stream(mRollDiceFragment.getDice())
+//                            .filter(this::isLockedAfterLastRoll)
+//                            .map(d -> String.valueOf(d.getNumber()))
+//                            .collect(Collectors.joining(","))
+//            ));
+//            // 记录上次掷骰子后锁定的骰子中得分骰子的个数
+//            mScoringDiceCount += calcScore(Arrays.stream(mRollDiceFragment.getDice())
+//                    .filter(this::isLockedAfterLastRoll)
+//                    .mapToInt(DiceView::getNumber)
+//                    .toArray()).getScoringDiceIndices().size();
+//            // 禁用上次掷骰子后锁定的骰子
+//            Arrays.stream(mRollDiceFragment.getDice())
+//                    .filter(this::isLockedAfterLastRoll)
+//                    .forEach(d -> d.setEnabled(false));
+//        }
+//        mRollDiceFragment.roll();
     }
 
     /**
@@ -294,132 +293,132 @@ public class FarkleScoreBoardFragment extends Fragment {
 
     /** 设置所有骰子的可用状态 */
     private void disableAllDice() {
-        Arrays.stream(mRollDiceFragment.getDice()).forEach(d -> d.setEnabled(false));
+//        Arrays.stream(mRollDiceFragment.getDice()).forEach(d -> d.setEnabled(false));
     }
 
     /** 掷骰子后的回调函数 */
     public void onDiceRolled(int[] diceNumbers) {
-        // 每次掷骰子后所有骰子isLocked() <=> !isEnabled()
-        for (int i = 0; i < mRollDiceFragment.getDice().length; ++i)
-            if (!mRollDiceFragment.getDice()[i].isEnabled())
-                diceNumbers[i] = 0;
-        writeLog(String.format(getString(R.string.logDiceRolled), Arrays.stream(diceNumbers)
-                .filter(x -> x != 0)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining(","))));
-        Result result = calcScore(diceNumbers);
-        if (result.getScoringDiceIndices().size() == 0)
-            onFarkle();
-        else {
-            // 将上次掷骰子的得分加到本轮得分
-            mCurrentTurnScore = Integer.parseInt(mCurrentTurnScoreTextView.getText().toString());
-            if (mScore[mCurrentPlayer] + mCurrentTurnScore + result.getScore() >= 10000)
-                onWin(result.getScore());
-                // 判断Hot Dice时要避免将分两次锁定的骰子合起来计算
-            else if (result.getScoringDiceIndices().size() + mScoringDiceCount == 6)
-                onHotDice(result.getScore());
-            else
-                mPlayer[mCurrentPlayer].onDiceRolled(result);
-        }
+//        // 每次掷骰子后所有骰子isLocked() <=> !isEnabled()
+//        for (int i = 0; i < mRollDiceFragment.getDice().length; ++i)
+//            if (!mRollDiceFragment.getDice()[i].isEnabled())
+//                diceNumbers[i] = 0;
+//        writeLog(String.format(getString(R.string.logDiceRolled), Arrays.stream(diceNumbers)
+//                .filter(x -> x != 0)
+//                .mapToObj(String::valueOf)
+//                .collect(Collectors.joining(","))));
+//        Result result = calcScore(diceNumbers);
+//        if (result.getScoringDiceIndices().size() == 0)
+//            onFarkle();
+//        else {
+//            // 将上次掷骰子的得分加到本轮得分
+//            mCurrentTurnScore = Integer.parseInt(mCurrentTurnScoreTextView.getText().toString());
+//            if (mScore[mCurrentPlayer] + mCurrentTurnScore + result.getScore() >= 10000)
+//                onWin(result.getScore());
+//                // 判断Hot Dice时要避免将分两次锁定的骰子合起来计算
+//            else if (result.getScoringDiceIndices().size() + mScoringDiceCount == 6)
+//                onHotDice(result.getScore());
+//            else
+//                mPlayer[mCurrentPlayer].onDiceRolled(result);
+//        }
     }
 
     private void onWin(int lastRollScore) {
-        writeLog(getString(mCurrentPlayer == 0 ? R.string.logYouWin : R.string.logCPUWins));
-        mCurrentTurnScore += lastRollScore;
-        mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore));
-        mScore[mCurrentPlayer] += mCurrentTurnScore;
-        mScoreTextView[mCurrentPlayer].setText(String.valueOf(mScore[mCurrentPlayer]));
-
-        disableAllDice();
-        mBankButton.setEnabled(false);
-        mRollDiceFragment.setLeftRollTimes(0);
-        mNewGameButton.setVisibility(View.VISIBLE);
-
-        if (mGameOverAction != null)
-            mGameOverAction.accept(new FarkleScore(LocalDate.now().toString(), mScore[0], mScore[1]));
+//        writeLog(getString(mCurrentPlayer == 0 ? R.string.logYouWin : R.string.logCPUWins));
+//        mCurrentTurnScore += lastRollScore;
+//        mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore));
+//        mScore[mCurrentPlayer] += mCurrentTurnScore;
+//        mScoreTextView[mCurrentPlayer].setText(String.valueOf(mScore[mCurrentPlayer]));
+//
+//        disableAllDice();
+//        mBankButton.setEnabled(false);
+//        mRollDiceFragment.setLeftRollTimes(0);
+//        mNewGameButton.setVisibility(View.VISIBLE);
+//
+//        if (mGameOverAction != null)
+//            mGameOverAction.accept(new FarkleScore(LocalDate.now().toString(), mScore[0], mScore[1]));
     }
 
     private void onHotDice(int lastRollScore) {
-        writeLog(String.format(getString(R.string.logHotDice), lastRollScore));
-        mCurrentTurnScore += lastRollScore;
-        mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore));
-        mScoringDiceCount = 0;
-
-        disableAllDice();
-        mBankButton.setEnabled(false);
-        mRollDiceFragment.setLeftRollTimes(1);
-
-        mPlayer[mCurrentPlayer].onHotDice();
+//        writeLog(String.format(getString(R.string.logHotDice), lastRollScore));
+//        mCurrentTurnScore += lastRollScore;
+//        mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore));
+//        mScoringDiceCount = 0;
+//
+//        disableAllDice();
+//        mBankButton.setEnabled(false);
+//        mRollDiceFragment.setLeftRollTimes(1);
+//
+//        mPlayer[mCurrentPlayer].onHotDice();
     }
 
     private void onFarkle() {
-        writeLog(getString(R.string.logFarkled));
-        disableAllDice();
-        try {
-            Thread.sleep(1000);
-        }
-        catch (InterruptedException ignored) {
-        }
-        nextPlayer();
+//        writeLog(getString(R.string.logFarkled));
+//        disableAllDice();
+//        try {
+//            Thread.sleep(1000);
+//        }
+//        catch (InterruptedException ignored) {
+//        }
+//        nextPlayer();
     }
 
     /** 锁定/解锁骰子时更新本轮得分 */
     private void updateCurrentTurnScore() {
-        Result result = calcScore(Arrays.stream(mRollDiceFragment.getDice())
-                .filter(this::isLockedAfterLastRoll)
-                .mapToInt(DiceView::getNumber)
-                .toArray());
-        mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore + result.getScore()));
-        boolean allLocked = Arrays.stream(mRollDiceFragment.getDice()).allMatch(DiceView::isLocked);
-        mRollDiceFragment.setLeftRollTimes(allLocked || result.getScoringDiceIndices().isEmpty() ? 0 : 1);
+//        Result result = calcScore(Arrays.stream(mRollDiceFragment.getDice())
+//                .filter(this::isLockedAfterLastRoll)
+//                .mapToInt(DiceView::getNumber)
+//                .toArray());
+//        mCurrentTurnScoreTextView.setText(String.valueOf(mCurrentTurnScore + result.getScore()));
+//        boolean allLocked = Arrays.stream(mRollDiceFragment.getDice()).allMatch(DiceView::isLocked);
+//        mRollDiceFragment.setLeftRollTimes(allLocked || result.getScoringDiceIndices().isEmpty() ? 0 : 1);
     }
 
     /** 保存本轮得分，包括本轮已积累的得分和最后一次掷骰子后所有得分的骰子 */
     private void bank() {
-        // 本轮中最后一次掷骰子之前锁定的骰子已被onRollButtonClicked()禁用
-        // result中一定有得分的骰子，否则已经Farkle
-        Result result = calcScore(Arrays.stream(mRollDiceFragment.getDice())
-                .mapToInt(d -> d.isEnabled() ? d.getNumber() : 0)
-                .toArray());
-        writeLog(String.format(getString(R.string.logDiceKept),
-                result.getScoringDiceIndices().stream().sorted()
-                        .map(i -> String.valueOf(mRollDiceFragment.getDice()[i].getNumber()))
-                        .collect(Collectors.joining(","))
-        ));
-        int currentTurnScore = mCurrentTurnScore + result.getScore();
-        mScore[mCurrentPlayer] += currentTurnScore;
-        mScoreTextView[mCurrentPlayer].setText(String.valueOf(mScore[mCurrentPlayer]));
-        // 此处mScore[mCurrentPlayer]不可能>=10000，否则在onDiceRolled中已调用onWin
-        writeLog(String.format(getString(R.string.logFinishTurn), currentTurnScore));
-        nextPlayer();
+//        // 本轮中最后一次掷骰子之前锁定的骰子已被onRollButtonClicked()禁用
+//        // result中一定有得分的骰子，否则已经Farkle
+//        Result result = calcScore(Arrays.stream(mRollDiceFragment.getDice())
+//                .mapToInt(d -> d.isEnabled() ? d.getNumber() : 0)
+//                .toArray());
+//        writeLog(String.format(getString(R.string.logDiceKept),
+//                result.getScoringDiceIndices().stream().sorted()
+//                        .map(i -> String.valueOf(mRollDiceFragment.getDice()[i].getNumber()))
+//                        .collect(Collectors.joining(","))
+//        ));
+//        int currentTurnScore = mCurrentTurnScore + result.getScore();
+//        mScore[mCurrentPlayer] += currentTurnScore;
+//        mScoreTextView[mCurrentPlayer].setText(String.valueOf(mScore[mCurrentPlayer]));
+//        // 此处mScore[mCurrentPlayer]不可能>=10000，否则在onDiceRolled中已调用onWin
+//        writeLog(String.format(getString(R.string.logFinishTurn), currentTurnScore));
+//        nextPlayer();
     }
 
     /** 如果当前玩家是电脑则隐藏"Bank"和"Roll"按钮，否则显示 */
     private void changeButtonVisibility() {
-        if (mPlayer[mCurrentPlayer] instanceof BotPlayer) {
-            mBankButton.setVisibility(View.INVISIBLE);
-            mRollDiceFragment.getRollButton().setVisibility(View.INVISIBLE);
-        }
-        else {
-            mBankButton.setVisibility(View.VISIBLE);
-            mRollDiceFragment.getRollButton().setVisibility(View.VISIBLE);
-        }
+//        if (mPlayer[mCurrentPlayer] instanceof BotPlayer) {
+//            mBankButton.setVisibility(View.INVISIBLE);
+//            mRollDiceFragment.getRollButton().setVisibility(View.INVISIBLE);
+//        }
+//        else {
+//            mBankButton.setVisibility(View.VISIBLE);
+//            mRollDiceFragment.getRollButton().setVisibility(View.VISIBLE);
+//        }
     }
 
     private void nextPlayer() {
-        mPlayerTextView[mCurrentPlayer].setTextColor(Color.BLACK);
-        mCurrentPlayer = (mCurrentPlayer + 1) % N_PLAYER;
-        mPlayerTextView[mCurrentPlayer].setTextColor(Color.RED);
-        mCurrentTurnScore = 0;
-        mCurrentTurnScoreTextView.setText("0");
-        mScoringDiceCount = 0;
-
-        changeButtonVisibility();
-        writeLog("----------------------------------------");
-        writeLog(getString(mCurrentPlayer == 0 ? R.string.logYourTurn : R.string.logCPUsTurn));
-        writeLog(String.format(getString(R.string.logStartingScore), mScore[mCurrentPlayer]));
-        mRollDiceFragment.activate();
-        mRollDiceFragment.setLeftRollTimes(0);
+//        mPlayerTextView[mCurrentPlayer].setTextColor(Color.BLACK);
+//        mCurrentPlayer = (mCurrentPlayer + 1) % N_PLAYER;
+//        mPlayerTextView[mCurrentPlayer].setTextColor(Color.RED);
+//        mCurrentTurnScore = 0;
+//        mCurrentTurnScoreTextView.setText("0");
+//        mScoringDiceCount = 0;
+//
+//        changeButtonVisibility();
+//        writeLog("----------------------------------------");
+//        writeLog(getString(mCurrentPlayer == 0 ? R.string.logYourTurn : R.string.logCPUsTurn));
+//        writeLog(String.format(getString(R.string.logStartingScore), mScore[mCurrentPlayer]));
+//        mRollDiceFragment.activate();
+//        mRollDiceFragment.setLeftRollTimes(0);
     }
 
 }

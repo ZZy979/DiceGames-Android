@@ -24,7 +24,7 @@ public class SixYahtzeeViewModel extends BaseYahtzeeViewModel {
     public static final int YAHTZEE = 19;
 
     public SixYahtzeeViewModel() {
-        super.init(20, 84, 100);
+        super(6, 3, 20, 84, 100);
     }
 
     @Override
