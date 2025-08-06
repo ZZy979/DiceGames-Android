@@ -132,6 +132,7 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     }
 
     /** 根据骰子点数更新得分 */
+    // TODO 移至ViewModel，增加estimatedScores
     private void updateScores() {
         int[] selectCount = mViewModel.getSelectCount().getValue();
         if (selectCount == null)

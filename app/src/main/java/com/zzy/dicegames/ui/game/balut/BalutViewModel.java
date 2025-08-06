@@ -1,6 +1,7 @@
 package com.zzy.dicegames.ui.game.balut;
 
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
+import com.zzy.dicegames.utils.ArrayUtils;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -53,7 +54,7 @@ public class BalutViewModel extends BaseGameViewModel {
         return totalScore;
     }
 
-    /** 计算指定得分项的得分 */
+    /** 根据当前骰子点数计算指定得分项的得分 */
     public int calculateScore(int category) {
         int score = 0;
         switch (category) {
@@ -94,14 +95,7 @@ public class BalutViewModel extends BaseGameViewModel {
     /** 判断是否满足Balut：所有骰子点数都相同 */
     private boolean isBalut() {
         int[] numbers = diceNumbers.getValue();
-        if (numbers == null)
-            return false;
-
-        for (int i = 1; i < numbers.length; i++) {
-            if (numbers[i] != numbers[0])
-                return false;
-        }
-        return true;
+        return numbers != null && ArrayUtils.all(numbers, numbers[0]);
     }
 
     /** 选择指定的得分项，更新得分 */

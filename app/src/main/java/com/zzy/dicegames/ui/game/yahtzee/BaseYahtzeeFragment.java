@@ -124,6 +124,7 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     }
 
     /** 根据骰子点数更新得分 */
+    // TODO 移至ViewModel，增加estimatedScores
     protected void updateScores() {
         boolean[] selected = mViewModel.getSelected().getValue();
         if (selected == null)

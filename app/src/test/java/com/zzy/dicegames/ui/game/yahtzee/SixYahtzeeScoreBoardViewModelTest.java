@@ -28,6 +28,15 @@ public class SixYahtzeeScoreBoardViewModelTest {
     }
 
     @Test
+    public void testInitialization() {
+        assertEquals(6, viewModel.getNumDice());
+        assertEquals(3, viewModel.getMaxRolls());
+        assertEquals(20, viewModel.getNumCategories());
+        assertEquals(84, viewModel.getBonusThreshold());
+        assertEquals(100, viewModel.getBonusValue());
+    }
+
+    @Test
     public void testUpperSection() {
         List<Pair<int[], int[]>> testCases = List.of(
                 Pair.create(arr(1, 4, 5, 4, 1, 2), arr(2, 2, 0, 8, 5, 0)),

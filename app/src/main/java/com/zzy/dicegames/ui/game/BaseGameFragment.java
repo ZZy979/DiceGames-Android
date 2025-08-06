@@ -37,8 +37,8 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         super.onViewCreated(view, savedInstanceState);
 
         mViewModel = createViewModel();
-        setupObservers(getViewLifecycleOwner());
         initViews(view);
+        setupObservers(getViewLifecycleOwner());
     }
 
     /** 初始化视图 */
@@ -50,7 +50,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         for (int i = 0; i < mDiceViews.length; i++) {
             final int position = i;
             mDiceViews[i] = view.findViewById(diceViewIds[i]);
-            mDiceViews[i].setOnClickListener(v -> mViewModel.toggleLocked(position));
+            mDiceViews[i].setOnClickListener(v -> clickDice(position));
             mDiceViews[i].setVisibility(i < mViewModel.getNumDice() ? View.VISIBLE : View.INVISIBLE);
         }
 
@@ -66,6 +66,8 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         mViewModel.getRemainingRolls().observe(owner, this::onRemainingRollsChanged);
         mViewModel.getDiceNumbers().observe(owner, this::onDiceNumbersChanged);
         mViewModel.getDiceLocked().observe(owner, this::onDiceLockedChanged);
+        mViewModel.getDiceEnabled().observe(owner, this::onDiceEnabledChanged);
+        mViewModel.getRollButtonEnabled().observe(owner, this::onRollButtonEnabledChanged);
     }
 
     /** 剩余掷骰子次数更新时的回调 */
@@ -74,11 +76,6 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
             mRollButton.setText(getString(R.string.roll));
         else
             mRollButton.setText(getString(R.string.rollRemaining, remaining));
-
-        boolean enabled = remaining > 0;
-        mRollButton.setEnabled(enabled);
-        for (DiceView diceView : mDiceViews)
-            diceView.setEnabled(enabled);
     }
 
     /** 骰子点数更新时的回调 */
@@ -93,9 +90,25 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
             mDiceViews[i].setLocked(locked[i]);
     }
 
-    /** 掷骰子并调用监听器 */
+    /** 骰子激活状态更新时的回调 */
+    protected void onDiceEnabledChanged(boolean[] enabled) {
+        for (int i = 0; i < enabled.length; i++)
+            mDiceViews[i].setEnabled(enabled[i]);
+    }
+
+    /** Roll按钮激活状态更新时的回调 */
+    protected void onRollButtonEnabledChanged(boolean enabled) {
+        mRollButton.setEnabled(enabled);
+    }
+
+    /** 点击第i个骰子 */
+    protected void clickDice(int i) {
+        mViewModel.toggleLocked(i);
+    }
+
+    /** 掷骰子 */
     protected void rollDice() {
-        // TODO 动画效果
+        // TODO 动画效果（动画期间骰子和Roll按钮enabled=false）
         mViewModel.rollDice();
     }
 

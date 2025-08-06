@@ -31,6 +31,8 @@ public class BalutViewModelTest {
 
     @Test
     public void testInitialization() {
+        assertEquals(5, viewModel.getNumDice());
+        assertEquals(3, viewModel.getMaxRolls());
         assertArrayEquals(new int[NUM_CATEGORIES][MAX_SELECTIONS], viewModel.getScores().getValue());
         assertArrayEquals(new int[NUM_CATEGORIES], viewModel.getSelectCount().getValue());
         assertEquals(0, viewModel.getNumSelected());

@@ -1,6 +1,6 @@
 package com.zzy.dicegames.ui.game;
 
-import com.zzy.dicegames.ui.dice.DiceView;
+import com.zzy.dicegames.utils.ArrayUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -31,23 +31,18 @@ public class BaseGameViewModelTest {
         assertEquals(4, viewModel.getNumDice());
         assertEquals(3, viewModel.getMaxRolls());
         assertEquals(3, viewModel.getRemainingRolls().getValue().intValue());
-
-        int[] diceNumbers = viewModel.getDiceNumbers().getValue();
-        boolean[] diceLocked = viewModel.getDiceLocked().getValue();
-        assertNotNull(diceNumbers);
-        assertNotNull(diceLocked);
-        assertEquals(4, diceNumbers.length);
-        assertEquals(4, diceLocked.length);
-        for (int i = 0; i < diceNumbers.length; i++) {
-            assertEquals(DiceView.MAX_NUMBER, diceNumbers[i]);
-            assertFalse(diceLocked[i]);
-        }
+        assertArrayEquals(ArrayUtils.create(4, 6), viewModel.getDiceNumbers().getValue());
+        assertArrayEquals(ArrayUtils.create(4, false), viewModel.getDiceLocked().getValue());
+        assertArrayEquals(ArrayUtils.create(4, true), viewModel.getDiceEnabled().getValue());
+        assertTrue(viewModel.getRollButtonEnabled().getValue());
     }
 
     @Test
     public void testIllegalArgument() {
         assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(0, 3));
         assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(7, 3));
+        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(4, 0));
+        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(5, -1));
     }
 
     @Test
@@ -69,9 +64,13 @@ public class BaseGameViewModelTest {
         assertEquals(1, viewModel.getRemainingRolls().getValue().intValue());
         for (int n : viewModel.getDiceNumbers().getValue())
             assertTrue(n >= 1 && n <= 6);
+        assertTrue(ArrayUtils.all(viewModel.getDiceEnabled().getValue(), true));
+        assertTrue(viewModel.getRollButtonEnabled().getValue());
 
         viewModel.rollDice();
         assertEquals(0, viewModel.getRemainingRolls().getValue().intValue());
+        assertTrue(ArrayUtils.all(viewModel.getDiceEnabled().getValue(), false));
+        assertFalse(viewModel.getRollButtonEnabled().getValue());
 
         viewModel.rollDice();  // 无效
         assertEquals(0, viewModel.getRemainingRolls().getValue().intValue());
@@ -103,15 +102,34 @@ public class BaseGameViewModelTest {
     }
 
     @Test
-    public void testReset() {
+    public void testSetDiceNumbers() {
+        viewModel.setDiceNumbers(4, 3, 1, 4, 6);
+        assertArrayEquals(new int[] {0, 1, 0, 1, 2, 0, 1}, viewModel.diceCounts);
+        assertEquals(18, viewModel.sumOfDice);
+
+        viewModel.setDiceNumbers(5, 5, 5, 5, 5);
+        assertArrayEquals(new int[] {0, 0, 0, 0, 0, 5, 0}, viewModel.diceCounts);
+        assertEquals(25, viewModel.sumOfDice);
+    }
+
+    @Test
+    public void testResetDiceWindow() {
         viewModel.toggleLocked(3);
         viewModel.rollDice();
+        assertEquals(1, viewModel.getRemainingRolls().getValue().intValue());
         assertTrue(viewModel.getDiceLocked().getValue()[3]);
+        assertArrayEquals(ArrayUtils.create(5, true), viewModel.getDiceEnabled().getValue());
+        assertTrue(viewModel.getRollButtonEnabled().getValue());
+
         viewModel.rollDice();
         assertEquals(0, viewModel.getRemainingRolls().getValue().intValue());
+        assertArrayEquals(ArrayUtils.create(5, false), viewModel.getDiceEnabled().getValue());
+        assertFalse(viewModel.getRollButtonEnabled().getValue());
 
-        viewModel.reset();
-        assertFalse(viewModel.getDiceLocked().getValue()[3]);
+        viewModel.resetDiceWindow();
         assertEquals(2, viewModel.getRemainingRolls().getValue().intValue());
+        assertFalse(viewModel.getDiceLocked().getValue()[3]);
+        assertArrayEquals(ArrayUtils.create(5, true), viewModel.getDiceEnabled().getValue());
+        assertTrue(viewModel.getRollButtonEnabled().getValue());
     }
 }
