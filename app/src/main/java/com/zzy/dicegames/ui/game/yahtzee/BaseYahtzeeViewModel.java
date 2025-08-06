@@ -19,7 +19,7 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
     /** 奖励分值 */
     protected int bonusValue;
 
-    /** 每个得分项的得分 */
+    /** 每个得分项的得分（未选择的为预估得分） */
     protected final MutableLiveData<int[]> scores = new MutableLiveData<>();
 
     /** 每个得分项是否已选择 */
@@ -84,6 +84,26 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
         return totalScore;
     }
 
+    @Override
+    public void setDiceNumbers(int... numbers) {
+        super.setDiceNumbers(numbers);
+        updateScores();
+    }
+
+    /** 根据骰子点数更新预估得分 */
+    protected void updateScores() {
+        boolean[] isSelected = selected.getValue();
+        int[] currentScores = scores.getValue();
+        if (isSelected == null || currentScores == null)
+            return;
+
+        for (int i = 0; i < currentScores.length; i++) {
+            if (!isSelected[i])
+                currentScores[i] = calculateScore(i);
+        }
+        scores.setValue(currentScores);
+    }
+
     /** 根据当前骰子点数计算指定得分项的得分 */
     public abstract int calculateScore(int category);
 
@@ -106,32 +126,34 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
     /** 选择指定的得分项，更新得分 */
     public void select(int category) {
         boolean[] currentSelected = selected.getValue();
-        int[] currentScores = scores.getValue();
-        if (currentSelected == null || currentSelected[category] || currentScores == null)
+        if (currentSelected == null || currentSelected[category])
             return;
 
-        currentScores[category] = calculateScore(category);
         currentSelected[category] = true;
-
         selected.setValue(currentSelected);
-        scores.setValue(currentScores);
+        // 掷骰子后已计算过预估得分，此处无需更新scores
         updateBonusAndTotalScore();
         numSelected++;
     }
 
     private void updateBonusAndTotalScore() {
         int[] currentScores = scores.getValue();
-        if (currentScores == null)
+        boolean[] isSelected = selected.getValue();
+        if (currentScores == null || isSelected == null)
             return;
 
         int upperTotal = 0;
-        for (int i = 0; i < NUM_UPPER_CATEGORIES; i++)
-            upperTotal += currentScores[i];
+        for (int i = 0; i < NUM_UPPER_CATEGORIES; i++) {
+            if (isSelected[i])
+                upperTotal += currentScores[i];
+        }
 
         int bonus = upperTotal >= bonusThreshold ? bonusValue : 0;
         int total = upperTotal + bonus;
-        for (int i = NUM_UPPER_CATEGORIES; i < numCategories; i++)
-            total += currentScores[i];
+        for (int i = NUM_UPPER_CATEGORIES; i < numCategories; i++) {
+            if (isSelected[i])
+                total += currentScores[i];
+        }
 
         upperTotalScore.setValue(upperTotal);
         bonusScore.setValue(bonus);

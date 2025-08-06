@@ -82,22 +82,10 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
         mViewModel.getTotalScore().observe(owner, this::onTotalScoreChanged);
     }
 
-    @Override
-    protected void onDiceNumbersChanged(int[] numbers) {
-        super.onDiceNumbersChanged(numbers);
-        updateScores();
-    }
-
     /** 得分项的得分更新时的回调 */
     protected void onScoresChanged(int[] scores) {
-        boolean[] selected = mViewModel.getSelected().getValue();
-        if (selected == null)
-            return;
-
-        for (int i = 0; i < scores.length; i++) {
-            if (selected[i])
-                mScoreTextViews[i].setText(Integer.toString(scores[i]));
-        }
+        for (int i = 0; i < scores.length; i++)
+            mScoreTextViews[i].setText(Integer.toString(scores[i]));
     }
 
     /** 得分项选择状态更新时的回调 */
@@ -121,19 +109,6 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     /** 游戏总分更新时的回调 */
     protected void onTotalScoreChanged(int totalScore) {
         mTotalScoreTextView.setText(Integer.toString(totalScore));
-    }
-
-    /** 根据骰子点数更新得分 */
-    // TODO 移至ViewModel，增加estimatedScores
-    protected void updateScores() {
-        boolean[] selected = mViewModel.getSelected().getValue();
-        if (selected == null)
-            return;
-
-        for (int i = 0; i < mScoreTextViews.length; ++i) {
-            if (!selected[i])
-                mScoreTextViews[i].setText(Integer.toString(mViewModel.calculateScore(i)));
-        }
     }
 
     /** 选择指定的得分项 */

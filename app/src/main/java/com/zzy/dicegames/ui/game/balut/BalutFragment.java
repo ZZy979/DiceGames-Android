@@ -95,25 +95,11 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
         mViewModel.getTotalScore().observe(owner, this::onTotalScoreChanged);
     }
 
-    @Override
-    protected void onDiceNumbersChanged(int[] numbers) {
-        super.onDiceNumbersChanged(numbers);
-        updateScores();
-    }
-
     /** 得分项的得分更新时的回调 */
     private void onScoresChanged(int[][] scores) {
-        int[] selectCount = mViewModel.getSelectCount().getValue();
-        if (selectCount == null)
-            return;
-
         for (int i = 0; i < scores.length; i++) {
-            for (int j = 0; j < scores[i].length; j++) {
-                if (j < selectCount[i])
-                    mScoreTextViews[i][j].setText(Integer.toString(scores[i][j]));
-                else if (j > selectCount[i])
-                    mScoreTextViews[i][j].setText("0");
-            }
+            for (int j = 0; j < scores[i].length; j++)
+                mScoreTextViews[i][j].setText(Integer.toString(scores[i][j]));
         }
     }
 
@@ -129,18 +115,6 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     /** 游戏总分更新时的回调 */
     private void onTotalScoreChanged(int totalScore) {
         mTotalScoreTextView.setText(Integer.toString(totalScore));
-    }
-
-    /** 根据骰子点数更新得分 */
-    // TODO 移至ViewModel，增加estimatedScores
-    private void updateScores() {
-        int[] selectCount = mViewModel.getSelectCount().getValue();
-        if (selectCount == null)
-            return;
-
-        for (int i = 0; i < mScoreTextViews.length; ++i)
-            if (selectCount[i] < mScoreTextViews[i].length)
-                mScoreTextViews[i][selectCount[i]].setText(Integer.toString(mViewModel.calculateScore(i)));
     }
 
     /** 选择指定的得分项 */

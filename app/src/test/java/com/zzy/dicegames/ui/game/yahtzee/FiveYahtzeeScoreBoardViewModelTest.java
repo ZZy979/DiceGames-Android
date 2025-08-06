@@ -37,6 +37,13 @@ public class FiveYahtzeeScoreBoardViewModelTest {
     }
 
     @Test
+    public void testSetDiceNumbers() {
+        viewModel.setDiceNumbers(4, 1, 3, 2, 4);
+        int[] expected = {1, 2, 3, 8, 0, 0, 0, 0, 0, 0, 30, 0, 14, 0};
+        assertArrayEquals(expected, viewModel.getScores().getValue());
+    }
+
+    @Test
     public void testUpperSection() {
         List<Pair<int[], int[]>> testCases = List.of(
                 Pair.create(arr(4, 3, 1, 4, 6), arr(1, 0, 3, 8, 0, 6)),

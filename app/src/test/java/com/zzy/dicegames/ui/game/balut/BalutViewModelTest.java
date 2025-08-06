@@ -40,6 +40,17 @@ public class BalutViewModelTest {
     }
 
     @Test
+    public void testSetDiceNumbers() {
+        viewModel.setDiceNumbers(2, 1, 5, 4, 4);
+        int[] expected = {8, 5, 0, 0, 0, 16, 0};
+        int[][] scores = viewModel.getScores().getValue();
+        for (int i = 0; i < scores.length; i++) {
+            for (int j = 0; j < scores[i].length; j++)
+                assertEquals(j == 0 ? expected[i] : 0, scores[i][j]);
+        }
+    }
+
+    @Test
     public void testFourFiveSix() {
         List<Pair<int[], int[]>> testCases = List.of(
                 Pair.create(arr(4, 3, 1, 4, 6), arr(8, 0, 6)),
@@ -122,8 +133,10 @@ public class BalutViewModelTest {
         assertEquals(0, viewModel.getNumSelected());
         assertEquals(12, viewModel.getTotalScore().getValue().intValue());
 
-        for (int i = 1; i <= 3; i++)
+        for (int i = 1; i <= 3; i++) {
+            viewModel.setDiceNumbers(1, 4, 5, 6, 6);
             viewModel.select(SIXES);
+        }
         assertArrayEquals(new int[] {12, 12, 12, 12}, viewModel.getScores().getValue()[SIXES]);
         assertEquals(4, viewModel.getSelectCount().getValue()[SIXES]);
         assertEquals(1, viewModel.getNumSelected());
@@ -157,9 +170,10 @@ public class BalutViewModelTest {
 
     @Test
     public void testReset() {
-        viewModel.setDiceNumbers(6, 6, 6, 6, 6);
-        for (int i = 1; i <= 4; i++)
+        for (int i = 1; i <= 4; i++) {
+            viewModel.setDiceNumbers(6, 6, 6, 6, 6);
             viewModel.select(BALUT);
+        }
         assertArrayEquals(new int[] {50, 50, 50, 50}, viewModel.getScores().getValue()[BALUT]);
         assertEquals(4, viewModel.getSelectCount().getValue()[BALUT]);
         assertEquals(1, viewModel.getNumSelected());

@@ -22,7 +22,7 @@ public class BalutViewModel extends BaseGameViewModel {
     public static final int CHOICE = 5;
     public static final int BALUT = 6;
 
-    /** 每个得分项的得分 */
+    /** 每个得分项的得分（未选择的为预估得分） */
     private final MutableLiveData<int[][]> scores = new MutableLiveData<>(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
 
     /** 每个得分项已选择次数 */
@@ -52,6 +52,26 @@ public class BalutViewModel extends BaseGameViewModel {
 
     public LiveData<Integer> getTotalScore() {
         return totalScore;
+    }
+
+    @Override
+    public void setDiceNumbers(int... numbers) {
+        super.setDiceNumbers(numbers);
+        updateScores();
+    }
+
+    /** 根据骰子点数更新预估得分 */
+    protected void updateScores() {
+        int[] currentSelectCount = selectCount.getValue();
+        int[][] currentScores = scores.getValue();
+        if (currentSelectCount == null || currentScores == null)
+            return;
+
+        for (int i = 0; i < currentScores.length; i++) {
+            if (currentSelectCount[i] < currentScores[i].length)
+                currentScores[i][currentSelectCount[i]] = calculateScore(i);
+        }
+        scores.setValue(currentScores);
     }
 
     /** 根据当前骰子点数计算指定得分项的得分 */
@@ -101,28 +121,28 @@ public class BalutViewModel extends BaseGameViewModel {
     /** 选择指定的得分项，更新得分 */
     public void select(int category) {
         int[] currentSelectCount = selectCount.getValue();
-        int[][] currentScores = scores.getValue();
-        if (currentSelectCount == null || currentSelectCount[category] >= MAX_SELECTIONS || currentScores == null)
+        if (currentSelectCount == null || currentSelectCount[category] >= MAX_SELECTIONS)
             return;
 
-        currentScores[category][currentSelectCount[category]] = calculateScore(category);
         currentSelectCount[category]++;
-
         selectCount.setValue(currentSelectCount);
-        scores.setValue(currentScores);
+        // 掷骰子后已计算过预估得分，此处无需更新scores
         updateTotalScore();
-        if (currentSelectCount[category] >= MAX_SELECTIONS) numSelected++;
+        if (currentSelectCount[category] >= MAX_SELECTIONS)
+            numSelected++;
     }
 
     private void updateTotalScore() {
         int[][] currentScores = scores.getValue();
-        if (currentScores == null)
+        int[] currentSelectCount = selectCount.getValue();
+        if (currentScores == null || currentSelectCount == null)
             return;
 
         int total = 0;
-        for (int i = 0; i < NUM_CATEGORIES; i++)
-            for (int j = 0; j < MAX_SELECTIONS; j++)
+        for (int i = 0; i < NUM_CATEGORIES; i++) {
+            for (int j = 0; j < currentSelectCount[i]; j++)
                 total += currentScores[i][j];
+        }
 
         totalScore.setValue(total);
     }
