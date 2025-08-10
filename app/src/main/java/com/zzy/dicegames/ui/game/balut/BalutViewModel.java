@@ -150,9 +150,8 @@ public class BalutViewModel extends BaseGameViewModel {
     @Override
     public void reset() {
         super.reset();
-        // scores的观察者依赖selectCount，因此先更新selectCount
-        selectCount.setValue(new int[NUM_CATEGORIES]);
         scores.setValue(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
+        selectCount.setValue(new int[NUM_CATEGORIES]);
         numSelected = 0;
         totalScore.setValue(0);
     }

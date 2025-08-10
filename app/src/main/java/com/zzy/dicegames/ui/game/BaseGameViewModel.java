@@ -122,28 +122,45 @@ public class BaseGameViewModel extends ViewModel {
         diceLocked.setValue(locked);
     }
 
-    /** 掷一次骰子，更新未锁定骰子的点数，并将剩余次数减1（除非无限次数） */
-    public void rollDice() {
+    /** 随机生成未锁定骰子的点数 */
+    protected int[] randomDiceNumbers(int[] numbers, boolean[] locked) {
+        for (int i = 0; i < numbers.length; i++) {
+            if (!locked[i])
+                numbers[i] = random.nextInt(6) + 1;
+        }
+        return numbers;
+    }
+
+    /**
+     * 掷未锁定的骰子
+     *
+     * @param takeEffect 结果是否生效，如果为true则更新骰子点数、计算得分的辅助数据和剩余次数；
+     *   否则仅更新骰子点数（用于掷骰子动画帧）
+     */
+    public void rollDice(boolean takeEffect) {
         Integer remaining = remainingRolls.getValue();
         int[] numbers = diceNumbers.getValue();
         boolean[] locked = diceLocked.getValue();
         if (remaining == null || remaining <= 0 || numbers == null || locked == null)
             return;
 
-        for (int i = 0; i < numbers.length; i++) {
-            if (!locked[i])
-                numbers[i] = random.nextInt(6) + 1;
-        }
-        setDiceNumbers(numbers);
-
-        if (maxRolls != UNLIMITED_ROLLS)
+        numbers = randomDiceNumbers(numbers, locked);
+        if (takeEffect) {
+            setDiceNumbers(numbers);
             decreaseRemainingRolls();
+        }
+        else
+            diceNumbers.setValue(numbers);
+    }
+
+    /** 掷未锁定的骰子，更新骰子点数、计算得分的辅助数据和剩余次数 */
+    public void rollDice() {
+        rollDice(true);
     }
 
     /** 设置骰子点数 */
     public void setDiceNumbers(int... numbers) {
         prepareCalculateScore(numbers);
-        // diceNumbers的观察者依赖辅助数据，因此最后更新diceNumbers
         diceNumbers.setValue(numbers);
     }
 
@@ -157,10 +174,10 @@ public class BaseGameViewModel extends ViewModel {
         }
     }
 
-    /** 剩余掷骰子次数减1 */
+    /** 剩余掷骰子次数减1（除非无限次数） */
     protected void decreaseRemainingRolls() {
         Integer remaining = remainingRolls.getValue();
-        if (remaining == null || remaining <= 0)
+        if (remaining == null || remaining <= 0 || remaining == UNLIMITED_ROLLS)
             return;
 
         remaining--;
