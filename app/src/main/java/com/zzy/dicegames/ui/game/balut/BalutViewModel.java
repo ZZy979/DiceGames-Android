@@ -55,8 +55,8 @@ public class BalutViewModel extends BaseGameViewModel {
     }
 
     @Override
-    public void setDiceNumbers(int... numbers) {
-        super.setDiceNumbers(numbers);
+    public void updateDiceNumbers(int... numbers) {
+        super.updateDiceNumbers(numbers);
         updateScores();
     }
 

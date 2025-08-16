@@ -85,8 +85,8 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
     }
 
     @Override
-    public void setDiceNumbers(int... numbers) {
-        super.setDiceNumbers(numbers);
+    public void updateDiceNumbers(int... numbers) {
+        super.updateDiceNumbers(numbers);
         updateScores();
     }
 

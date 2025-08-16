@@ -2,17 +2,12 @@ package com.zzy.dicegames.ui.game;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.ui.dice.DiceView;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
@@ -36,11 +31,6 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     protected Button mRollButton;
 
     protected V mViewModel;
-
-    /** 用于异步执行UI操作（如掷骰子动画）的线程池 */
-    protected ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    protected Handler mainHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -118,24 +108,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
 
     /** 掷骰子 */
     protected void rollDice() {
-        int totalFrames = 10;  // 动画帧数
-        int frameInterval = 30;  // 帧间隔(ms)
-        executor.execute(() -> {
-            mainHandler.post(() -> mViewModel.setRollButtonEnabled(false));
-            for (int i = 0; i < totalFrames; i++) {
-                mainHandler.post(() -> mViewModel.rollDice(false));  // 动画效果
-                try {
-                    Thread.sleep(frameInterval);
-                }
-                catch (InterruptedException e) {
-                    break;
-                }
-            }
-            mainHandler.post(() -> {
-                mViewModel.setRollButtonEnabled(true);
-                mViewModel.rollDice();  // 真正生效
-            });
-        });
+        mViewModel.rollDiceWithAnimation();
     }
 
     /** 重置骰子窗口 */

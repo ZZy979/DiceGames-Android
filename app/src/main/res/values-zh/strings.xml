@@ -56,19 +56,21 @@
     <string name="nthPlace">第%s名</string>
 
     <string name="playerYou">你</string>
-    <string name="playerCPU">计算机</string>
-    <string name="currentTurnScore">本轮得分</string>
+    <string name="playerComputer">计算机</string>
+    <string name="turnScore">本轮得分</string>
     <string name="bank">保存</string>
+    <string name="logGameBegins">游戏开始</string>
     <string name="logYourTurn">轮到你</string>
-    <string name="logCPUsTurn">轮到计算机</string>
+    <string name="logComputerTurn">轮到计算机</string>
     <string name="logStartingScore">开始得分：%d</string>
     <string name="logDiceRolled">掷骰子结果：%s</string>
     <string name="logDiceKept">保留骰子：%s</string>
     <string name="logHotDice">Hot Dice! 本轮得分加%d，再掷一次</string>
-    <string name="logFarkled">Farkled!</string>
+    <string name="logFarkle">Farkle!</string>
     <string name="logFinishTurn">本轮结束，本轮得分：%d</string>
     <string name="logYouWin">你赢了！</string>
-    <string name="logCPUWins">计算机赢了</string>
+    <string name="logComputerWins">计算机赢了</string>
+    <string name="logSeparator">----------------------------------------</string>
 
     <string name="top10">前10名</string>
     <string name="nothing">暂无</string>

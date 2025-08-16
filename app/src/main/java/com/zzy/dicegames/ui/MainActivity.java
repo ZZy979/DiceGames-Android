@@ -18,7 +18,7 @@ import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.data.entity.SixYahtzeeScore;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 import com.zzy.dicegames.ui.game.balut.BalutFragment;
-import com.zzy.dicegames.ui.game.farkle.FarkleGameFragment;
+import com.zzy.dicegames.ui.game.farkle.FarkleFragment;
 import com.zzy.dicegames.ui.game.rolladice.RollADiceFragment;
 import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeFragment;
 import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeFragment;
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
             else if (gameTitle.equals(getString(R.string.rollADice)))
                 newGameFragment = new RollADiceFragment();
             else if (gameTitle.equals(getString(R.string.farkle)))
-                newGameFragment = new FarkleGameFragment();
+                newGameFragment = new FarkleFragment();
 
             if (newGameFragment != null) {
                 mGameFragment = newGameFragment;

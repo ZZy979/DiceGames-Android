@@ -38,7 +38,7 @@ public class FiveYahtzeeScoreBoardViewModelTest {
 
     @Test
     public void testSetDiceNumbers() {
-        viewModel.setDiceNumbers(4, 1, 3, 2, 4);
+        viewModel.updateDiceNumbers(4, 1, 3, 2, 4);
         int[] expected = {1, 2, 3, 8, 0, 0, 0, 0, 0, 0, 30, 0, 14, 0};
         assertArrayEquals(expected, viewModel.getScores().getValue());
     }
@@ -52,7 +52,7 @@ public class FiveYahtzeeScoreBoardViewModelTest {
                 Pair.create(arr(1, 2, 3, 4, 5), arr(1, 2, 3, 4, 5, 0))
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             for (int i = 0; i < 6; i++)
                 assertEquals(t.second[i], viewModel.calculateScore(i));
         }
@@ -61,13 +61,13 @@ public class FiveYahtzeeScoreBoardViewModelTest {
     @Test
     public void testBonus() {
         for (int i = 6; i >= 2; i--) {
-            viewModel.setDiceNumbers(i, i, i, i - 1, i - 1);
+            viewModel.updateDiceNumbers(i, i, i, i - 1, i - 1);
             viewModel.select(i - 1);
         }
         assertEquals(60, viewModel.getUpperTotalScore().getValue().intValue());
         assertEquals(0, viewModel.getBonusScore().getValue().intValue());
 
-        viewModel.setDiceNumbers(1, 1, 1, 2, 2);
+        viewModel.updateDiceNumbers(1, 1, 1, 2, 2);
         viewModel.select(ONES);
         assertEquals(63, viewModel.getUpperTotalScore().getValue().intValue());
         assertEquals(50, viewModel.getBonusScore().getValue().intValue());
@@ -82,7 +82,7 @@ public class FiveYahtzeeScoreBoardViewModelTest {
                 Pair.create(arr(1, 1, 2, 3, 4), 0)
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second.intValue(), viewModel.calculateScore(TWO_PAIRS));
         }
     }
@@ -96,7 +96,7 @@ public class FiveYahtzeeScoreBoardViewModelTest {
                 Pair.create(arr(6, 6, 6, 6, 6), arr(30, 30))
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second[0], viewModel.calculateScore(THREE_OF_A_KIND));
             assertEquals(t.second[1], viewModel.calculateScore(FOUR_OF_A_KIND));
         }
@@ -110,7 +110,7 @@ public class FiveYahtzeeScoreBoardViewModelTest {
                 Pair.create(arr(5, 5, 5, 5, 5), 0)
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second.intValue(), viewModel.calculateScore(FULL_HOUSE));
         }
     }
@@ -126,7 +126,7 @@ public class FiveYahtzeeScoreBoardViewModelTest {
                 Pair.create(arr(2, 3, 4, 5, 6), arr(30, 40))
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second[0], viewModel.calculateScore(SMALL_STRAIGHT));
             assertEquals(t.second[1], viewModel.calculateScore(LARGE_STRAIGHT));
         }
@@ -139,7 +139,7 @@ public class FiveYahtzeeScoreBoardViewModelTest {
                 Pair.create(arr(6, 6, 6, 6, 6), 30)
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second.intValue(), viewModel.calculateScore(CHANCE));
         }
     }
@@ -152,18 +152,18 @@ public class FiveYahtzeeScoreBoardViewModelTest {
                 Pair.create(arr(6, 6, 6, 5, 6), 0)
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second.intValue(), viewModel.calculateScore(YAHTZEE));
         }
     }
 
     @Test
     public void testJoker() {
-        viewModel.setDiceNumbers(5, 2, 5, 4, 6);
+        viewModel.updateDiceNumbers(5, 2, 5, 4, 6);
         viewModel.select(FIVES);
         viewModel.select(YAHTZEE);
 
-        viewModel.setDiceNumbers(5, 5, 5, 5, 5);
+        viewModel.updateDiceNumbers(5, 5, 5, 5, 5);
         assertEquals(25, viewModel.calculateScore(TWO_PAIRS));
         assertEquals(25, viewModel.calculateScore(THREE_OF_A_KIND));
         assertEquals(25, viewModel.calculateScore(FOUR_OF_A_KIND));

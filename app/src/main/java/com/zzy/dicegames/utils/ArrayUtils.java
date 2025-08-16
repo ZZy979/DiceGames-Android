@@ -1,6 +1,7 @@
 package com.zzy.dicegames.utils;
 
 import java.util.Arrays;
+import java.util.function.IntPredicate;
 
 public class ArrayUtils {
 
@@ -50,13 +51,54 @@ public class ArrayUtils {
         return true;
     }
 
+    /** 返回数组中等于给定值的元素个数 */
+    public static int count(int[] a, int value) {
+        if (a == null) return 0;
+        int res = 0;
+        for (int elem : a)
+            if (elem == value)
+                res++;
+        return res;
+    }
+
+    /** 返回数组中等于给定值的元素个数 */
+    public static int count(boolean[] a, boolean value) {
+        if (a == null) return 0;
+        int res = 0;
+        for (boolean elem : a)
+            if (elem == value)
+                res++;
+        return res;
+    }
+
+    /** 返回数组中满足给定条件的元素个数 */
+    public static int count(int[] a, IntPredicate p) {
+        if (a == null) return 0;
+        int res = 0;
+        for (int elem : a)
+            if (p.test(elem))
+                res++;
+        return res;
+    }
+
+    /** 返回满足给定条件的元素构成的数组 */
+    public static int[] filter(int[] a, IntPredicate p) {
+        if (a == null) return null;
+        int[] res = new int[count(a, p)];
+        int n = 0;
+        for (int elem : a)
+            if (p.test(elem))
+                res[n++] = elem;
+        return Arrays.copyOf(res, n);
+    }
+
     /** 使用指定的分隔符连接所有元素 */
     public static String join(int[] a, String delimiter) {
         if (a == null || a.length == 0)
             return "";
         StringBuilder sb = new StringBuilder(Integer.toString(a[0]));
         for (int i = 1; i < a.length; i++)
-            sb.append(delimiter).append(Integer.toString(a[i]));
+            sb.append(delimiter).append(a[i]);
         return sb.toString();
     }
 }

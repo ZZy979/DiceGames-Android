@@ -1,5 +1,7 @@
 package com.zzy.dicegames.ui.game;
 
+import android.os.Handler;
+
 import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.utils.ArrayUtils;
 
@@ -19,6 +21,12 @@ public class BaseGameViewModel extends ViewModel {
 
     /** 无限次数 */
     public static final int UNLIMITED_ROLLS = Integer.MAX_VALUE;
+
+    /** 掷骰子动画帧数 */
+    protected static final int ROLL_DICE_ANIMATION_FRAMES = 10;
+
+    /** 掷骰子动画帧间隔(ms) */
+    protected static final long ROLL_DICE_ANIMATION_INTERVAL = 30;
 
     /** 骰子个数 */
     protected int numDice;
@@ -49,6 +57,9 @@ public class BaseGameViewModel extends ViewModel {
     protected int sumOfDice;
 
     protected Random random = new Random();
+
+    /** 用于异步执行操作 */
+    protected Handler handler = new Handler();
 
     /**
      * @param numDice 骰子个数，1~6之间
@@ -96,20 +107,29 @@ public class BaseGameViewModel extends ViewModel {
         return rollButtonEnabled;
     }
 
-    public void unlockAllDice() {
+    public boolean hasRemainingRolls() {
+        Integer remaining = remainingRolls.getValue();
+        return remaining != null && remaining > 0;
+    }
+
+    protected void unlockAllDice() {
         diceLocked.setValue(ArrayUtils.fill(diceLocked.getValue(), false));
     }
 
-    public void enableAllDice() {
+    protected void enableAllDice() {
         diceEnabled.setValue(ArrayUtils.fill(diceEnabled.getValue(), true));
     }
 
-    public void disableAllDice() {
+    protected void disableAllDice() {
         diceEnabled.setValue(ArrayUtils.fill(diceEnabled.getValue(), false));
     }
 
-    public void setRollButtonEnabled(boolean enabled) {
+    protected void setRollButtonEnabled(boolean enabled) {
         rollButtonEnabled.setValue(enabled);
+    }
+
+    public void setHandler(Handler handler) {
+        this.handler = handler;
     }
 
     /** 翻转第i个骰子的锁定状态 */
@@ -123,7 +143,12 @@ public class BaseGameViewModel extends ViewModel {
     }
 
     /** 随机生成未锁定骰子的点数 */
-    protected int[] randomDiceNumbers(int[] numbers, boolean[] locked) {
+    public int[] generateRandomDiceNumbers() {
+        int[] numbers = diceNumbers.getValue();
+        boolean[] locked = diceLocked.getValue();
+        if (numbers == null || locked == null)
+            return null;
+
         for (int i = 0; i < numbers.length; i++) {
             if (!locked[i])
                 numbers[i] = random.nextInt(6) + 1;
@@ -131,37 +156,43 @@ public class BaseGameViewModel extends ViewModel {
         return numbers;
     }
 
-    /**
-     * 掷未锁定的骰子
-     *
-     * @param takeEffect 结果是否生效，如果为true则更新骰子点数、计算得分的辅助数据和剩余次数；
-     *   否则仅更新骰子点数（用于掷骰子动画帧）
-     */
-    public void rollDice(boolean takeEffect) {
-        Integer remaining = remainingRolls.getValue();
-        int[] numbers = diceNumbers.getValue();
-        boolean[] locked = diceLocked.getValue();
-        if (remaining == null || remaining <= 0 || numbers == null || locked == null)
+    /** 掷未锁定的骰子，更新骰子点数、计算得分的辅助数据和剩余次数 */
+    // 无动画效果，可用于单元测试
+    public void rollDice() {
+        if (!hasRemainingRolls())
             return;
 
-        numbers = randomDiceNumbers(numbers, locked);
-        if (takeEffect) {
-            setDiceNumbers(numbers);
+        int[] numbers = generateRandomDiceNumbers();
+        updateDiceNumbers(numbers);
+        decreaseRemainingRolls();
+    }
+
+    /** 掷骰子（带动画效果） */
+    public void rollDiceWithAnimation() {
+        if (!hasRemainingRolls())
+            return;
+
+        setRollButtonEnabled(false);
+        rollDiceAnimation(0);
+    }
+
+    /** 掷骰子动画帧 */
+    protected void rollDiceAnimation(int frame) {
+        int[] numbers = generateRandomDiceNumbers();
+        if (frame < ROLL_DICE_ANIMATION_FRAMES) {
+            diceNumbers.setValue(numbers);
+            handler.postDelayed(() -> rollDiceAnimation(frame + 1), ROLL_DICE_ANIMATION_INTERVAL);
+        }
+        else {
+            updateDiceNumbers(numbers);
             decreaseRemainingRolls();
         }
-        else
-            diceNumbers.setValue(numbers);
     }
 
-    /** 掷未锁定的骰子，更新骰子点数、计算得分的辅助数据和剩余次数 */
-    public void rollDice() {
-        rollDice(true);
-    }
-
-    /** 设置骰子点数 */
-    public void setDiceNumbers(int... numbers) {
-        prepareCalculateScore(numbers);
+    /** 更新骰子点数 */
+    public void updateDiceNumbers(int... numbers) {
         diceNumbers.setValue(numbers);
+        prepareCalculateScore(numbers);
     }
 
     /** 基于骰子点数准备用于计算得分的辅助数据 */

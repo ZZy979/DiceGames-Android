@@ -47,6 +47,45 @@ public class ArrayUtilsTest {
     }
 
     @Test
+    public void testCount() {
+        int[] a1 = {8, 6, 5, 8, 8, 7, 8}, a2 = {42}, a3 = {};
+        assertEquals(4, ArrayUtils.count(a1, 8));
+        assertEquals(0, ArrayUtils.count(a1, 888));
+        assertEquals(1, ArrayUtils.count(a2, 42));
+        assertEquals(0, ArrayUtils.count(a3, 6));
+        assertEquals(0, ArrayUtils.count(null, 1));
+
+        boolean[] b1 = {true, false, false}, b2 = {true}, b3 = {};
+        assertEquals(1, ArrayUtils.count(b1, true));
+        assertEquals(2, ArrayUtils.count(b1, false));
+        assertEquals(1, ArrayUtils.count(b2, true));
+        assertEquals(0, ArrayUtils.count(b2, false));
+        assertEquals(0, ArrayUtils.count(b3, true));
+        assertEquals(0, ArrayUtils.count(b3, false));
+        assertEquals(0, ArrayUtils.count(null, true));
+    }
+
+    @Test
+    public void testCountPredicate() {
+        int[] a1 = {8, 6, 5, 8, 8, 7, 8}, a2 = {42}, a3 = {};
+        assertEquals(3, ArrayUtils.count(a1, x -> x < 8));
+        assertEquals(0, ArrayUtils.count(a1, x -> x > 10));
+        assertEquals(1, ArrayUtils.count(a2, x -> x % 2 == 0));
+        assertEquals(0, ArrayUtils.count(a3, x -> x != 0));
+        assertEquals(0, ArrayUtils.count(null, x -> x != 0));
+    }
+
+    @Test
+    public void testFilter() {
+        int[] a1 = {1, 2, 3, 4, 5, 6, 7, 8}, a2 = {888}, a3 = {};
+        assertArrayEquals(new int[] {2, 4, 6, 8}, ArrayUtils.filter(a1, x -> x % 2 == 0));
+        assertArrayEquals(new int[0], ArrayUtils.filter(a1, x -> x <= 0));
+        assertArrayEquals(new int[] {888}, ArrayUtils.filter(a2, x -> x > 100));
+        assertArrayEquals(new int[0], ArrayUtils.filter(a3, x -> x != 0));
+        assertNull(ArrayUtils.filter(null, x -> x != 0));
+    }
+
+    @Test
     public void testJoin() {
         int[] a1 = {1, 2, 3, 4, 5}, a2 = {42}, a3 = {};
         assertEquals("1,2,3,4,5", ArrayUtils.join(a1, ","));

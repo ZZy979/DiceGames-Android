@@ -41,19 +41,19 @@ public class BaseYahtzeeViewModelTest {
 
    @Test
    public void testIsYahtzee() {
-      viewModel.setDiceNumbers(5, 5, 2, 4, 5);
+      viewModel.updateDiceNumbers(5, 5, 2, 4, 5);
       assertFalse(viewModel.isYahtzee());
 
-      viewModel.setDiceNumbers(6, 6, 6, 6, 6);
+      viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
       assertTrue(viewModel.isYahtzee());
    }
 
    @Test
    public void testIsJoker() {
-      viewModel.setDiceNumbers(5, 5, 2, 4, 5);
+      viewModel.updateDiceNumbers(5, 5, 2, 4, 5);
       assertFalse(viewModel.isJoker());
 
-      viewModel.setDiceNumbers(6, 6, 6, 6, 6);
+      viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
       assertFalse(viewModel.isJoker());
 
       viewModel.select(viewModel.getNumCategories() - 1);
@@ -65,7 +65,7 @@ public class BaseYahtzeeViewModelTest {
 
    @Test
    public void testSelect() {
-      viewModel.setDiceNumbers(1, 2, 3, 4, 5);
+      viewModel.updateDiceNumbers(1, 2, 3, 4, 5);
       viewModel.select(9);
       assertEquals(15, viewModel.getScores().getValue()[9]);
       assertTrue(viewModel.getSelected().getValue()[9]);
@@ -73,7 +73,7 @@ public class BaseYahtzeeViewModelTest {
       assertEquals(0, viewModel.getUpperTotalScore().getValue().intValue());
       assertEquals(15, viewModel.getTotalScore().getValue().intValue());
 
-      viewModel.setDiceNumbers(2, 2, 2, 2, 2);
+      viewModel.updateDiceNumbers(2, 2, 2, 2, 2);
       viewModel.select(1);
       assertEquals(10, viewModel.getScores().getValue()[1]);
       assertTrue(viewModel.getSelected().getValue()[1]);
@@ -99,7 +99,7 @@ public class BaseYahtzeeViewModelTest {
       viewModel.getSelected().observeForever(selectedObserver);
       viewModel.getTotalScore().observeForever(totalScoreObserver);
 
-      viewModel.setDiceNumbers(2, 2, 2, 2, 2);
+      viewModel.updateDiceNumbers(2, 2, 2, 2, 2);
       viewModel.select(1);
 
       verify(scoresObserver, atLeastOnce()).onChanged(argThat(a -> a[1] == 10));
@@ -109,19 +109,19 @@ public class BaseYahtzeeViewModelTest {
 
    @Test
    public void testBonus() {
-      viewModel.setDiceNumbers(3, 3, 3, 3, 3);
+      viewModel.updateDiceNumbers(3, 3, 3, 3, 3);
       viewModel.select(2);
       assertEquals(15, viewModel.getUpperTotalScore().getValue().intValue());
       assertEquals(0, viewModel.getBonusScore().getValue().intValue());
       assertEquals(15, viewModel.getTotalScore().getValue().intValue());
 
-      viewModel.setDiceNumbers(2, 2, 2, 2, 2);
+      viewModel.updateDiceNumbers(2, 2, 2, 2, 2);
       viewModel.select(1);
       assertEquals(25, viewModel.getUpperTotalScore().getValue().intValue());
       assertEquals(8, viewModel.getBonusScore().getValue().intValue());
       assertEquals(33, viewModel.getTotalScore().getValue().intValue());
 
-      viewModel.setDiceNumbers(6, 6, 6, 6, 6);
+      viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
       viewModel.select(5);
       assertEquals(55, viewModel.getUpperTotalScore().getValue().intValue());
       assertEquals(8, viewModel.getBonusScore().getValue().intValue());
@@ -130,7 +130,7 @@ public class BaseYahtzeeViewModelTest {
 
    @Test
    public void testReset() {
-      viewModel.setDiceNumbers(6, 6, 6, 6, 6);
+      viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
       viewModel.select(5);
       assertEquals(30, viewModel.getScores().getValue()[5]);
       assertTrue(viewModel.getSelected().getValue()[5]);

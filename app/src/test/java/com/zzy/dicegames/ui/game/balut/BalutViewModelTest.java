@@ -40,8 +40,8 @@ public class BalutViewModelTest {
     }
 
     @Test
-    public void testSetDiceNumbers() {
-        viewModel.setDiceNumbers(2, 1, 5, 4, 4);
+    public void testUpdateDiceNumbers() {
+        viewModel.updateDiceNumbers(2, 1, 5, 4, 4);
         int[] expected = {8, 5, 0, 0, 0, 16, 0};
         int[][] scores = viewModel.getScores().getValue();
         for (int i = 0; i < scores.length; i++) {
@@ -59,7 +59,7 @@ public class BalutViewModelTest {
                 Pair.create(arr(1, 2, 3, 4, 5), arr(4, 5, 0))
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             for (int i = 0; i < 3; i++)
                 assertEquals(t.second[i], viewModel.calculateScore(i));
         }
@@ -76,7 +76,7 @@ public class BalutViewModelTest {
                 Pair.create(arr(2, 3, 4, 5, 6), 20)
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second.intValue(), viewModel.calculateScore(STRAIGHT));
         }
     }
@@ -90,7 +90,7 @@ public class BalutViewModelTest {
                 Pair.create(arr(5, 5, 5, 5, 5), 0)
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second.intValue(), viewModel.calculateScore(FULL_HOUSE));
         }
     }
@@ -102,7 +102,7 @@ public class BalutViewModelTest {
                 Pair.create(arr(6, 6, 6, 6, 6), 30)
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second.intValue(), viewModel.calculateScore(CHOICE));
         }
     }
@@ -119,14 +119,14 @@ public class BalutViewModelTest {
                 Pair.create(arr(6, 6, 6, 5, 6), 0)
         );
         for (var t : testCases) {
-            viewModel.setDiceNumbers(t.first);
+            viewModel.updateDiceNumbers(t.first);
             assertEquals(t.second.intValue(), viewModel.calculateScore(BALUT));
         }
     }
 
     @Test
     public void testSelect() {
-        viewModel.setDiceNumbers(1, 4, 5, 6, 6);
+        viewModel.updateDiceNumbers(1, 4, 5, 6, 6);
         viewModel.select(SIXES);
         assertArrayEquals(new int[] {12, 0, 0, 0}, viewModel.getScores().getValue()[SIXES]);
         assertEquals(1, viewModel.getSelectCount().getValue()[SIXES]);
@@ -134,7 +134,7 @@ public class BalutViewModelTest {
         assertEquals(12, viewModel.getTotalScore().getValue().intValue());
 
         for (int i = 1; i <= 3; i++) {
-            viewModel.setDiceNumbers(1, 4, 5, 6, 6);
+            viewModel.updateDiceNumbers(1, 4, 5, 6, 6);
             viewModel.select(SIXES);
         }
         assertArrayEquals(new int[] {12, 12, 12, 12}, viewModel.getScores().getValue()[SIXES]);
@@ -143,7 +143,7 @@ public class BalutViewModelTest {
         assertEquals(48, viewModel.getTotalScore().getValue().intValue());
 
         // 已达到最大次数
-        viewModel.setDiceNumbers(6, 6, 6, 6, 6);
+        viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
         viewModel.select(SIXES);
         assertArrayEquals(new int[] {12, 12, 12, 12}, viewModel.getScores().getValue()[SIXES]);
         assertEquals(4, viewModel.getSelectCount().getValue()[SIXES]);
@@ -160,7 +160,7 @@ public class BalutViewModelTest {
         viewModel.getSelectCount().observeForever(selectCountObserver);
         viewModel.getTotalScore().observeForever(totalScoreObserver);
 
-        viewModel.setDiceNumbers(5, 5, 5, 5, 5);
+        viewModel.updateDiceNumbers(5, 5, 5, 5, 5);
         viewModel.select(BALUT);
 
         verify(scoresObserver, atLeastOnce()).onChanged(argThat(a -> a[BALUT][0] == 45));
@@ -171,7 +171,7 @@ public class BalutViewModelTest {
     @Test
     public void testReset() {
         for (int i = 1; i <= 4; i++) {
-            viewModel.setDiceNumbers(6, 6, 6, 6, 6);
+            viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
             viewModel.select(BALUT);
         }
         assertArrayEquals(new int[] {50, 50, 50, 50}, viewModel.getScores().getValue()[BALUT]);

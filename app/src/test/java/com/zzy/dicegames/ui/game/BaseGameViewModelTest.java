@@ -1,11 +1,16 @@
 package com.zzy.dicegames.ui.game;
 
+import android.os.Handler;
+
 import com.zzy.dicegames.utils.ArrayUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
@@ -18,11 +23,19 @@ public class BaseGameViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     private BaseGameViewModel viewModel;
+
+    @Mock
+    private Handler mockHandler;
 
     @Before
     public void setUp() {
+        // ViewModel初始化必须放在setUp()方法中，否则会报错 Method xxx not mocked
         viewModel = new BaseGameViewModel(5, 2);
+        viewModel.setHandler(mockHandler);
     }
 
     @Test
@@ -102,12 +115,25 @@ public class BaseGameViewModelTest {
     }
 
     @Test
-    public void testSetDiceNumbers() {
-        viewModel.setDiceNumbers(4, 3, 1, 4, 6);
+    public void testRollDiceAnimation() {
+        // 第一帧
+        viewModel.rollDiceWithAnimation();
+        assertFalse(viewModel.getRollButtonEnabled().getValue());
+        verify(mockHandler).postDelayed(any(), eq(ROLL_DICE_ANIMATION_INTERVAL));
+
+        // 最后一帧
+        viewModel.rollDiceAnimation(ROLL_DICE_ANIMATION_FRAMES);
+        assertEquals(1, viewModel.getRemainingRolls().getValue().intValue());
+        assertTrue(viewModel.getRollButtonEnabled().getValue());
+    }
+
+    @Test
+    public void testUpdateDiceNumbers() {
+        viewModel.updateDiceNumbers(4, 3, 1, 4, 6);
         assertArrayEquals(new int[] {0, 1, 0, 1, 2, 0, 1}, viewModel.diceCounts);
         assertEquals(18, viewModel.sumOfDice);
 
-        viewModel.setDiceNumbers(5, 5, 5, 5, 5);
+        viewModel.updateDiceNumbers(5, 5, 5, 5, 5);
         assertArrayEquals(new int[] {0, 0, 0, 0, 0, 5, 0}, viewModel.diceCounts);
         assertEquals(25, viewModel.sumOfDice);
     }
