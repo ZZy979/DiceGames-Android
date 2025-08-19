@@ -54,28 +54,28 @@ public class ScoresParser {
                     if (tagName.equals("FiveYahtzeeScore")) {
                         String date = parser.getAttributeValue(null, "date");
                         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
-                        int gotBonus = Integer.parseInt(parser.getAttributeValue(null, "got_bonus"));
-                        int gotYahtzee = Integer.parseInt(parser.getAttributeValue(null, "got_yahtzee"));
-                        fiveYahtzeeScores.add(new FiveYahtzeeScore(date, score, gotBonus, gotYahtzee));
+                        boolean hasBonus = Boolean.parseBoolean(parser.getAttributeValue(null, "has_bonus"));
+                        boolean hasYahtzee = Boolean.parseBoolean(parser.getAttributeValue(null, "has_yahtzee"));
+                        fiveYahtzeeScores.add(new FiveYahtzeeScore(date, score, hasBonus, hasYahtzee));
                     }
                     else if (tagName.equals("SixYahtzeeScore")) {
                         String date = parser.getAttributeValue(null, "date");
                         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
-                        int gotBonus = Integer.parseInt(parser.getAttributeValue(null, "got_bonus"));
-                        int gotYahtzee = Integer.parseInt(parser.getAttributeValue(null, "got_yahtzee"));
-                        sixYahtzeeScores.add(new SixYahtzeeScore(date, score, gotBonus, gotYahtzee));
+                        boolean hasBonus = Boolean.parseBoolean(parser.getAttributeValue(null, "has_bonus"));
+                        boolean hasYahtzee = Boolean.parseBoolean(parser.getAttributeValue(null, "has_yahtzee"));
+                        sixYahtzeeScores.add(new SixYahtzeeScore(date, score, hasBonus, hasYahtzee));
                     }
                     else if (tagName.equals("BalutScore")) {
                         String date = parser.getAttributeValue(null, "date");
                         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
-                        int gotBalut = Integer.parseInt(parser.getAttributeValue(null, "got_balut"));
-                        balutScores.add(new BalutScore(date, score, gotBalut));
+                        int numBalut = Integer.parseInt(parser.getAttributeValue(null, "num_balut"));
+                        balutScores.add(new BalutScore(date, score, numBalut));
                     }
                     else if (tagName.equals("FarkleScore")) {
                         String date = parser.getAttributeValue(null, "date");
                         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
-                        int cpuScore = Integer.parseInt(parser.getAttributeValue(null, "cpu_score"));
-                        farkleScores.add(new FarkleScore(date, score, cpuScore));
+                        int computerScore = Integer.parseInt(parser.getAttributeValue(null, "computer_score"));
+                        farkleScores.add(new FarkleScore(date, score, computerScore));
                     }
                 }
                 eventType = parser.next();

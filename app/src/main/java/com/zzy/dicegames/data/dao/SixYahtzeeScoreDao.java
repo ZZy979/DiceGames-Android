@@ -38,19 +38,19 @@ public interface SixYahtzeeScoreDao {
     @Query("SELECT AVG(score) FROM six_yahtzee_score")
     double averageScore();
 
-    @Query("SELECT SUM(got_bonus) FROM six_yahtzee_score")
-    int sumGotBonus();
+    @Query("SELECT SUM(has_bonus) FROM six_yahtzee_score")
+    int numBonus();
 
-    @Query("SELECT SUM(got_yahtzee) FROM six_yahtzee_score")
-    int sumGotYahtzee();
-
-    @Insert
-    void insert(SixYahtzeeScore sixYahtzeeScore);
+    @Query("SELECT SUM(has_yahtzee) FROM six_yahtzee_score")
+    int numYahtzee();
 
     @Insert
-    void insertAll(List<SixYahtzeeScore> sixYahtzeeScores);
+    void insert(SixYahtzeeScore score);
+
+    @Insert
+    void insertAll(List<SixYahtzeeScore> scores);
 
     @Delete
-    void deleteAll(List<SixYahtzeeScore> sixYahtzeeScores);
+    void deleteAll(List<SixYahtzeeScore> scores);
 
 }

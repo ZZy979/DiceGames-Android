@@ -97,8 +97,8 @@ public class HighScoresActivity extends AppCompatActivity {
                 bundle.putInt(YahtzeeHighScoresFragment.MAX_SCORE, fiveYahtzeeScoreDao.maxScore());
                 bundle.putInt(YahtzeeHighScoresFragment.MIN_SCORE, fiveYahtzeeScoreDao.minScore());
                 bundle.putDouble(YahtzeeHighScoresFragment.AVERAGE_SCORE, fiveYahtzeeScoreDao.averageScore());
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, fiveYahtzeeScoreDao.sumGotBonus());
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, fiveYahtzeeScoreDao.sumGotYahtzee());
+                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, fiveYahtzeeScoreDao.numBonus());
+                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, fiveYahtzeeScoreDao.numYahtzee());
             }
             else if (gameTitle.equals(getString(R.string.sixYahtzee))) {
                 mHighScoresFragment = new YahtzeeHighScoresFragment();
@@ -108,8 +108,8 @@ public class HighScoresActivity extends AppCompatActivity {
                 bundle.putInt(YahtzeeHighScoresFragment.MAX_SCORE, sixYahtzeeScoreDao.maxScore());
                 bundle.putInt(YahtzeeHighScoresFragment.MIN_SCORE, sixYahtzeeScoreDao.minScore());
                 bundle.putDouble(YahtzeeHighScoresFragment.AVERAGE_SCORE, sixYahtzeeScoreDao.averageScore());
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, sixYahtzeeScoreDao.sumGotBonus());
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, sixYahtzeeScoreDao.sumGotYahtzee());
+                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, sixYahtzeeScoreDao.numBonus());
+                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, sixYahtzeeScoreDao.numYahtzee());
             }
             else if (gameTitle.equals(getString(R.string.balut))) {
                 mHighScoresFragment = new BalutHighScoresFragment();
@@ -119,7 +119,7 @@ public class HighScoresActivity extends AppCompatActivity {
                 bundle.putInt(BalutHighScoresFragment.MAX_SCORE, balutScoreDao.maxScore());
                 bundle.putInt(BalutHighScoresFragment.MIN_SCORE, balutScoreDao.minScore());
                 bundle.putDouble(BalutHighScoresFragment.AVERAGE_SCORE, balutScoreDao.averageScore());
-                bundle.putInt(BalutHighScoresFragment.GOT_BALUT, balutScoreDao.sumGotBalut());
+                bundle.putInt(BalutHighScoresFragment.GOT_BALUT, balutScoreDao.numBalut());
             }
             else if (gameTitle.equals(getString(R.string.farkle))) {
                 mHighScoresFragment = new FarkleHighScoresFragment();

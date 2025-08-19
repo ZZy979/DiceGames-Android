@@ -38,16 +38,16 @@ public interface BalutScoreDao {
     @Query("SELECT AVG(score) FROM balut_score")
     double averageScore();
 
-    @Query("SELECT SUM(got_balut) FROM balut_score")
-    int sumGotBalut();
+    @Query("SELECT SUM(num_balut) FROM balut_score")
+    int numBalut();
 
     @Insert
-    void insert(BalutScore balutScore);
+    void insert(BalutScore score);
 
     @Insert
-    void insertAll(List<BalutScore> balutScores);
+    void insertAll(List<BalutScore> scores);
 
     @Delete
-    void deleteAll(List<BalutScore> balutScores);
+    void deleteAll(List<BalutScore> scores);
 
 }

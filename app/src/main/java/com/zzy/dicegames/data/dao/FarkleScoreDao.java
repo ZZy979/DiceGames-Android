@@ -23,15 +23,15 @@ public interface FarkleScoreDao {
     @Query("SELECT COUNT(*) FROM farkle_score")
     int count();
 
-    @Query("SELECT COUNT(*) FROM farkle_score WHERE score > cpu_score")
+    @Query("SELECT COUNT(*) FROM farkle_score WHERE score > computer_score")
     int winCount();
 
     @Insert
-    void insert(FarkleScore farkleScore);
+    void insert(FarkleScore score);
 
     @Insert
-    void insertAll(List<FarkleScore> farkleScores);
+    void insertAll(List<FarkleScore> scores);
 
     @Delete
-    void deleteAll(List<FarkleScore> farkleScores);
+    void deleteAll(List<FarkleScore> scores);
 }

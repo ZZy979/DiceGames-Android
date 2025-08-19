@@ -12,22 +12,20 @@ import androidx.annotation.NonNull;
 @Entity(tableName = "balut_score")
 public class BalutScore extends BaseScore {
     /** Balut得分次数 */
-    @ColumnInfo(name = "got_balut")
-    @NonNull
-    private Integer gotBalut;
+    @ColumnInfo(name = "num_balut")
+    private int numBalut;
 
-    public BalutScore(@NonNull String date, @NonNull Integer score, @NonNull Integer gotBalut) {
+    public BalutScore(@NonNull String date, int score, int numBalut) {
         super(date, score);
-        this.gotBalut = gotBalut;
+        this.numBalut = numBalut;
     }
 
-    @NonNull
-    public Integer getGotBalut() {
-        return gotBalut;
+    public int getNumBalut() {
+        return numBalut;
     }
 
-    public void setGotBalut(@NonNull Integer gotBalut) {
-        this.gotBalut = gotBalut;
+    public void setNumBalut(int numBalut) {
+        this.numBalut = numBalut;
     }
 
 }

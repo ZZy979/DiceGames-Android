@@ -144,13 +144,13 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
         if (mViewModel.getTotalScore().getValue() == null || scores == null)
             return null;
 
-        int gotBalut = 0;
+        int numBalut = 0;
         for (int j = 0; j < scores[BALUT].length; j++) {
             if (scores[BALUT][j] > 0)
-                gotBalut++;
+                numBalut++;
         }
         return new BalutScore(LocalDate.now().toString(),
-                mViewModel.getTotalScore().getValue(), gotBalut);
+                mViewModel.getTotalScore().getValue(), numBalut);
     }
 
     /**

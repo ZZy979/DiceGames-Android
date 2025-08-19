@@ -10,37 +10,33 @@ import androidx.room.ColumnInfo;
  */
 public abstract class AbstractYahtzeeScore extends BaseScore {
     /** 是否获得奖励分 */
-    @ColumnInfo(name = "got_bonus")
-    @NonNull
-    protected Integer gotBonus;
+    @ColumnInfo(name = "has_bonus")
+    protected boolean hasBonus;
 
     /** Yahtzee是否得分 */
-    @ColumnInfo(name = "got_yahtzee")
-    @NonNull
-    protected Integer gotYahtzee;
+    @ColumnInfo(name = "has_yahtzee")
+    protected boolean hasYahtzee;
 
-    public AbstractYahtzeeScore(@NonNull String date, @NonNull Integer score, @NonNull Integer gotBonus, @NonNull Integer gotYahtzee) {
+    public AbstractYahtzeeScore(@NonNull String date, int score, boolean hasBonus, boolean hasYahtzee) {
         super(date, score);
-        this.gotBonus = gotBonus;
-        this.gotYahtzee = gotYahtzee;
+        this.hasBonus = hasBonus;
+        this.hasYahtzee = hasYahtzee;
     }
 
-    @NonNull
-    public Integer getGotBonus() {
-        return gotBonus;
+    public boolean isHasBonus() {
+        return hasBonus;
     }
 
-    public void setGotBonus(@NonNull Integer gotBonus) {
-        this.gotBonus = gotBonus;
+    public void setHasBonus(boolean hasBonus) {
+        this.hasBonus = hasBonus;
     }
 
-    @NonNull
-    public Integer getGotYahtzee() {
-        return gotYahtzee;
+    public boolean isHasYahtzee() {
+        return hasYahtzee;
     }
 
-    public void setGotYahtzee(@NonNull Integer gotYahtzee) {
-        this.gotYahtzee = gotYahtzee;
+    public void setHasYahtzee(boolean hasYahtzee) {
+        this.hasYahtzee = hasYahtzee;
     }
 
 }

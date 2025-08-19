@@ -183,9 +183,9 @@ public class MainActivity extends AppCompatActivity {
             for (FiveYahtzeeScore fiveYahtzeeScore : scoreDatabase.fiveYahtzeeScoreDao().findAll())
                 serializer.startTag(null, "FiveYahtzeeScore")
                         .attribute(null, "date", fiveYahtzeeScore.getDate())
-                        .attribute(null, "score", fiveYahtzeeScore.getScore().toString())
-                        .attribute(null, "got_bonus", fiveYahtzeeScore.getGotBonus().toString())
-                        .attribute(null, "got_yahtzee", fiveYahtzeeScore.getGotYahtzee().toString())
+                        .attribute(null, "score", Integer.toString(fiveYahtzeeScore.getScore()))
+                        .attribute(null, "has_bonus", Boolean.toString(fiveYahtzeeScore.isHasBonus()))
+                        .attribute(null, "has_yahtzee", Boolean.toString(fiveYahtzeeScore.isHasYahtzee()))
                         .endTag(null, "FiveYahtzeeScore");
             serializer.endTag(null, "FiveYahtzeeScores");
 
@@ -194,9 +194,9 @@ public class MainActivity extends AppCompatActivity {
             for (SixYahtzeeScore sixYahtzeeScore : scoreDatabase.sixYahtzeeScoreDao().findAll())
                 serializer.startTag(null, "SixYahtzeeScore")
                         .attribute(null, "date", sixYahtzeeScore.getDate())
-                        .attribute(null, "score", sixYahtzeeScore.getScore().toString())
-                        .attribute(null, "got_bonus", sixYahtzeeScore.getGotBonus().toString())
-                        .attribute(null, "got_yahtzee", sixYahtzeeScore.getGotYahtzee().toString())
+                        .attribute(null, "score", Integer.toString(sixYahtzeeScore.getScore()))
+                        .attribute(null, "has_bonus", Boolean.toString(sixYahtzeeScore.isHasBonus()))
+                        .attribute(null, "has_yahtzee", Boolean.toString(sixYahtzeeScore.isHasYahtzee()))
                         .endTag(null, "SixYahtzeeScore");
             serializer.endTag(null, "SixYahtzeeScores");
 
@@ -205,8 +205,8 @@ public class MainActivity extends AppCompatActivity {
             for (BalutScore balutScore : scoreDatabase.balutScoreDao().findAll())
                 serializer.startTag(null, "BalutScore")
                         .attribute(null, "date", balutScore.getDate())
-                        .attribute(null, "score", balutScore.getScore().toString())
-                        .attribute(null, "got_balut", balutScore.getGotBalut().toString())
+                        .attribute(null, "score", Integer.toString(balutScore.getScore()))
+                        .attribute(null, "num_balut", Integer.toString(balutScore.getNumBalut()))
                         .endTag(null, "BalutScore");
             serializer.endTag(null, "BalutScores");
 
@@ -215,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
             for (FarkleScore farkleScore : scoreDatabase.farkleScoreDao().findAll())
                 serializer.startTag(null, "FarkleScore")
                         .attribute(null, "date", farkleScore.getDate())
-                        .attribute(null, "score", farkleScore.getScore().toString())
-                        .attribute(null, "cpu_score", farkleScore.getCpuScore().toString())
+                        .attribute(null, "score", Integer.toString(farkleScore.getScore()))
+                        .attribute(null, "computer_score", Integer.toString(farkleScore.getComputerScore()))
                         .endTag(null, "FarkleScore");
             serializer.endTag(null, "FarkleScores");
 

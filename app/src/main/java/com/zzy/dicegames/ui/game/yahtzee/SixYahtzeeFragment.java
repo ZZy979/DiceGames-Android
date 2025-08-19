@@ -63,8 +63,8 @@ public class SixYahtzeeFragment extends BaseYahtzeeFragment {
 
         return new SixYahtzeeScore(LocalDate.now().toString(),
                 mViewModel.getTotalScore().getValue(),
-                mViewModel.getBonusScore().getValue() == 0 ? 0 : 1,
-                scores[scores.length - 1] == 0 ? 0 : 1);
+                mViewModel.getBonusScore().getValue() > 0,
+                scores[scores.length - 1] > 0);
     }
 
     @Override
