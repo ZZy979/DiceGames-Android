@@ -9,12 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.data.ScoreDatabase;
-import com.zzy.dicegames.data.dao.BalutScoreDao;
-import com.zzy.dicegames.data.entity.BalutScore;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
-
-import java.time.LocalDate;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
@@ -44,6 +39,7 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mViewModel.setGameOverAction(this::onGameOver);
         if (savedInstanceState == null)
             rollDice();
     }
@@ -120,16 +116,6 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     /** 选择指定的得分项 */
     private void select(int category) {
         mViewModel.select(category);
-        if (mViewModel.getNumSelected() == NUM_CATEGORIES)
-            onGameOver(getScore());
-        else
-            resetDiceWindow();
-    }
-
-    @Override
-    protected void resetDiceWindow() {
-        super.resetDiceWindow();
-        rollDice();
     }
 
     @Override
@@ -138,35 +124,11 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
         rollDice();
     }
 
-    /** 游戏结束时获取得分 */
-    private BalutScore getScore() {
-        int[][] scores = mViewModel.getScores().getValue();
-        if (mViewModel.getTotalScore().getValue() == null || scores == null)
-            return null;
-
-        int numBalut = 0;
-        for (int j = 0; j < scores[BALUT].length; j++) {
-            if (scores[BALUT][j] > 0)
-                numBalut++;
-        }
-        return new BalutScore(LocalDate.now().toString(),
-                mViewModel.getTotalScore().getValue(), numBalut);
-    }
-
-    /**
-     * 游戏结束时的回调函数，保存得分并开始新游戏<br>
-     * 将该方法设置为计分板的监听器，游戏结束时计分板将以本局得分为参数调用该监听器
-     */
-    private void onGameOver(BalutScore score) {
-        int rank = saveScore(score);
+    /** 游戏结束时的回调函数 */
+    private void onGameOver() {
+        var score = mViewModel.createScoreEntity();
+        int rank = mViewModel.saveScoreToDatabase(score);
         showScore(score.getScore(), rank);
-    }
-
-    /** 保存得分，返回该得分在前10名中的名次，0表示不在前10名中 */
-    private int saveScore(BalutScore score) {
-        BalutScoreDao balutScoreDao = ScoreDatabase.getInstance(getContext()).balutScoreDao();
-        balutScoreDao.insert(score);
-        return balutScoreDao.findTop10Score().indexOf(score.getScore()) + 1;
     }
 
 }

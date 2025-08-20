@@ -1,8 +1,13 @@
 package com.zzy.dicegames.ui.game.balut;
 
+import android.os.Handler;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import java.util.List;
 
@@ -18,11 +23,18 @@ public class BalutViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+
     private BalutViewModel viewModel;
+
+    @Mock
+    private Handler mockHandler;
 
     @Before
     public void setUp() {
         viewModel = new BalutViewModel();
+        viewModel.setHandler(mockHandler);
     }
 
     private static int[] arr(int... a) {

@@ -6,12 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.data.ScoreDatabase;
-import com.zzy.dicegames.data.dao.FiveYahtzeeScoreDao;
-import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
-import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
-
-import java.time.LocalDate;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -47,27 +41,6 @@ public class FiveYahtzeeFragment extends BaseYahtzeeFragment {
                 R.id.tv2p, R.id.tv3e, R.id.tv4e, R.id.tvFullHouse,
                 R.id.tvSmallStraight, R.id.tvLargeStraight, R.id.tvChance, R.id.tvYahtzee
         };
-    }
-
-    @Override
-    protected AbstractYahtzeeScore getScore() {
-        int[] scores = mViewModel.getScores().getValue();
-        if (mViewModel.getTotalScore().getValue() == null
-                || mViewModel.getBonusScore().getValue() == null
-                || scores == null)
-            return null;
-
-        return new FiveYahtzeeScore(LocalDate.now().toString(),
-                mViewModel.getTotalScore().getValue(),
-                mViewModel.getBonusScore().getValue() > 0,
-                scores[scores.length - 1] > 0);
-    }
-
-    @Override
-    protected int saveScore(AbstractYahtzeeScore score) {
-        FiveYahtzeeScoreDao fiveYahtzeeScoreDao = ScoreDatabase.getInstance(getContext()).fiveYahtzeeScoreDao();
-        fiveYahtzeeScoreDao.insert((FiveYahtzeeScore) score);
-        return fiveYahtzeeScoreDao.findTop10Score().indexOf(score.getScore()) + 1;
     }
 
 }

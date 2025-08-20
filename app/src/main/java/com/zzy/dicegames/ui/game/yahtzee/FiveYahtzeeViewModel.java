@@ -1,5 +1,10 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
+import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
+import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
+
+import java.time.LocalDate;
+
 public class FiveYahtzeeViewModel extends BaseYahtzeeViewModel {
     // 得分项编号
     public static final int ONES = 0;
@@ -92,5 +97,21 @@ public class FiveYahtzeeViewModel extends BaseYahtzeeViewModel {
                 consecutive = 0;
         }
         return false;
+    }
+
+    @Override
+    public FiveYahtzeeScore createScoreEntity() {
+        int[] finalScores = scores.getValue();
+        if (finalScores == null || totalScore.getValue() == null || bonusScore.getValue() == null)
+            return null;
+        return new FiveYahtzeeScore(LocalDate.now().toString(), totalScore.getValue(),
+                bonusScore.getValue() > 0, finalScores[finalScores.length - 1] > 0);
+    }
+
+    @Override
+    public int saveScoreToDatabase(AbstractYahtzeeScore score) {
+        var dao = scoreDatabase.fiveYahtzeeScoreDao();
+        dao.insert((FiveYahtzeeScore) score);
+        return dao.findTop10Score().indexOf(score.getScore()) + 1;
     }
 }

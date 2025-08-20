@@ -1,9 +1,11 @@
 package com.zzy.dicegames.ui.game.farkle;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.data.entity.FarkleScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
 import com.zzy.dicegames.utils.ArrayUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +58,9 @@ public class FarkleViewModel extends BaseGameViewModel {
     /** “保存得分”按钮激活状态 */
     private final MutableLiveData<Boolean> bankButtonEnabled = new MutableLiveData<>(false);
 
+    /** “新游戏”按钮可见状态 */
+    private final MutableLiveData<Boolean> newGameButtonVisible = new MutableLiveData<>(false);
+
     /** 游戏日志 */
     private final MutableLiveData<List<Pair<Integer, Object[]>>> gameLog = new MutableLiveData<>(new ArrayList<>());
 
@@ -78,6 +83,10 @@ public class FarkleViewModel extends BaseGameViewModel {
 
     public LiveData<Boolean> getBankButtonEnabled() {
         return bankButtonEnabled;
+    }
+
+    public MutableLiveData<Boolean> getNewGameButtonVisible() {
+        return newGameButtonVisible;
     }
 
     public LiveData<List<Pair<Integer, Object[]>>> getGameLog() {
@@ -327,10 +336,12 @@ public class FarkleViewModel extends BaseGameViewModel {
         addCurrentPlayerScore(accumulatedTurnScore);
 
         disableAllDice();
-        bankButtonEnabled.setValue(false);
         rollButtonEnabled.setValue(false);
-        // mNewGameButton.setVisibility(View.VISIBLE);
-        // gameOver
+        bankButtonEnabled.setValue(false);
+        newGameButtonVisible.setValue(true);
+
+        if (gameOverAction != null)
+            gameOverAction.run();
     }
 
     protected void hotDice(int lastRollScore) {
@@ -401,6 +412,20 @@ public class FarkleViewModel extends BaseGameViewModel {
             handler.postDelayed(this::rollDiceWithAnimation, DELAY);
     }
 
+    /** 游戏结束时创建得分实体 */
+    public FarkleScore createScoreEntity() {
+        int[] scores = playerScores.getValue();
+        if (scores == null)
+            return null;
+        return new FarkleScore(LocalDate.now().toString(), scores[PLAYER_HUMAN], scores[PLAYER_COMPUTER]);
+    }
+
+    /** 将得分保存到数据库 */
+    public void saveScoreToDatabase(FarkleScore score) {
+        var dao = scoreDatabase.farkleScoreDao();
+        dao.insert(score);
+    }
+
     @Override
     public void resetDiceWindow() {
         unlockAllDice();
@@ -417,6 +442,7 @@ public class FarkleViewModel extends BaseGameViewModel {
         accumulatedTurnScore = 0;
         estimatedTurnScore.setValue(0);
         bankButtonEnabled.setValue(false);
+        newGameButtonVisible.setValue(false);
         gameLog.setValue(new ArrayList<>());
     }
 }

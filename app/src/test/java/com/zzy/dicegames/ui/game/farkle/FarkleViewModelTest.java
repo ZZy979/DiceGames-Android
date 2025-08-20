@@ -57,6 +57,7 @@ public class FarkleViewModelTest {
         assertArrayEquals(new boolean[NUM_DICE], viewModel.getDiceEnabled().getValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
+        assertFalse(viewModel.getNewGameButtonVisible().getValue());
         assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
         assertArrayEquals(new int[NUM_PLAYERS], viewModel.getPlayerScores().getValue());
         assertEquals(0, viewModel.getEstimatedTurnScore().getValue().intValue());
@@ -314,8 +315,9 @@ public class FarkleViewModelTest {
         assertEquals(600, viewModel.getEstimatedTurnScore().getValue().intValue());
         assertEquals(10500, viewModel.getCurrentPlayerScore());
         assertTrue(viewModel.isAllDiceDisabled());
-        assertFalse(viewModel.getBankButtonEnabled().getValue());
         assertFalse(viewModel.getRollButtonEnabled().getValue());
+        assertFalse(viewModel.getBankButtonEnabled().getValue());
+        assertTrue(viewModel.getNewGameButtonVisible().getValue());
     }
 
     @Test
@@ -402,6 +404,7 @@ public class FarkleViewModelTest {
         assertTrue(ArrayUtils.all(viewModel.getDiceEnabled().getValue(), false));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
+        assertFalse(viewModel.getNewGameButtonVisible().getValue());
         assertArrayEquals(new int[NUM_PLAYERS], viewModel.getPlayerScores().getValue());
         assertEquals(0, viewModel.getEstimatedTurnScore().getValue().intValue());
         assertTrue(viewModel.getGameLog().getValue().isEmpty());

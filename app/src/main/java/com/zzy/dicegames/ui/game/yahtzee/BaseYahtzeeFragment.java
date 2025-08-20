@@ -7,7 +7,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 
 import androidx.lifecycle.LifecycleOwner;
@@ -36,6 +35,7 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mViewModel.setGameOverAction(this::onGameOver);
         if (savedInstanceState == null)
             rollDice();
     }
@@ -114,16 +114,6 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     /** 选择指定的得分项 */
     protected void select(int category) {
         mViewModel.select(category);
-        if (mViewModel.getNumSelected() == mViewModel.getNumCategories())
-            onGameOver(getScore());
-        else
-            resetDiceWindow();
-    }
-
-    @Override
-    protected void resetDiceWindow() {
-        super.resetDiceWindow();
-        rollDice();
     }
 
     @Override
@@ -132,19 +122,11 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
         rollDice();
     }
 
-    /** 游戏结束时获取得分 */
-    protected abstract AbstractYahtzeeScore getScore();
-
-    /**
-     * 游戏结束时的回调函数，保存得分并开始新游戏<br>
-     * 将该方法设置为计分板的监听器，游戏结束时计分板将以本局得分为参数调用该监听器
-     */
-    protected void onGameOver(AbstractYahtzeeScore score) {
-        int rank = saveScore(score);
+    /** 游戏结束时的回调函数 */
+    protected void onGameOver() {
+        var score = mViewModel.createScoreEntity();
+        int rank = mViewModel.saveScoreToDatabase(score);
         showScore(score.getScore(), rank);
     }
-
-    /** 保存得分，返回该得分在前10名中的名次，0表示不在前10名中 */
-    protected abstract int saveScore(AbstractYahtzeeScore score);
 
 }

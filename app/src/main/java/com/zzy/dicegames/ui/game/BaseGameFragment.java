@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.ui.dice.DiceView;
 
 import androidx.fragment.app.Fragment;
@@ -37,6 +38,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         super.onViewCreated(view, savedInstanceState);
 
         mViewModel = createViewModel();
+        mViewModel.setScoreDatabase(ScoreDatabase.getInstance(getContext()));
         initViews(view);
         setupObservers(getViewLifecycleOwner());
     }
@@ -111,11 +113,6 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         mViewModel.rollDiceWithAnimation();
     }
 
-    /** 重置骰子窗口 */
-    protected void resetDiceWindow() {
-        mViewModel.resetDiceWindow();
-    }
-
     /** 返回游戏标题 */
     public String getTitle() {
         return mTitleTextView.getText().toString();
@@ -124,31 +121,6 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     /** 开始一次新游戏 */
     public void startNewGame() {
         mViewModel.reset();
-    }
-
-    /**
-     * 根据名次返回对应的文字“第rank名”
-     *
-     * @throws IllegalArgumentException 如果rank<=0
-     */
-    public String getRankText(int rank) {
-        if (rank <= 0)
-            throw new IllegalArgumentException("名次必须大于0");
-        String lang = getResources().getConfiguration().getLocales().get(0).getLanguage();
-        String arg;
-        if (lang.equals("en")) {
-            if (rank % 10 == 1 && rank != 11)
-                arg = String.format("%dst", rank);
-            else if (rank % 10 == 2 && rank != 12)
-                arg = String.format("%dnd", rank);
-            else if (rank % 10 == 3 && rank != 13)
-                arg = String.format("%drd", rank);
-            else
-                arg = String.format("%dth", rank);
-        }
-        else
-            arg = String.valueOf(rank);
-        return String.format(getString(R.string.nthPlace), arg);
     }
 
     /**
@@ -162,7 +134,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         if (rank == 1)
             honor = getString(R.string.newHighScore);
         else if (rank >= 2 && rank <= 10)
-            honor = getRankText(rank);
+            honor = getString(R.string.rank, rank);
         else
             honor = getString(R.string.score);
         new AlertDialog.Builder(getContext())

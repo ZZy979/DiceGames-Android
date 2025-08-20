@@ -1,7 +1,10 @@
 package com.zzy.dicegames.ui.game.balut;
 
+import com.zzy.dicegames.data.entity.BalutScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
 import com.zzy.dicegames.utils.ArrayUtils;
+
+import java.time.LocalDate;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -130,6 +133,15 @@ public class BalutViewModel extends BaseGameViewModel {
         updateTotalScore();
         if (currentSelectCount[category] >= MAX_SELECTIONS)
             numSelected++;
+
+        if (numSelected == NUM_CATEGORIES) {
+            if (gameOverAction != null)
+                gameOverAction.run();
+        }
+        else {
+            resetDiceWindow();
+            rollDiceWithAnimation();
+        }
     }
 
     private void updateTotalScore() {
@@ -145,6 +157,27 @@ public class BalutViewModel extends BaseGameViewModel {
         }
 
         totalScore.setValue(total);
+    }
+
+    /** 游戏结束时创建得分实体 */
+    public BalutScore createScoreEntity() {
+        int[][] finalScores = scores.getValue();
+        if (finalScores == null || totalScore.getValue() == null)
+            return null;
+
+        int numBalut = 0;
+        for (int j = 0; j < finalScores[BALUT].length; j++) {
+            if (finalScores[BALUT][j] > 0)
+                numBalut++;
+        }
+        return new BalutScore(LocalDate.now().toString(), totalScore.getValue(), numBalut);
+    }
+
+    /** 将得分保存到数据库，并返回排名（0表示不在前10名中） */
+    public int saveScoreToDatabase(BalutScore score) {
+        var dao = scoreDatabase.balutScoreDao();
+        dao.insert(score);
+        return dao.findTop10Score().indexOf(score.getScore()) + 1;
     }
 
     @Override

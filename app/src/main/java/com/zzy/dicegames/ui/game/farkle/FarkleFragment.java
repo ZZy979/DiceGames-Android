@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.data.ScoreDatabase;
-import com.zzy.dicegames.data.entity.FarkleScore;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 
 import java.util.List;
@@ -57,6 +55,7 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mViewModel.setGameOverAction(this::onGameOver);
         if (savedInstanceState == null) {
             mViewModel.addLog(R.string.logGameBegins);
             mViewModel.addLog(R.string.logYourTurn);
@@ -85,7 +84,6 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
 
         mNewGameButton = view.findViewById(R.id.btnNewGame);
         mNewGameButton.setOnClickListener(v -> startNewGame());
-        mNewGameButton.setVisibility(View.GONE);
 
         mLogView = view.findViewById(R.id.rvLog);
         mLogView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -104,7 +102,8 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
         mViewModel.getCurrentPlayer().observe(owner, this::onCurrentPlayerChanged);
         mViewModel.getPlayerScores().observe(owner, this::onPlayerScoresChanged);
         mViewModel.getEstimatedTurnScore().observe(owner, this::onEstimatedTurnScoreChanged);
-        mViewModel.getBankButtonEnabled().observe(owner, this::onBankButtonEnabled);
+        mViewModel.getBankButtonEnabled().observe(owner, this::onBankButtonEnabledChanged);
+        mViewModel.getNewGameButtonVisible().observe(owner, this::onNewGameButtonVisibleChanged);
         mViewModel.getGameLog().observe(owner, this::onGameLogChanged);
     }
 
@@ -126,8 +125,13 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
     }
 
     /** “保存得分”按钮激活状态更新时的回调 */
-    private void onBankButtonEnabled(boolean enabled) {
+    private void onBankButtonEnabledChanged(boolean enabled) {
         mBankButton.setEnabled(enabled);
+    }
+
+    /** “新游戏”按钮可见状态更新时的回调 */
+    private void onNewGameButtonVisibleChanged(boolean visible) {
+        mNewGameButton.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     /** 游戏日志更新时的回调 */
@@ -143,15 +147,10 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
             mViewModel.toggleLocked(i);
     }
 
-    /** 游戏结束时获取得分 */
-    private FarkleScore getScore() {
-        return null;
-//        return new FarkleScore(LocalDate.now().toString(), mScore[0], mScore[1]);
-    }
-
     /** 游戏结束时的回调函数 */
-    private void onGameOver(FarkleScore score) {
-        ScoreDatabase.getInstance(getContext()).farkleScoreDao().insert(score);
+    private void onGameOver() {
+        var score = mViewModel.createScoreEntity();
+        mViewModel.saveScoreToDatabase(score);
     }
 
 }

@@ -1,8 +1,15 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
+import android.os.Handler;
+
+import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
@@ -14,16 +21,22 @@ public class BaseYahtzeeViewModelTest {
    @Rule
    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
+   @Rule
+   public MockitoRule mockitoRule = MockitoJUnit.rule();
+
    private BaseYahtzeeViewModel viewModel;
+
+   @Mock
+   private Handler mockHandler;
 
    @Before
    public void setUp() {
       viewModel = new BaseYahtzeeViewModel(5, 3, 10, 20, 8) {
-         @Override
-         public int calculateScore(int category) {
-            return sumOfDice;
-         }
+         @Override public int calculateScore(int category) { return sumOfDice; }
+         @Override public AbstractYahtzeeScore createScoreEntity() { return null; }
+         @Override public int saveScoreToDatabase(AbstractYahtzeeScore score) { return 0; }
       };
+      viewModel.setHandler(mockHandler);
    }
 
    @Test
@@ -50,16 +63,15 @@ public class BaseYahtzeeViewModelTest {
 
    @Test
    public void testIsJoker() {
-      viewModel.updateDiceNumbers(5, 5, 2, 4, 5);
+      viewModel.updateDiceNumbers(2, 4, 5, 6, 6);
       assertFalse(viewModel.isJoker());
+      viewModel.select(5);
+
+      viewModel.updateDiceNumbers(3, 3, 3, 3, 3);
+      assertFalse(viewModel.isJoker());
+      viewModel.select(viewModel.getNumCategories() - 1);
 
       viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
-      assertFalse(viewModel.isJoker());
-
-      viewModel.select(viewModel.getNumCategories() - 1);
-      assertFalse(viewModel.isJoker());
-
-      viewModel.select(5);
       assertTrue(viewModel.isJoker());
    }
 

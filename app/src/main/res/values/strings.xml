@@ -53,7 +53,7 @@
 
     <string name="gameOver">Game Over</string>
     <string name="newHighScore">New high score</string>
-    <string name="nthPlace">%s place</string>
+    <string name="rank">#%d</string>
 
     <string name="playerYou">You</string>
     <string name="playerComputer">Computer</string>

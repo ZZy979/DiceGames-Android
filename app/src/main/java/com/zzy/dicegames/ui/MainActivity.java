@@ -118,12 +118,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        ScoreDatabase.closeInstance();
-        super.onDestroy();
-    }
-
     private void changeGameType(String gameTitle) {
         if (mGameFragment.getTitle().equals(gameTitle))
             mGameFragment.startNewGame();

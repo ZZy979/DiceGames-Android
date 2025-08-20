@@ -2,6 +2,7 @@ package com.zzy.dicegames.ui.game;
 
 import android.os.Handler;
 
+import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.utils.ArrayUtils;
 
@@ -60,6 +61,12 @@ public class BaseGameViewModel extends ViewModel {
 
     /** 用于异步执行操作 */
     protected Handler handler = new Handler();
+
+    /** 游戏结束时执行的动作 */
+    protected Runnable gameOverAction;
+
+    /** 游戏得分数据库 */
+    protected ScoreDatabase scoreDatabase;
 
     /**
      * @param numDice 骰子个数，1~6之间
@@ -130,6 +137,14 @@ public class BaseGameViewModel extends ViewModel {
 
     public void setHandler(Handler handler) {
         this.handler = handler;
+    }
+
+    public void setGameOverAction(Runnable gameOverAction) {
+        this.gameOverAction = gameOverAction;
+    }
+
+    public void setScoreDatabase(ScoreDatabase scoreDatabase) {
+        this.scoreDatabase = scoreDatabase;
     }
 
     /** 翻转第i个骰子的锁定状态 */

@@ -1,5 +1,6 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
+import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
 import com.zzy.dicegames.utils.ArrayUtils;
 
@@ -134,6 +135,15 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
         // 掷骰子后已计算过预估得分，此处无需更新scores
         updateBonusAndTotalScore();
         numSelected++;
+
+        if (numSelected == numCategories) {
+            if (gameOverAction != null)
+                gameOverAction.run();
+        }
+        else {
+            resetDiceWindow();
+            rollDiceWithAnimation();
+        }
     }
 
     private void updateBonusAndTotalScore() {
@@ -159,6 +169,12 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
         bonusScore.setValue(bonus);
         totalScore.setValue(total);
     }
+
+    /** 游戏结束时创建得分实体 */
+    public abstract AbstractYahtzeeScore createScoreEntity();
+
+    /** 将得分保存到数据库，并返回排名（0表示不在前10名中） */
+    public abstract int saveScoreToDatabase(AbstractYahtzeeScore score);
 
     @Override
     public void reset() {
