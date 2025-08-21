@@ -137,8 +137,7 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
         numSelected++;
 
         if (numSelected == numCategories) {
-            if (gameOverAction != null)
-                gameOverAction.run();
+            gameOver();
         }
         else {
             resetDiceWindow();
@@ -170,7 +169,17 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
         totalScore.setValue(total);
     }
 
-    /** 游戏结束时创建得分实体 */
+    /** 游戏结束 */
+    public void gameOver() {
+        disableAllDice();
+        rollButtonEnabled.setValue(false);
+        var score = createScoreEntity();
+        int rank = saveScoreToDatabase(score);
+        if (gameOverAction != null)
+            gameOverAction.accept(new Object[] {score.getScore(), rank});
+    }
+
+    /** 创建得分实体 */
     public abstract AbstractYahtzeeScore createScoreEntity();
 
     /** 将得分保存到数据库，并返回排名（0表示不在前10名中） */

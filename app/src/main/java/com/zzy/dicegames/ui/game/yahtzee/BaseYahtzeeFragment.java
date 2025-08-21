@@ -123,10 +123,8 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     }
 
     /** 游戏结束时的回调函数 */
-    protected void onGameOver() {
-        var score = mViewModel.createScoreEntity();
-        int rank = mViewModel.saveScoreToDatabase(score);
-        showScore(score.getScore(), rank);
+    protected void onGameOver(Object[] args) {
+        showScore((int) args[0], (int) args[1]);
     }
 
 }

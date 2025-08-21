@@ -3,6 +3,8 @@ package com.zzy.dicegames.ui.game.yahtzee;
 import android.os.Handler;
 
 import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
+import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
+import com.zzy.dicegames.utils.ArrayUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -10,6 +12,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
+import java.util.function.Consumer;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
@@ -25,6 +29,7 @@ public class BaseYahtzeeViewModelTest {
    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
    private BaseYahtzeeViewModel viewModel;
+   private BaseYahtzeeViewModel spyViewModel;
 
    @Mock
    private Handler mockHandler;
@@ -37,6 +42,7 @@ public class BaseYahtzeeViewModelTest {
          @Override public int saveScoreToDatabase(AbstractYahtzeeScore score) { return 0; }
       };
       viewModel.setHandler(mockHandler);
+      spyViewModel = spy(viewModel);
    }
 
    @Test
@@ -138,6 +144,30 @@ public class BaseYahtzeeViewModelTest {
       assertEquals(55, viewModel.getUpperTotalScore().getValue().intValue());
       assertEquals(8, viewModel.getBonusScore().getValue().intValue());
       assertEquals(63, viewModel.getTotalScore().getValue().intValue());
+   }
+
+   @Test
+   public void testSelectAll() {
+      doNothing().when(spyViewModel).gameOver();
+      for (int i = 0; i < spyViewModel.getNumCategories(); i++)
+         spyViewModel.select(i);
+      verify(spyViewModel).gameOver();
+   }
+
+   @Test
+   public void testGameOver() {
+      doReturn(new FiveYahtzeeScore("2025-01-01", 300, true, false))
+              .when(spyViewModel).createScoreEntity();
+      doReturn(8).when(spyViewModel).saveScoreToDatabase(any());
+      Consumer<Object[]> gameOverAction = mock(Consumer.class);
+      spyViewModel.setGameOverAction(gameOverAction);
+
+      spyViewModel.gameOver();
+      assertTrue(ArrayUtils.all(spyViewModel.getDiceEnabled().getValue(), false));
+      assertFalse(spyViewModel.getRollButtonEnabled().getValue());
+      verify(spyViewModel).createScoreEntity();
+      verify(spyViewModel).saveScoreToDatabase(argThat(s -> s.getScore() == 300));
+      verify(gameOverAction).accept(argThat(a -> (int) a[0] == 300 && (int) a[1] == 8));
    }
 
    @Test

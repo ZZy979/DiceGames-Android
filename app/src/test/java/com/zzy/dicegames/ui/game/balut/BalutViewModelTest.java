@@ -2,6 +2,9 @@ package com.zzy.dicegames.ui.game.balut;
 
 import android.os.Handler;
 
+import com.zzy.dicegames.data.entity.BalutScore;
+import com.zzy.dicegames.utils.ArrayUtils;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -10,6 +13,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
@@ -27,6 +31,7 @@ public class BalutViewModelTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private BalutViewModel viewModel;
+    private BalutViewModel spyViewModel;
 
     @Mock
     private Handler mockHandler;
@@ -35,6 +40,7 @@ public class BalutViewModelTest {
     public void setUp() {
         viewModel = new BalutViewModel();
         viewModel.setHandler(mockHandler);
+        spyViewModel = spy(viewModel);
     }
 
     private static int[] arr(int... a) {
@@ -178,6 +184,45 @@ public class BalutViewModelTest {
         verify(scoresObserver, atLeastOnce()).onChanged(argThat(a -> a[BALUT][0] == 45));
         verify(selectCountObserver, atLeastOnce()).onChanged(argThat(a -> a[BALUT] == 1));
         verify(totalScoreObserver).onChanged(45);
+    }
+
+    @Test
+    public void testSelectAll() {
+        doNothing().when(spyViewModel).gameOver();
+        for (int i = 0; i < NUM_CATEGORIES; i++) {
+            for (int j = 0; j < MAX_SELECTIONS; j++)
+                spyViewModel.select(i);
+        }
+        verify(spyViewModel).gameOver();
+    }
+
+    @Test
+    public void testGameOver() {
+        doReturn(new BalutScore("2025-01-01", 400, 2)).when(spyViewModel).createScoreEntity();
+        doReturn(6).when(spyViewModel).saveScoreToDatabase(any());
+        Consumer<Object[]> gameOverAction = mock(Consumer.class);
+        spyViewModel.setGameOverAction(gameOverAction);
+
+        spyViewModel.gameOver();
+        assertTrue(ArrayUtils.all(spyViewModel.getDiceEnabled().getValue(), false));
+        assertFalse(spyViewModel.getRollButtonEnabled().getValue());
+        verify(spyViewModel).createScoreEntity();
+        verify(spyViewModel).saveScoreToDatabase(argThat(s -> s.getScore() == 400));
+        verify(gameOverAction).accept(argThat(a -> (int) a[0] == 400 && (int) a[1] == 6));
+    }
+
+    @Test
+    public void testCreateScoreEntity() {
+        doNothing().when(spyViewModel).gameOver();
+        for (int i = 0; i < NUM_CATEGORIES; i++) {
+            for (int j = 0; j < MAX_SELECTIONS; j++) {
+                spyViewModel.updateDiceNumbers(6, 6, 6, 6, 6);
+                spyViewModel.select(i);
+            }
+        }
+        var score = spyViewModel.createScoreEntity();
+        assertEquals(440, score.getScore());
+        assertEquals(4, score.getNumBalut());
     }
 
     @Test

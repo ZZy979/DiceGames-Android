@@ -8,6 +8,7 @@ import com.zzy.dicegames.utils.ArrayUtils;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -63,7 +64,7 @@ public class BaseGameViewModel extends ViewModel {
     protected Handler handler = new Handler();
 
     /** 游戏结束时执行的动作 */
-    protected Runnable gameOverAction;
+    protected Consumer<Object[]> gameOverAction;
 
     /** 游戏得分数据库 */
     protected ScoreDatabase scoreDatabase;
@@ -139,7 +140,7 @@ public class BaseGameViewModel extends ViewModel {
         this.handler = handler;
     }
 
-    public void setGameOverAction(Runnable gameOverAction) {
+    public void setGameOverAction(Consumer<Object[]> gameOverAction) {
         this.gameOverAction = gameOverAction;
     }
 
@@ -186,8 +187,6 @@ public class BaseGameViewModel extends ViewModel {
     public void rollDiceWithAnimation() {
         if (!hasRemainingRolls())
             return;
-
-        setRollButtonEnabled(false);
         rollDiceAnimation(0);
     }
 

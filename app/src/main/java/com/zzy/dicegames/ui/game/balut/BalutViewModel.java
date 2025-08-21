@@ -135,8 +135,7 @@ public class BalutViewModel extends BaseGameViewModel {
             numSelected++;
 
         if (numSelected == NUM_CATEGORIES) {
-            if (gameOverAction != null)
-                gameOverAction.run();
+            gameOver();
         }
         else {
             resetDiceWindow();
@@ -159,7 +158,17 @@ public class BalutViewModel extends BaseGameViewModel {
         totalScore.setValue(total);
     }
 
-    /** 游戏结束时创建得分实体 */
+    /** 游戏结束 */
+    public void gameOver() {
+        disableAllDice();
+        rollButtonEnabled.setValue(false);
+        var score = createScoreEntity();
+        int rank = saveScoreToDatabase(score);
+        if (gameOverAction != null)
+            gameOverAction.accept(new Object[] {score.getScore(), rank});
+    }
+
+    /** 创建得分实体 */
     public BalutScore createScoreEntity() {
         int[][] finalScores = scores.getValue();
         if (finalScores == null || totalScore.getValue() == null)

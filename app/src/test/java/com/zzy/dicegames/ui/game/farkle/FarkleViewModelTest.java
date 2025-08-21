@@ -3,6 +3,7 @@ package com.zzy.dicegames.ui.game.farkle;
 import android.os.Handler;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.data.entity.FarkleScore;
 import com.zzy.dicegames.utils.ArrayUtils;
 
 import org.junit.Before;
@@ -307,17 +308,15 @@ public class FarkleViewModelTest {
 
     @Test
     public void testWin() {
-        viewModel.addCurrentPlayerScore(9900);
-        viewModel.beforeRollDice();
-        viewModel.win(600);
-        var gameLog = viewModel.getGameLog().getValue();
+        doNothing().when(spyViewModel).gameOver();
+        spyViewModel.addCurrentPlayerScore(9900);
+        spyViewModel.beforeRollDice();
+        spyViewModel.win(600);
+        var gameLog = spyViewModel.getGameLog().getValue();
         assertGameLogEquals(Pair.create(R.string.logYouWin, new Object[0]), gameLog.get(0));
-        assertEquals(600, viewModel.getEstimatedTurnScore().getValue().intValue());
-        assertEquals(10500, viewModel.getCurrentPlayerScore());
-        assertTrue(viewModel.isAllDiceDisabled());
-        assertFalse(viewModel.getRollButtonEnabled().getValue());
-        assertFalse(viewModel.getBankButtonEnabled().getValue());
-        assertTrue(viewModel.getNewGameButtonVisible().getValue());
+        assertEquals(600, spyViewModel.getEstimatedTurnScore().getValue().intValue());
+        assertEquals(10500, spyViewModel.getCurrentPlayerScore());
+        verify(spyViewModel).gameOver();
     }
 
     @Test
@@ -379,6 +378,31 @@ public class FarkleViewModelTest {
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         var gameLog = viewModel.getGameLog().getValue();
         assertGameLogEquals(Pair.create(R.string.logYourTurn, new Object[0]), gameLog.get(4));
+    }
+
+    @Test
+    public void testGameOver() {
+        doReturn(new FarkleScore("2025-01-01", 10000, 8000)).when(spyViewModel).createScoreEntity();
+        doNothing().when(spyViewModel).saveScoreToDatabase(any());
+
+        spyViewModel.gameOver();
+        assertTrue(spyViewModel.isAllDiceDisabled());
+        assertFalse(spyViewModel.getRollButtonEnabled().getValue());
+        assertFalse(spyViewModel.getBankButtonEnabled().getValue());
+        assertTrue(spyViewModel.getNewGameButtonVisible().getValue());
+        verify(spyViewModel).createScoreEntity();
+        verify(spyViewModel).saveScoreToDatabase(
+                argThat(s -> s.getScore() == 10000 && s.getComputerScore() == 8000));
+    }
+
+    @Test
+    public void testCreateScoreEntity() {
+        viewModel.addCurrentPlayerScore(7500);
+        viewModel.nextPlayer();
+        viewModel.addCurrentPlayerScore(10500);
+        var score = viewModel.createScoreEntity();
+        assertEquals(7500, score.getScore());
+        assertEquals(10500, score.getComputerScore());
     }
 
     @Test

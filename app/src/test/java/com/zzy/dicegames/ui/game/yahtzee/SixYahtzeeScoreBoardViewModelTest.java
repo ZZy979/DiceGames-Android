@@ -16,6 +16,7 @@ import androidx.core.util.Pair;
 
 import static com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeViewModel.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class SixYahtzeeScoreBoardViewModelTest {
     @Rule
@@ -25,6 +26,7 @@ public class SixYahtzeeScoreBoardViewModelTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     private SixYahtzeeViewModel viewModel;
+    private SixYahtzeeViewModel spyViewModel;
 
     @Mock
     private Handler mockHandler;
@@ -33,6 +35,7 @@ public class SixYahtzeeScoreBoardViewModelTest {
     public void setUp() {
         viewModel = new SixYahtzeeViewModel();
         viewModel.setHandler(mockHandler);
+        spyViewModel = spy(viewModel);
     }
 
     private static int[] arr(int... a) {
@@ -200,5 +203,18 @@ public class SixYahtzeeScoreBoardViewModelTest {
         assertEquals(36, viewModel.calculateScore(HUT));
         assertEquals(36, viewModel.calculateScore(HOUSE));
         assertEquals(36, viewModel.calculateScore(TOWER));
+    }
+
+    @Test
+    public void testCreateScoreEntity() {
+        doNothing().when(spyViewModel).gameOver();
+        for (int i = 0; i < viewModel.getNumCategories(); i++) {
+            spyViewModel.updateDiceNumbers(6, 6, 6, 6, 6, 6);
+            spyViewModel.select(i);
+        }
+        var score = spyViewModel.createScoreEntity();
+        assertEquals(256, score.getScore());
+        assertFalse(score.isHasBonus());
+        assertTrue(score.isHasYahtzee());
     }
 }

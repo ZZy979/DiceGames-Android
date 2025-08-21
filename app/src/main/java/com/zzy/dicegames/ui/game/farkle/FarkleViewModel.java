@@ -191,6 +191,7 @@ public class FarkleViewModel extends BaseGameViewModel {
     }
 
     protected void beforeRollDice() {
+        rollButtonEnabled.setValue(false);
         if (isAllDiceDisabled()) {
             // 本轮第一次掷骰子或发生了Hot Dice
             enableAllDice();
@@ -334,14 +335,7 @@ public class FarkleViewModel extends BaseGameViewModel {
         accumulatedTurnScore += lastRollScore;
         estimatedTurnScore.setValue(accumulatedTurnScore);
         addCurrentPlayerScore(accumulatedTurnScore);
-
-        disableAllDice();
-        rollButtonEnabled.setValue(false);
-        bankButtonEnabled.setValue(false);
-        newGameButtonVisible.setValue(true);
-
-        if (gameOverAction != null)
-            gameOverAction.run();
+        gameOver();
     }
 
     protected void hotDice(int lastRollScore) {
@@ -412,7 +406,17 @@ public class FarkleViewModel extends BaseGameViewModel {
             handler.postDelayed(this::rollDiceWithAnimation, DELAY);
     }
 
-    /** 游戏结束时创建得分实体 */
+    /** 游戏结束 */
+    public void gameOver() {
+        disableAllDice();
+        rollButtonEnabled.setValue(false);
+        bankButtonEnabled.setValue(false);
+        newGameButtonVisible.setValue(true);
+        var score = createScoreEntity();
+        saveScoreToDatabase(score);
+    }
+
+    /** 创建得分实体 */
     public FarkleScore createScoreEntity() {
         int[] scores = playerScores.getValue();
         if (scores == null)

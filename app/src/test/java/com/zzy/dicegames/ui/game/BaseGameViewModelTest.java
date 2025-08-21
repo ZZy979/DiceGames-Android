@@ -118,7 +118,6 @@ public class BaseGameViewModelTest {
     public void testRollDiceAnimation() {
         // 第一帧
         viewModel.rollDiceWithAnimation();
-        assertFalse(viewModel.getRollButtonEnabled().getValue());
         verify(mockHandler).postDelayed(any(), eq(ROLL_DICE_ANIMATION_INTERVAL));
 
         // 最后一帧

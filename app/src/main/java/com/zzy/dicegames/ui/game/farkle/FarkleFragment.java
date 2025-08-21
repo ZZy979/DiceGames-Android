@@ -55,7 +55,6 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mViewModel.setGameOverAction(this::onGameOver);
         if (savedInstanceState == null) {
             mViewModel.addLog(R.string.logGameBegins);
             mViewModel.addLog(R.string.logYourTurn);
@@ -132,6 +131,7 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
     /** “新游戏”按钮可见状态更新时的回调 */
     private void onNewGameButtonVisibleChanged(boolean visible) {
         mNewGameButton.setVisibility(visible ? View.VISIBLE : View.GONE);
+        mBankButton.setVisibility(visible ? View.GONE : View.VISIBLE);
     }
 
     /** 游戏日志更新时的回调 */
@@ -145,12 +145,6 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
     protected void clickDice(int i) {
         if (mViewModel.isHumanTurn())
             mViewModel.toggleLocked(i);
-    }
-
-    /** 游戏结束时的回调函数 */
-    private void onGameOver() {
-        var score = mViewModel.createScoreEntity();
-        mViewModel.saveScoreToDatabase(score);
     }
 
 }
