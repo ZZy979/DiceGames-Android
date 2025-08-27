@@ -1,5 +1,6 @@
 package com.zzy.dicegames.data.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 
 /**
@@ -9,7 +10,7 @@ import androidx.room.Entity;
  */
 @Entity(tableName = "six_yahtzee_score")
 public class SixYahtzeeScore extends AbstractYahtzeeScore {
-    public SixYahtzeeScore(String date, int score, boolean hasBonus, boolean hasYahtzee) {
+    public SixYahtzeeScore(@NonNull String date, int score, boolean hasBonus, boolean hasYahtzee) {
         super(date, score, hasBonus, hasYahtzee);
     }
 }

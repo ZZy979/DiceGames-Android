@@ -213,8 +213,8 @@ public class SixYahtzeeScoreBoardViewModelTest {
             spyViewModel.select(i);
         }
         var score = spyViewModel.createScoreEntity();
-        assertEquals(256, score.getScore());
-        assertFalse(score.isHasBonus());
-        assertTrue(score.isHasYahtzee());
+        assertEquals(256, score.score);
+        assertFalse(score.hasBonus);
+        assertTrue(score.hasYahtzee);
     }
 }

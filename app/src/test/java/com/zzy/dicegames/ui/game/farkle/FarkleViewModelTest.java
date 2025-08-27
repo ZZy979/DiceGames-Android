@@ -393,7 +393,7 @@ public class FarkleViewModelTest {
         assertTrue(spyViewModel.getNewGameButtonVisible().getValue());
         verify(spyViewModel).createScoreEntity();
         verify(spyViewModel).saveScoreToDatabase(
-                argThat(s -> s.getScore() == 10000 && s.getComputerScore() == 8000));
+                argThat(s -> s.score == 10000 && s.computerScore == 8000));
     }
 
     @Test
@@ -402,8 +402,8 @@ public class FarkleViewModelTest {
         viewModel.nextPlayer();
         viewModel.addCurrentPlayerScore(10500);
         var score = viewModel.createScoreEntity();
-        assertEquals(7500, score.getScore());
-        assertEquals(10500, score.getComputerScore());
+        assertEquals(7500, score.score);
+        assertEquals(10500, score.computerScore);
     }
 
     @Test

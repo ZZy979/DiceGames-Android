@@ -12,42 +12,16 @@ import androidx.room.PrimaryKey;
  */
 public abstract class BaseScore implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    protected int id;
+    public int id;
 
     /** yyyy-MM-dd */
     @NonNull
-    protected String date;
+    public String date;
 
-    protected int score;
+    public int score;
 
     public BaseScore(@NonNull String date, int score) {
         this.date = date;
         this.score = score;
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @NonNull
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(@NonNull String date) {
-        this.date = date;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
 }

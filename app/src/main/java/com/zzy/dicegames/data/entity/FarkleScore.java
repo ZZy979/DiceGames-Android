@@ -13,19 +13,10 @@ import androidx.room.Entity;
 public class FarkleScore extends BaseScore {
     /** 计算机得分 */
     @ColumnInfo(name = "computer_score")
-    private int computerScore;
+    public int computerScore;
 
     public FarkleScore(@NonNull String date, int score, int computerScore) {
         super(date, score);
         this.computerScore = computerScore;
     }
-
-    public int getComputerScore() {
-        return computerScore;
-    }
-
-    public void setComputerScore(int computerScore) {
-        this.computerScore = computerScore;
-    }
-
 }

@@ -176,7 +176,7 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
         var score = createScoreEntity();
         int rank = saveScoreToDatabase(score);
         if (gameOverAction != null)
-            gameOverAction.accept(new Object[] {score.getScore(), rank});
+            gameOverAction.accept(new Object[] {score.score, rank});
     }
 
     /** 创建得分实体 */

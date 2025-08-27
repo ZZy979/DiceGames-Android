@@ -112,6 +112,6 @@ public class FiveYahtzeeViewModel extends BaseYahtzeeViewModel {
     public int saveScoreToDatabase(AbstractYahtzeeScore score) {
         var dao = scoreDatabase.fiveYahtzeeScoreDao();
         dao.insert((FiveYahtzeeScore) score);
-        return dao.findTop10Score().indexOf(score.getScore()) + 1;
+        return dao.findTop10Score().indexOf(score.score) + 1;
     }
 }

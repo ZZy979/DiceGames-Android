@@ -165,7 +165,7 @@ public class BalutViewModel extends BaseGameViewModel {
         var score = createScoreEntity();
         int rank = saveScoreToDatabase(score);
         if (gameOverAction != null)
-            gameOverAction.accept(new Object[] {score.getScore(), rank});
+            gameOverAction.accept(new Object[] {score.score, rank});
     }
 
     /** 创建得分实体 */
@@ -186,7 +186,7 @@ public class BalutViewModel extends BaseGameViewModel {
     public int saveScoreToDatabase(BalutScore score) {
         var dao = scoreDatabase.balutScoreDao();
         dao.insert(score);
-        return dao.findTop10Score().indexOf(score.getScore()) + 1;
+        return dao.findTop10Score().indexOf(score.score) + 1;
     }
 
     @Override

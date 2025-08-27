@@ -195,8 +195,8 @@ public class FiveYahtzeeScoreBoardViewModelTest {
             spyViewModel.select(i);
         }
         var score = spyViewModel.createScoreEntity();
-        assertEquals(150, score.getScore());
-        assertFalse(score.isHasBonus());
-        assertTrue(score.isHasYahtzee());
+        assertEquals(150, score.score);
+        assertFalse(score.hasBonus);
+        assertTrue(score.hasYahtzee);
     }
 }

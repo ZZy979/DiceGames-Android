@@ -166,7 +166,7 @@ public class BaseYahtzeeViewModelTest {
       assertTrue(ArrayUtils.all(spyViewModel.getDiceEnabled().getValue(), false));
       assertFalse(spyViewModel.getRollButtonEnabled().getValue());
       verify(spyViewModel).createScoreEntity();
-      verify(spyViewModel).saveScoreToDatabase(argThat(s -> s.getScore() == 300));
+      verify(spyViewModel).saveScoreToDatabase(argThat(s -> s.score == 300));
       verify(gameOverAction).accept(argThat(a -> (int) a[0] == 300 && (int) a[1] == 8));
    }
 

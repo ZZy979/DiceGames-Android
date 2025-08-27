@@ -207,7 +207,7 @@ public class BalutViewModelTest {
         assertTrue(ArrayUtils.all(spyViewModel.getDiceEnabled().getValue(), false));
         assertFalse(spyViewModel.getRollButtonEnabled().getValue());
         verify(spyViewModel).createScoreEntity();
-        verify(spyViewModel).saveScoreToDatabase(argThat(s -> s.getScore() == 400));
+        verify(spyViewModel).saveScoreToDatabase(argThat(s -> s.score == 400));
         verify(gameOverAction).accept(argThat(a -> (int) a[0] == 400 && (int) a[1] == 6));
     }
 
@@ -221,8 +221,8 @@ public class BalutViewModelTest {
             }
         }
         var score = spyViewModel.createScoreEntity();
-        assertEquals(440, score.getScore());
-        assertEquals(4, score.getNumBalut());
+        assertEquals(440, score.score);
+        assertEquals(4, score.numBalut);
     }
 
     @Test

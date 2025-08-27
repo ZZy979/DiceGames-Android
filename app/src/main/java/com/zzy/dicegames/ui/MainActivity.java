@@ -176,10 +176,10 @@ public class MainActivity extends AppCompatActivity {
             serializer.startTag(null, "FiveYahtzeeScores");
             for (FiveYahtzeeScore fiveYahtzeeScore : scoreDatabase.fiveYahtzeeScoreDao().findAll())
                 serializer.startTag(null, "FiveYahtzeeScore")
-                        .attribute(null, "date", fiveYahtzeeScore.getDate())
-                        .attribute(null, "score", Integer.toString(fiveYahtzeeScore.getScore()))
-                        .attribute(null, "has_bonus", Boolean.toString(fiveYahtzeeScore.isHasBonus()))
-                        .attribute(null, "has_yahtzee", Boolean.toString(fiveYahtzeeScore.isHasYahtzee()))
+                        .attribute(null, "date", fiveYahtzeeScore.date)
+                        .attribute(null, "score", Integer.toString(fiveYahtzeeScore.score))
+                        .attribute(null, "has_bonus", Boolean.toString(fiveYahtzeeScore.hasBonus))
+                        .attribute(null, "has_yahtzee", Boolean.toString(fiveYahtzeeScore.hasYahtzee))
                         .endTag(null, "FiveYahtzeeScore");
             serializer.endTag(null, "FiveYahtzeeScores");
 
@@ -187,10 +187,10 @@ public class MainActivity extends AppCompatActivity {
             serializer.startTag(null, "SixYahtzeeScores");
             for (SixYahtzeeScore sixYahtzeeScore : scoreDatabase.sixYahtzeeScoreDao().findAll())
                 serializer.startTag(null, "SixYahtzeeScore")
-                        .attribute(null, "date", sixYahtzeeScore.getDate())
-                        .attribute(null, "score", Integer.toString(sixYahtzeeScore.getScore()))
-                        .attribute(null, "has_bonus", Boolean.toString(sixYahtzeeScore.isHasBonus()))
-                        .attribute(null, "has_yahtzee", Boolean.toString(sixYahtzeeScore.isHasYahtzee()))
+                        .attribute(null, "date", sixYahtzeeScore.date)
+                        .attribute(null, "score", Integer.toString(sixYahtzeeScore.score))
+                        .attribute(null, "has_bonus", Boolean.toString(sixYahtzeeScore.hasBonus))
+                        .attribute(null, "has_yahtzee", Boolean.toString(sixYahtzeeScore.hasYahtzee))
                         .endTag(null, "SixYahtzeeScore");
             serializer.endTag(null, "SixYahtzeeScores");
 
@@ -198,9 +198,9 @@ public class MainActivity extends AppCompatActivity {
             serializer.startTag(null, "BalutScores");
             for (BalutScore balutScore : scoreDatabase.balutScoreDao().findAll())
                 serializer.startTag(null, "BalutScore")
-                        .attribute(null, "date", balutScore.getDate())
-                        .attribute(null, "score", Integer.toString(balutScore.getScore()))
-                        .attribute(null, "num_balut", Integer.toString(balutScore.getNumBalut()))
+                        .attribute(null, "date", balutScore.date)
+                        .attribute(null, "score", Integer.toString(balutScore.score))
+                        .attribute(null, "num_balut", Integer.toString(balutScore.numBalut))
                         .endTag(null, "BalutScore");
             serializer.endTag(null, "BalutScores");
 
@@ -208,9 +208,9 @@ public class MainActivity extends AppCompatActivity {
             serializer.startTag(null, "FarkleScores");
             for (FarkleScore farkleScore : scoreDatabase.farkleScoreDao().findAll())
                 serializer.startTag(null, "FarkleScore")
-                        .attribute(null, "date", farkleScore.getDate())
-                        .attribute(null, "score", Integer.toString(farkleScore.getScore()))
-                        .attribute(null, "computer_score", Integer.toString(farkleScore.getComputerScore()))
+                        .attribute(null, "date", farkleScore.date)
+                        .attribute(null, "score", Integer.toString(farkleScore.score))
+                        .attribute(null, "computer_score", Integer.toString(farkleScore.computerScore))
                         .endTag(null, "FarkleScore");
             serializer.endTag(null, "FarkleScores");
 

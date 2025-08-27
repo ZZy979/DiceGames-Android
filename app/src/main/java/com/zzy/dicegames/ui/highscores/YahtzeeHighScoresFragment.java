@@ -69,8 +69,8 @@ public class YahtzeeHighScoresFragment extends Fragment {
             for (int i = 0; i < highScores.size(); ++i) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("rank", i + 1);
-                map.put("score", highScores.get(i).getScore());
-                map.put("date", highScores.get(i).getDate());
+                map.put("score", highScores.get(i).score);
+                map.put("date", highScores.get(i).date);
                 data.add(map);
             }
             ((ListView) rootView.findViewById(R.id.lvHighScores)).setAdapter(new SimpleAdapter(
