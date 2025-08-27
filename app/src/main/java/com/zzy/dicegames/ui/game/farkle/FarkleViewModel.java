@@ -327,6 +327,7 @@ public class FarkleViewModel extends BaseGameViewModel {
     protected void farkle() {
         addLog(R.string.logFarkle);
         disableAllDice();
+        bankButtonEnabled.setValue(false);
         handler.postDelayed(this::nextPlayer, DELAY);
     }
 

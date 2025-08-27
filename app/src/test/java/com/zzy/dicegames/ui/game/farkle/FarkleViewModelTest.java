@@ -303,6 +303,7 @@ public class FarkleViewModelTest {
         var gameLog = viewModel.getGameLog().getValue();
         assertGameLogEquals(Pair.create(R.string.logFarkle, new Object[0]), gameLog.get(0));
         assertTrue(viewModel.isAllDiceDisabled());
+        assertFalse(viewModel.getBankButtonEnabled().getValue());
         verify(mockHandler).postDelayed(any(), anyLong());
     }
 
