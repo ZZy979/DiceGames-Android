@@ -53,16 +53,6 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState == null) {
-            mViewModel.addLog(R.string.logGameBegins);
-            mViewModel.addLog(R.string.logYourTurn);
-            mViewModel.addLog(R.string.logStartingScore, 0);
-        }
-    }
-
-    @Override
     protected void initViews(View view) {
         super.initViews(view);
 

@@ -46,9 +46,10 @@ public class FarkleViewModelTest {
         return a;
     }
 
-    private static void assertGameLogEquals(Pair<Integer, Object[]> expected, Pair<Integer, Object[]> actual) {
-        assertEquals(expected.first, actual.first);
-        assertArrayEquals(expected.second, actual.second);
+    private static void assertGameLogEquals(
+            Pair<Integer, Object[]> actual, int expectedId, Object... expectedArgs) {
+        assertEquals(expectedId, actual.first.intValue());
+        assertArrayEquals(expectedArgs, actual.second);
     }
 
     @Test
@@ -62,23 +63,25 @@ public class FarkleViewModelTest {
         assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
         assertArrayEquals(new int[NUM_PLAYERS], viewModel.getPlayerScores().getValue());
         assertEquals(0, viewModel.getEstimatedTurnScore().getValue().intValue());
-        assertTrue(viewModel.getGameLog().getValue().isEmpty());
+        var gameLog = viewModel.getGameLog().getValue();
+        assertEquals(3, gameLog.size());
+        assertGameLogEquals(gameLog.get(0), R.string.logGameBegins);
+        assertGameLogEquals(gameLog.get(1), R.string.logYourTurn);
+        assertGameLogEquals(gameLog.get(2), R.string.logStartingScore, 0);
     }
 
     @Test
     public void testAddLog() {
         viewModel.addLog(123, "foo", "bar");
         var gameLog = viewModel.getGameLog().getValue();
-        assertEquals(1, gameLog.size());
-        assertGameLogEquals(Pair.create(123, new Object[] {"foo", "bar"}), gameLog.get(0));
+        assertGameLogEquals(gameLog.get(gameLog.size() - 1), 123, "foo", "bar");
     }
 
     @Test
     public void testAddDiceNumbersLog() {
         viewModel.addDiceNumbersLog(456, new int[] {1, 2, 3, 4, 5, 6});
         var gameLog = viewModel.getGameLog().getValue();
-        assertEquals(1, gameLog.size());
-        assertGameLogEquals(Pair.create(456, new Object[] {"1,2,3,4,5,6"}), gameLog.get(0));
+        assertGameLogEquals(gameLog.get(gameLog.size() - 1), 456, "1,2,3,4,5,6");
     }
 
     @Test
@@ -134,18 +137,18 @@ public class FarkleViewModelTest {
         assertTrue(ArrayUtils.all(spyViewModel.getDiceEnabled().getValue(), true));
         assertArrayEquals(numbers1, spyViewModel.getDiceNumbers().getValue());
         var gameLog = viewModel.getGameLog().getValue();
-        assertGameLogEquals(Pair.create(R.string.logDiceRolled, new Object[] {"4,1,3,5,4,6"}), gameLog.get(0));
+        assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logDiceRolled, "4,1,3,5,4,6");
         assertTrue(viewModel.getBankButtonEnabled().getValue());
 
         // 后续掷骰子
         spyViewModel.toggleLocked(1);
         spyViewModel.toggleLocked(3);
         spyViewModel.rollDice();
-        assertGameLogEquals(Pair.create(R.string.logDiceKept, new Object[] {"1,5"}), gameLog.get(1));
         assertArrayEquals(new boolean[] {true, false, true, false, true, true},
                 spyViewModel.getDiceEnabled().getValue());
         assertArrayEquals(numbers2, spyViewModel.getDiceNumbers().getValue());
-        assertGameLogEquals(Pair.create(R.string.logDiceRolled, new Object[] {"5,6,2,3"}), gameLog.get(2));
+        assertGameLogEquals(gameLog.get(gameLog.size() - 2), R.string.logDiceKept, "1,5");
+        assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logDiceRolled, "5,6,2,3");
     }
 
     @Test
@@ -301,7 +304,7 @@ public class FarkleViewModelTest {
         viewModel.beforeRollDice();
         viewModel.farkle();
         var gameLog = viewModel.getGameLog().getValue();
-        assertGameLogEquals(Pair.create(R.string.logFarkle, new Object[0]), gameLog.get(0));
+        assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logFarkle);
         assertTrue(viewModel.isAllDiceDisabled());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
         verify(mockHandler).postDelayed(any(), anyLong());
@@ -314,7 +317,7 @@ public class FarkleViewModelTest {
         spyViewModel.beforeRollDice();
         spyViewModel.win(600);
         var gameLog = spyViewModel.getGameLog().getValue();
-        assertGameLogEquals(Pair.create(R.string.logYouWin, new Object[0]), gameLog.get(0));
+        assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logYouWin);
         assertEquals(600, spyViewModel.getEstimatedTurnScore().getValue().intValue());
         assertEquals(10500, spyViewModel.getCurrentPlayerScore());
         verify(spyViewModel).gameOver();
@@ -325,7 +328,7 @@ public class FarkleViewModelTest {
         viewModel.beforeRollDice();
         viewModel.hotDice(1500);
         var gameLog = viewModel.getGameLog().getValue();
-        assertGameLogEquals(Pair.create(R.string.logHotDice, new Object[] {1500}), gameLog.get(0));
+        assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logHotDice, 1500);
         assertEquals(1500, viewModel.getEstimatedTurnScore().getValue().intValue());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
         assertTrue(ArrayUtils.all(viewModel.getDiceLocked().getValue(), false));
@@ -348,10 +351,10 @@ public class FarkleViewModelTest {
         spyViewModel.beforeRollDice();
         spyViewModel.updateDiceNumbers(1, 3, 4, 6, 6, 6);
         spyViewModel.bank();
-        var gameLog = viewModel.getGameLog().getValue();
-        assertGameLogEquals(Pair.create(R.string.logDiceKept, new Object[] {"1,6,6,6"}), gameLog.get(1));
         assertEquals(700, spyViewModel.getCurrentPlayerScore());
-        assertGameLogEquals(Pair.create(R.string.logFinishTurn, new Object[] {700}), gameLog.get(2));
+        var gameLog = viewModel.getGameLog().getValue();
+        assertGameLogEquals(gameLog.get(gameLog.size() - 2), R.string.logDiceKept, "1,6,6,6");
+        assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logFinishTurn, 700);
         verify(spyViewModel).nextPlayer();
     }
 
@@ -365,9 +368,9 @@ public class FarkleViewModelTest {
         assertTrue(ArrayUtils.all(viewModel.getDiceEnabled().getValue(), false));
         assertFalse(viewModel.getRollButtonEnabled().getValue());
         var gameLog = viewModel.getGameLog().getValue();
-        assertGameLogEquals(Pair.create(R.string.logSeparator, new Object[0]), gameLog.get(0));
-        assertGameLogEquals(Pair.create(R.string.logComputerTurn, new Object[0]), gameLog.get(1));
-        assertGameLogEquals(Pair.create(R.string.logStartingScore, new Object[] {0}), gameLog.get(2));
+        assertGameLogEquals(gameLog.get(gameLog.size() - 3), R.string.logSeparator);
+        assertGameLogEquals(gameLog.get(gameLog.size() - 2), R.string.logComputerTurn);
+        assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logStartingScore, 0);
         verify(mockHandler).postDelayed(any(), anyLong());
     }
 
@@ -378,7 +381,7 @@ public class FarkleViewModelTest {
         assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         var gameLog = viewModel.getGameLog().getValue();
-        assertGameLogEquals(Pair.create(R.string.logYourTurn, new Object[0]), gameLog.get(4));
+        assertGameLogEquals(gameLog.get(gameLog.size() - 2), R.string.logYourTurn);
     }
 
     @Test
@@ -432,6 +435,10 @@ public class FarkleViewModelTest {
         assertFalse(viewModel.getNewGameButtonVisible().getValue());
         assertArrayEquals(new int[NUM_PLAYERS], viewModel.getPlayerScores().getValue());
         assertEquals(0, viewModel.getEstimatedTurnScore().getValue().intValue());
-        assertTrue(viewModel.getGameLog().getValue().isEmpty());
+        var gameLog = viewModel.getGameLog().getValue();
+        assertEquals(3, gameLog.size());
+        assertGameLogEquals(gameLog.get(0), R.string.logGameBegins);
+        assertGameLogEquals(gameLog.get(1), R.string.logYourTurn);
+        assertGameLogEquals(gameLog.get(2), R.string.logStartingScore, 0);
     }
 }

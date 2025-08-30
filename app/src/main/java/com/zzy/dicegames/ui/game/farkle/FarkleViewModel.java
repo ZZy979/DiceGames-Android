@@ -67,6 +67,7 @@ public class FarkleViewModel extends BaseGameViewModel {
     public FarkleViewModel() {
         super(NUM_DICE, UNLIMITED_ROLLS);
         disableAllDice();
+        addGameBeginsLog();
     }
 
     public LiveData<Integer> getCurrentPlayer() {
@@ -144,6 +145,12 @@ public class FarkleViewModel extends BaseGameViewModel {
 
         log.add(Pair.create(resId, args));
         gameLog.setValue(log);
+    }
+
+    private void addGameBeginsLog() {
+        addLog(R.string.logGameBegins);
+        addLog(R.string.logYourTurn);
+        addLog(R.string.logStartingScore, 0);
     }
 
     /**
@@ -449,5 +456,6 @@ public class FarkleViewModel extends BaseGameViewModel {
         bankButtonEnabled.setValue(false);
         newGameButtonVisible.setValue(false);
         gameLog.setValue(new ArrayList<>());
+        addGameBeginsLog();
     }
 }
