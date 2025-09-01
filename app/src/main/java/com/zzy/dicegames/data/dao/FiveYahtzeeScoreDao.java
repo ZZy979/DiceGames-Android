@@ -1,13 +1,15 @@
 package com.zzy.dicegames.data.dao;
 
+import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
+import com.zzy.dicegames.data.entity.YahtzeeStatistics;
+
+import java.util.List;
+
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-
-import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
-
-import java.util.List;
 
 /**
  * {@link FiveYahtzeeScore}类DAO接口
@@ -20,34 +22,26 @@ public interface FiveYahtzeeScoreDao {
     @Query("SELECT * FROM five_yahtzee_score")
     List<FiveYahtzeeScore> findAll();
 
-    @Query("SELECT * FROM five_yahtzee_score ORDER BY score DESC, date DESC LIMIT 10")
-    List<FiveYahtzeeScore> findTop10();
+    @Query("SELECT * FROM five_yahtzee_score WHERE id = :id")
+    FiveYahtzeeScore findById(int id);
 
-    @Query("SELECT score FROM five_yahtzee_score ORDER BY score DESC LIMIT 10")
-    List<Integer> findTop10Score();
+    @Query("SELECT * FROM five_yahtzee_score ORDER BY score DESC, date DESC LIMIT :n")
+    List<FiveYahtzeeScore> findTop(int n);
 
-    @Query("SELECT COUNT(*) FROM five_yahtzee_score")
-    int count();
+    @Query("SELECT COUNT(*) + 1 FROM five_yahtzee_score WHERE score > :score")
+    int rank(int score);
 
-    @Query("SELECT MAX(score) FROM five_yahtzee_score")
-    int maxScore();
+    @Query(
+            "SELECT COUNT(*) AS count, MAX(score) AS maxScore, MIN(score) AS minScore, " +
+            "    AVG(score) AS avgScore, SUM(has_bonus) AS numBonus, SUM(has_yahtzee) AS numYahtzee " +
+            "FROM five_yahtzee_score"
+    )
+    YahtzeeStatistics statistics();
 
-    @Query("SELECT MIN(score) FROM five_yahtzee_score")
-    int minScore();
-
-    @Query("SELECT AVG(score) FROM five_yahtzee_score")
-    double averageScore();
-
-    @Query("SELECT SUM(has_bonus) FROM five_yahtzee_score")
-    int numBonus();
-
-    @Query("SELECT SUM(has_yahtzee) FROM five_yahtzee_score")
-    int numYahtzee();
-
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(FiveYahtzeeScore score);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<FiveYahtzeeScore> scores);
 
     @Delete

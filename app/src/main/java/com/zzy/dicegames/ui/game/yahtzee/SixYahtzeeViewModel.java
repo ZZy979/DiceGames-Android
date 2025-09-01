@@ -153,6 +153,6 @@ public class SixYahtzeeViewModel extends BaseYahtzeeViewModel {
     public int saveScoreToDatabase(AbstractYahtzeeScore score) {
         var dao = scoreDatabase.sixYahtzeeScoreDao();
         dao.insert((SixYahtzeeScore) score);
-        return dao.findTop10Score().indexOf(score.score) + 1;
+        return dao.rank(score.score);
     }
 }

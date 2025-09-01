@@ -182,7 +182,7 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
     /** 创建得分实体 */
     public abstract AbstractYahtzeeScore createScoreEntity();
 
-    /** 将得分保存到数据库，并返回排名（0表示不在前10名中） */
+    /** 将得分保存到数据库，并返回排名 */
     public abstract int saveScoreToDatabase(AbstractYahtzeeScore score);
 
     @Override

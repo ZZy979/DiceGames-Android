@@ -8,10 +8,6 @@ import android.widget.Spinner;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.ScoreDatabase;
-import com.zzy.dicegames.data.dao.BalutScoreDao;
-import com.zzy.dicegames.data.dao.FarkleScoreDao;
-import com.zzy.dicegames.data.dao.FiveYahtzeeScoreDao;
-import com.zzy.dicegames.data.dao.SixYahtzeeScoreDao;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -91,41 +87,45 @@ public class HighScoresActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             if (gameTitle.equals(getString(R.string.fiveYahtzee))) {
                 mHighScoresFragment = new YahtzeeHighScoresFragment();
-                FiveYahtzeeScoreDao fiveYahtzeeScoreDao = scoreDatabase.fiveYahtzeeScoreDao();
-                bundle.putSerializable(YahtzeeHighScoresFragment.TOP10_SCORE, (Serializable) fiveYahtzeeScoreDao.findTop10());
-                bundle.putInt(YahtzeeHighScoresFragment.GAMES_PLAYED, fiveYahtzeeScoreDao.count());
-                bundle.putInt(YahtzeeHighScoresFragment.MAX_SCORE, fiveYahtzeeScoreDao.maxScore());
-                bundle.putInt(YahtzeeHighScoresFragment.MIN_SCORE, fiveYahtzeeScoreDao.minScore());
-                bundle.putDouble(YahtzeeHighScoresFragment.AVERAGE_SCORE, fiveYahtzeeScoreDao.averageScore());
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, fiveYahtzeeScoreDao.numBonus());
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, fiveYahtzeeScoreDao.numYahtzee());
+                var dao = scoreDatabase.fiveYahtzeeScoreDao();
+                var stats = dao.statistics();
+                bundle.putSerializable(YahtzeeHighScoresFragment.TOP10_SCORE, (Serializable) dao.findTop(10));
+                bundle.putInt(YahtzeeHighScoresFragment.GAMES_PLAYED, stats.count);
+                bundle.putInt(YahtzeeHighScoresFragment.MAX_SCORE, stats.maxScore);
+                bundle.putInt(YahtzeeHighScoresFragment.MIN_SCORE, stats.minScore);
+                bundle.putDouble(YahtzeeHighScoresFragment.AVERAGE_SCORE, stats.avgScore);
+                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, stats.numBonus);
+                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, stats.numYahtzee);
             }
             else if (gameTitle.equals(getString(R.string.sixYahtzee))) {
                 mHighScoresFragment = new YahtzeeHighScoresFragment();
-                SixYahtzeeScoreDao sixYahtzeeScoreDao = scoreDatabase.sixYahtzeeScoreDao();
-                bundle.putSerializable(YahtzeeHighScoresFragment.TOP10_SCORE, (Serializable) sixYahtzeeScoreDao.findTop10());
-                bundle.putInt(YahtzeeHighScoresFragment.GAMES_PLAYED, sixYahtzeeScoreDao.count());
-                bundle.putInt(YahtzeeHighScoresFragment.MAX_SCORE, sixYahtzeeScoreDao.maxScore());
-                bundle.putInt(YahtzeeHighScoresFragment.MIN_SCORE, sixYahtzeeScoreDao.minScore());
-                bundle.putDouble(YahtzeeHighScoresFragment.AVERAGE_SCORE, sixYahtzeeScoreDao.averageScore());
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, sixYahtzeeScoreDao.numBonus());
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, sixYahtzeeScoreDao.numYahtzee());
+                var dao = scoreDatabase.sixYahtzeeScoreDao();
+                var stats = dao.statistics();
+                bundle.putSerializable(YahtzeeHighScoresFragment.TOP10_SCORE, (Serializable) dao.findTop(10));
+                bundle.putInt(YahtzeeHighScoresFragment.GAMES_PLAYED, stats.count);
+                bundle.putInt(YahtzeeHighScoresFragment.MAX_SCORE, stats.maxScore);
+                bundle.putInt(YahtzeeHighScoresFragment.MIN_SCORE, stats.minScore);
+                bundle.putDouble(YahtzeeHighScoresFragment.AVERAGE_SCORE, stats.avgScore);
+                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, stats.numBonus);
+                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, stats.numYahtzee);
             }
             else if (gameTitle.equals(getString(R.string.balut))) {
                 mHighScoresFragment = new BalutHighScoresFragment();
-                BalutScoreDao balutScoreDao = scoreDatabase.balutScoreDao();
-                bundle.putSerializable(BalutHighScoresFragment.TOP10_SCORE, (Serializable) balutScoreDao.findTop10());
-                bundle.putInt(BalutHighScoresFragment.GAMES_PLAYED, balutScoreDao.count());
-                bundle.putInt(BalutHighScoresFragment.MAX_SCORE, balutScoreDao.maxScore());
-                bundle.putInt(BalutHighScoresFragment.MIN_SCORE, balutScoreDao.minScore());
-                bundle.putDouble(BalutHighScoresFragment.AVERAGE_SCORE, balutScoreDao.averageScore());
-                bundle.putInt(BalutHighScoresFragment.GOT_BALUT, balutScoreDao.numBalut());
+                var dao = scoreDatabase.balutScoreDao();
+                var stats = dao.statistics();
+                bundle.putSerializable(BalutHighScoresFragment.TOP10_SCORE, (Serializable) dao.findTop(10));
+                bundle.putInt(BalutHighScoresFragment.GAMES_PLAYED, stats.count);
+                bundle.putInt(BalutHighScoresFragment.MAX_SCORE, stats.maxScore);
+                bundle.putInt(BalutHighScoresFragment.MIN_SCORE, stats.minScore);
+                bundle.putDouble(BalutHighScoresFragment.AVERAGE_SCORE, stats.avgScore);
+                bundle.putInt(BalutHighScoresFragment.GOT_BALUT, stats.numBalut);
             }
             else if (gameTitle.equals(getString(R.string.farkle))) {
                 mHighScoresFragment = new FarkleHighScoresFragment();
-                FarkleScoreDao farkleScoreDao = scoreDatabase.farkleScoreDao();
-                bundle.putInt(FarkleHighScoresFragment.GAMES_PLAYED, farkleScoreDao.count());
-                bundle.putInt(FarkleHighScoresFragment.WON_GAMES, farkleScoreDao.winCount());
+                var dao = scoreDatabase.farkleScoreDao();
+                var stats = dao.statistics();
+                bundle.putInt(FarkleHighScoresFragment.GAMES_PLAYED, stats.count);
+                bundle.putInt(FarkleHighScoresFragment.WON_GAMES, stats.winCount);
             }
 
             mHighScoresFragment.setArguments(bundle);

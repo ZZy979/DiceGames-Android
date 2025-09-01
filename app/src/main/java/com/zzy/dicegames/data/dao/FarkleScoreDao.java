@@ -1,12 +1,14 @@
 package com.zzy.dicegames.data.dao;
 
 import com.zzy.dicegames.data.entity.FarkleScore;
+import com.zzy.dicegames.data.entity.FarkleStatistics;
 
 import java.util.List;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 /**
@@ -20,16 +22,19 @@ public interface FarkleScoreDao {
     @Query("SELECT * FROM farkle_score")
     List<FarkleScore> findAll();
 
-    @Query("SELECT COUNT(*) FROM farkle_score")
-    int count();
+    @Query("SELECT * FROM farkle_score WHERE id = :id")
+    FarkleScore findById(int id);
 
-    @Query("SELECT COUNT(*) FROM farkle_score WHERE score > computer_score")
-    int winCount();
+    @Query(
+            "SELECT COUNT(*) AS count, SUM(score > computer_score) AS winCount " +
+            "FROM farkle_score"
+    )
+    FarkleStatistics statistics();
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(FarkleScore score);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(List<FarkleScore> scores);
 
     @Delete

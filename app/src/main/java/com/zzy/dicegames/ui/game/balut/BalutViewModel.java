@@ -182,11 +182,11 @@ public class BalutViewModel extends BaseGameViewModel {
         return new BalutScore(LocalDate.now().toString(), totalScore.getValue(), numBalut);
     }
 
-    /** 将得分保存到数据库，并返回排名（0表示不在前10名中） */
+    /** 将得分保存到数据库，并返回排名 */
     public int saveScoreToDatabase(BalutScore score) {
         var dao = scoreDatabase.balutScoreDao();
         dao.insert(score);
-        return dao.findTop10Score().indexOf(score.score) + 1;
+        return dao.rank(score.score);
     }
 
     @Override
