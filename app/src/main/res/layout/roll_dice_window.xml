@@ -8,43 +8,43 @@
 
     <com.zzy.dicegames.ui.dice.DiceView
         android:id="@+id/dice1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:locked="false"
         app:number="6" />
 
     <com.zzy.dicegames.ui.dice.DiceView
         android:id="@+id/dice2"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:locked="false"
         app:number="6" />
 
     <com.zzy.dicegames.ui.dice.DiceView
         android:id="@+id/dice3"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:locked="false"
         app:number="6" />
 
     <com.zzy.dicegames.ui.dice.DiceView
         android:id="@+id/dice4"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:locked="false"
         app:number="6" />
 
     <com.zzy.dicegames.ui.dice.DiceView
         android:id="@+id/dice5"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:locked="false"
         app:number="6" />
 
     <com.zzy.dicegames.ui.dice.DiceView
         android:id="@+id/dice6"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:locked="false"
         app:number="6" />
 
