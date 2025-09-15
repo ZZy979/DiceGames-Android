@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.zzy.dicegames.R;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -25,14 +27,13 @@ class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
     public void setLog(List<Pair<Integer, Object[]>> log) {
         mLog = log;
         notifyDataSetChanged();
-        // TODO notifyItemInserted();
     }
 
     @NonNull
     @Override
     public LogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_1, parent, false);
+                .inflate(R.layout.farkle_log_item, parent, false);
         return new LogViewHolder(view);
     }
 
@@ -52,7 +53,7 @@ class LogAdapter extends RecyclerView.Adapter<LogAdapter.LogViewHolder> {
 
         public LogViewHolder(View itemView) {
             super(itemView);
-            mTextView = itemView.findViewById(android.R.id.text1);
+            mTextView = itemView.findViewById(R.id.tvLog);
         }
     }
 }
