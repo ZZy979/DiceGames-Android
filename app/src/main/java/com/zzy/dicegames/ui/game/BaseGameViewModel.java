@@ -177,16 +177,16 @@ public class BaseGameViewModel extends ViewModel {
     public void rollDice() {
         if (!hasRemainingRolls())
             return;
-
+        decreaseRemainingRolls();
         int[] numbers = generateRandomDiceNumbers();
         updateDiceNumbers(numbers);
-        decreaseRemainingRolls();
     }
 
     /** 掷骰子（带动画效果） */
     public void rollDiceWithAnimation() {
         if (!hasRemainingRolls())
             return;
+        decreaseRemainingRolls();
         rollDiceAnimation(0);
     }
 
@@ -199,7 +199,6 @@ public class BaseGameViewModel extends ViewModel {
         }
         else {
             updateDiceNumbers(numbers);
-            decreaseRemainingRolls();
         }
     }
 
