@@ -7,6 +7,7 @@ import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -15,12 +16,16 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class FiveYahtzeeScoreDaoTest {
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
     private ScoreDatabase database;
 
     private FiveYahtzeeScoreDao dao;
@@ -71,6 +76,7 @@ public class FiveYahtzeeScoreDaoTest {
     public void testFindById() {
         var score = dao.findById(8);
         assertNotNull(score);
+        assertEquals(8, score.id);
         assertEquals("2025-01-08", score.date);
         assertEquals(260, score.score);
         assertFalse(score.hasBonus);
@@ -81,14 +87,14 @@ public class FiveYahtzeeScoreDaoTest {
 
     @Test
     public void testFindTop() {
-        var topScores = dao.findTop(5);
         int[] expected = {370, 350, 320, 300, 290};
-        assertEquals(5, topScores.size());
-        for (int i = 0; i < expected.length; i++)
-            assertEquals(expected[i], topScores.get(i).score);
+        dao.findTop(5).observeForever(topScores -> {
+            assertEquals(5, topScores.size());
+            for (int i = 0; i < expected.length; i++)
+                assertEquals(expected[i], topScores.get(i).score);
+        });
 
-        topScores = dao.findTop(100);
-        assertEquals(12, topScores.size());
+        dao.findTop(100).observeForever(topScores -> assertEquals(12, topScores.size()));
     }
 
     @Test
@@ -103,13 +109,14 @@ public class FiveYahtzeeScoreDaoTest {
 
     @Test
     public void testStatistics() {
-        var stats = dao.statistics();
-        assertEquals(12, stats.count);
-        assertEquals(370, stats.maxScore);
-        assertEquals(160, stats.minScore);
-        assertEquals(272.5, stats.avgScore, 1e-6);
-        assertEquals(6, stats.numBonus);
-        assertEquals(5, stats.numYahtzee);
+        dao.statistics().observeForever(stats -> {
+            assertEquals(12, stats.count);
+            assertEquals(370, stats.maxScore);
+            assertEquals(160, stats.minScore);
+            assertEquals(272.5, stats.avgScore, 1e-6);
+            assertEquals(6, stats.numBonus);
+            assertEquals(5, stats.numYahtzee);
+        });
     }
 
     @Test
@@ -117,21 +124,34 @@ public class FiveYahtzeeScoreDaoTest {
         for (int i = 0; i < testScores.size(); i++)
             testScores.get(i).id = i + 1;
         dao.deleteAll(testScores);
+        dao.statistics().observeForever(stats -> {
+            assertEquals(0, stats.count);
+            assertEquals(0, stats.maxScore);
+            assertEquals(0, stats.minScore);
+            assertEquals(0.0, stats.avgScore, 1e-6);
+            assertEquals(0, stats.numBonus);
+            assertEquals(0, stats.numYahtzee);
+        });
+    }
 
-        var stats = dao.statistics();
-        assertEquals(0, stats.count);
-        assertEquals(0, stats.maxScore);
-        assertEquals(0, stats.minScore);
-        assertEquals(0.0, stats.avgScore, 1e-6);
-        assertEquals(0, stats.numBonus);
-        assertEquals(0, stats.numYahtzee);
+    @Test
+    public void testStatisticsObserver() {
+        dao.insert(new FiveYahtzeeScore("2025-01-13", 375, true, true));
+        dao.statistics().observeForever(stats -> {
+            assertEquals(13, stats.count);
+            assertEquals(375, stats.maxScore);
+            assertEquals(160, stats.minScore);
+            assertEquals(280.384615, stats.avgScore, 1e-6);
+            assertEquals(7, stats.numBonus);
+            assertEquals(6, stats.numYahtzee);
+        });
     }
 
     @Test
     public void testInsert() {
         var score = new FiveYahtzeeScore("2025-01-13", 255, true, false);
         dao.insert(score);
-        assertEquals(13, dao.statistics().count);
+        assertEquals(13, dao.count());
         var actual = dao.findById(13);
         assertNotNull(actual);
         assertEquals(255, actual.score);
@@ -142,7 +162,7 @@ public class FiveYahtzeeScoreDaoTest {
         var score = new FiveYahtzeeScore("2025-01-07", 245, false, false);
         score.id = 7;
         dao.insert(score);
-        assertEquals(12, dao.statistics().count);
+        assertEquals(12, dao.count());
         assertEquals(240, dao.findById(7).score);
     }
 
@@ -156,7 +176,7 @@ public class FiveYahtzeeScoreDaoTest {
             scores.add(s);
         }
         dao.deleteAll(scores);
-        assertEquals(9, dao.statistics().count);
+        assertEquals(9, dao.count());
         for (int id : idsToDelete)
             assertNull(dao.findById(id));
     }

@@ -73,7 +73,7 @@
     <string name="logSeparator">----------------------------------------</string>
 
     <string name="top10">Top 10</string>
-    <string name="nothing">Nothing yet</string>
+    <string name="nothing">Nothing</string>
     <string name="statistics">Statistics</string>
     <string name="gamesPlayed">Games played</string>
     <string name="maxScore">Maximum score</string>

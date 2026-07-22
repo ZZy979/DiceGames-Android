@@ -114,6 +114,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     }
 
     /** 返回游戏标题 */
+    // TODO 替换为GameType枚举
     public String getTitle() {
         return mTitleTextView.getText().toString();
     }

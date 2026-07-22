@@ -32,6 +32,7 @@ public class HighScoresActivity extends AppCompatActivity {
     private List<String> mSupportedGameTypes;
 
     /** 当前展示的游戏类型在{@link #mSupportedGameTypes}中的索引 */
+    // TODO 替换为ViewModel
     private int mGameTitleIndex = -1;
 
     /** 展示区域 */
@@ -86,16 +87,7 @@ public class HighScoresActivity extends AppCompatActivity {
             ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
             Bundle bundle = new Bundle();
             if (gameTitle.equals(getString(R.string.fiveYahtzee))) {
-                mHighScoresFragment = new YahtzeeHighScoresFragment();
-                var dao = scoreDatabase.fiveYahtzeeScoreDao();
-                var stats = dao.statistics();
-                bundle.putSerializable(YahtzeeHighScoresFragment.TOP10_SCORE, (Serializable) dao.findTop(10));
-                bundle.putInt(YahtzeeHighScoresFragment.GAMES_PLAYED, stats.count);
-                bundle.putInt(YahtzeeHighScoresFragment.MAX_SCORE, stats.maxScore);
-                bundle.putInt(YahtzeeHighScoresFragment.MIN_SCORE, stats.minScore);
-                bundle.putDouble(YahtzeeHighScoresFragment.AVERAGE_SCORE, stats.avgScore);
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, stats.numBonus);
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, stats.numYahtzee);
+                mHighScoresFragment = new FiveYahtzeeStatsFragment();
             }
             else if (gameTitle.equals(getString(R.string.sixYahtzee))) {
                 mHighScoresFragment = new YahtzeeHighScoresFragment();

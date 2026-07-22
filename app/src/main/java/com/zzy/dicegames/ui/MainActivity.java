@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        // TODO fix
         super.onBackPressed();
         long currentTime = new Date().getTime();
         if (currentTime - mLastPressTime < 1000) finish();
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
         if (mGameFragment.getTitle().equals(gameTitle))
             mGameFragment.startNewGame();
         else {
+            // TODO createGameFragmentByGameType
             BaseGameFragment<?> newGameFragment = null;
             if (gameTitle.equals(getString(R.string.fiveYahtzee)))
                 newGameFragment = new FiveYahtzeeFragment();

@@ -11,6 +11,6 @@ import androidx.room.Entity;
 @Entity(tableName = "five_yahtzee_score")
 public class FiveYahtzeeScore extends AbstractYahtzeeScore {
     public FiveYahtzeeScore(@NonNull String date, int score, boolean hasBonus, boolean hasYahtzee) {
-        super(date, score, hasBonus,hasYahtzee);
+        super(date, score, hasBonus, hasYahtzee);
     }
 }
