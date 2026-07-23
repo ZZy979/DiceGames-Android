@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.ui.help.HelpActivity;
-import com.zzy.dicegames.ui.highscores.HighScoresActivity;
+import com.zzy.dicegames.ui.stats.StatisticsActivity;
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.data.entity.BalutScore;
 import com.zzy.dicegames.data.entity.FarkleScore;
@@ -86,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(HelpActivity.GAME_TITLE, mGameFragment.getTitle());
             startActivity(intent);
         }
-        else if (itemId == R.id.menuHighScores) {
-            intent = new Intent(this, HighScoresActivity.class);
-            intent.putExtra(HighScoresActivity.GAME_TITLE, mGameFragment.getTitle());
+        else if (itemId == R.id.menuStatistics) {
+            intent = new Intent(this, StatisticsActivity.class);
+            intent.putExtra(StatisticsActivity.GAME_TITLE, mGameFragment.getTitle());
             startActivity(intent);
         }
         else if (itemId == R.id.menuImportScores) {

@@ -7,6 +7,7 @@ import com.zzy.dicegames.data.entity.FarkleScore;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -15,12 +16,16 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class FarkleScoreDaoTest {
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
     private ScoreDatabase database;
 
     private FarkleScoreDao dao;
@@ -75,9 +80,10 @@ public class FarkleScoreDaoTest {
 
     @Test
     public void testStatistics() {
-        var stats = dao.statistics();
-        assertEquals(8, stats.count);
-        assertEquals(5, stats.winCount);
+        dao.statistics().observeForever(stats -> {
+            assertEquals(8, stats.count);
+            assertEquals(5, stats.winCount);
+        });
     }
 
     @Test
@@ -85,17 +91,26 @@ public class FarkleScoreDaoTest {
         for (int i = 0; i < testScores.size(); i++)
             testScores.get(i).id = i + 1;
         dao.deleteAll(testScores);
+        dao.statistics().observeForever(stats -> {
+            assertEquals(0, stats.count);
+            assertEquals(0, stats.winCount);
+        });
+    }
 
-        var stats = dao.statistics();
-        assertEquals(0, stats.count);
-        assertEquals(0, stats.winCount);
+    @Test
+    public void testStatisticsObserver() {
+        dao.insert(new FarkleScore("2025-04-09", 11000, 9800));
+        dao.statistics().observeForever(stats -> {
+            assertEquals(9, stats.count);
+            assertEquals(6, stats.winCount);
+        });
     }
 
     @Test
     public void testInsert() {
         var score = new FarkleScore("2025-04-09", 9800, 10650);
         dao.insert(score);
-        assertEquals(9, dao.statistics().count);
+        assertEquals(9, dao.count());
         var actual = dao.findById(9);
         assertNotNull(actual);
         assertEquals(9800, actual.score);
@@ -106,7 +121,7 @@ public class FarkleScoreDaoTest {
         var score = new FarkleScore("2025-04-02", 10050, 9050);
         score.id = 2;
         dao.insert(score);
-        assertEquals(8, dao.statistics().count);
+        assertEquals(8, dao.count());
         assertEquals(10000, dao.findById(2).score);
     }
 
@@ -120,7 +135,7 @@ public class FarkleScoreDaoTest {
             scores.add(s);
         }
         dao.deleteAll(scores);
-        assertEquals(6, dao.statistics().count);
+        assertEquals(6, dao.count());
         for (int id : idsToDelete)
             assertNull(dao.findById(id));
     }

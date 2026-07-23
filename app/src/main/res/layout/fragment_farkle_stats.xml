@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.highscores.FarkleHighScoresFragment">
+    tools:context=".ui.stats.FarkleStatsFragment">
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,11 +46,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/wonGames"
+                android:text="@string/gamesWon"
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/tvWonGames"
+                android:id="@+id/tvGamesWon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

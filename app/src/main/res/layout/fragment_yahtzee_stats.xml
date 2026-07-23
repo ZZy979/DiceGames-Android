@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.highscores.BaseYahtzeeStatsFragment">
+    tools:context=".ui.stats.BaseYahtzeeStatsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:text="@string/top10"
             android:textSize="24sp" />
 
-        <com.zzy.dicegames.ui.highscores.ScrollListView
+        <com.zzy.dicegames.ui.stats.ScrollListView
             android:id="@+id/lvHighScores"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

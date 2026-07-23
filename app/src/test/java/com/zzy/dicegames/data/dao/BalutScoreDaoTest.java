@@ -7,6 +7,7 @@ import com.zzy.dicegames.data.entity.BalutScore;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -15,12 +16,16 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class BalutScoreDaoTest {
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
     private ScoreDatabase database;
 
     private BalutScoreDao dao;
@@ -78,14 +83,14 @@ public class BalutScoreDaoTest {
 
     @Test
     public void testFindTop() {
-        var topScores = dao.findTop(5);
         int[] expected = {600, 550, 500, 470, 420};
-        assertEquals(5, topScores.size());
-        for (int i = 0; i < expected.length; i++)
-            assertEquals(expected[i], topScores.get(i).score);
+        dao.findTop(5).observeForever(topScores -> {
+            assertEquals(5, topScores.size());
+            for (int i = 0; i < expected.length; i++)
+                assertEquals(expected[i], topScores.get(i).score);
+        });
 
-        topScores = dao.findTop(100);
-        assertEquals(11, topScores.size());
+        dao.findTop(100).observeForever(topScores -> assertEquals(11, topScores.size()));
     }
 
     @Test
@@ -100,12 +105,13 @@ public class BalutScoreDaoTest {
 
     @Test
     public void testStatistics() {
-        var stats = dao.statistics();
-        assertEquals(11, stats.count);
-        assertEquals(600, stats.maxScore);
-        assertEquals(280, stats.minScore);
-        assertEquals(415.454545, stats.avgScore, 1e-6);
-        assertEquals(14, stats.numBalut);
+        dao.statistics().observeForever(stats -> {
+            assertEquals(11, stats.count);
+            assertEquals(600, stats.maxScore);
+            assertEquals(280, stats.minScore);
+            assertEquals(415.454545, stats.avgScore, 1e-6);
+            assertEquals(14, stats.numBalut);
+        });
     }
 
     @Test
@@ -113,20 +119,32 @@ public class BalutScoreDaoTest {
         for (int i = 0; i < testScores.size(); i++)
             testScores.get(i).id = i + 1;
         dao.deleteAll(testScores);
+        dao.statistics().observeForever(stats -> {
+            assertEquals(0, stats.count);
+            assertEquals(0, stats.maxScore);
+            assertEquals(0, stats.minScore);
+            assertEquals(0.0, stats.avgScore, 1e-6);
+            assertEquals(0, stats.numBalut);
+        });
+    }
 
-        var stats = dao.statistics();
-        assertEquals(0, stats.count);
-        assertEquals(0, stats.maxScore);
-        assertEquals(0, stats.minScore);
-        assertEquals(0.0, stats.avgScore, 1e-6);
-        assertEquals(0, stats.numBalut);
+    @Test
+    public void testStatisticsObserver() {
+        dao.insert(new BalutScore("2025-03-12", 450, 2));
+        dao.statistics().observeForever(stats -> {
+            assertEquals(12, stats.count);
+            assertEquals(600, stats.maxScore);
+            assertEquals(280, stats.minScore);
+            assertEquals(418.333333, stats.avgScore, 1e-6);
+            assertEquals(16, stats.numBalut);
+        });
     }
 
     @Test
     public void testInsert() {
         var score = new BalutScore("2025-03-12", 460, 2);
         dao.insert(score);
-        assertEquals(12, dao.statistics().count);
+        assertEquals(12, dao.count());
         var actual = dao.findById(12);
         assertNotNull(actual);
         assertEquals(460, actual.score);
@@ -137,7 +155,7 @@ public class BalutScoreDaoTest {
         var score = new BalutScore("2025-03-03", 385, 1);
         score.id = 3;
         dao.insert(score);
-        assertEquals(11, dao.statistics().count);
+        assertEquals(11, dao.count());
         assertEquals(380, dao.findById(3).score);
     }
 
@@ -151,7 +169,7 @@ public class BalutScoreDaoTest {
             scores.add(s);
         }
         dao.deleteAll(scores);
-        assertEquals(8, dao.statistics().count);
+        assertEquals(8, dao.count());
         for (int id : idsToDelete)
             assertNull(dao.findById(id));
     }

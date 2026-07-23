@@ -5,6 +5,7 @@ import com.zzy.dicegames.data.entity.FarkleStatistics;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -25,11 +26,14 @@ public interface FarkleScoreDao {
     @Query("SELECT * FROM farkle_score WHERE id = :id")
     FarkleScore findById(int id);
 
+    @Query("SELECT COUNT(*) FROM farkle_score")
+    int count();
+
     @Query(
             "SELECT COUNT(*) AS count, SUM(score > computer_score) AS winCount " +
             "FROM farkle_score"
     )
-    FarkleStatistics statistics();
+    LiveData<FarkleStatistics> statistics();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(FarkleScore score);

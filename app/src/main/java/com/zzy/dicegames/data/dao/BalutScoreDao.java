@@ -5,6 +5,7 @@ import com.zzy.dicegames.data.entity.BalutStatistics;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -26,17 +27,20 @@ public interface BalutScoreDao {
     BalutScore findById(int id);
 
     @Query("SELECT * FROM balut_score ORDER BY score DESC, date DESC LIMIT :n")
-    List<BalutScore> findTop(int n);
+    LiveData<List<BalutScore>> findTop(int n);
 
     @Query("SELECT COUNT(*) + 1 FROM balut_score WHERE score > :score")
     int rank(int score);
+
+    @Query("SELECT COUNT(*) FROM balut_score")
+    int count();
 
     @Query(
             "SELECT COUNT(*) AS count, MAX(score) AS maxScore, MIN(score) AS minScore, " +
             "    AVG(score) AS avgScore, SUM(num_balut) AS numBalut " +
             "FROM balut_score"
     )
-    BalutStatistics statistics();
+    LiveData<BalutStatistics> statistics();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(BalutScore score);

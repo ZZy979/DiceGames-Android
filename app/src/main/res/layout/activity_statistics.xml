@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.highscores.HighScoresActivity">
+    tools:context=".ui.stats.StatisticsActivity">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -14,7 +14,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/highScores"
+        android:text="@string/statistics"
         android:textSize="40sp"
         android:textStyle="bold" />
 
@@ -29,7 +29,7 @@
         android:layout_marginBottom="10dp" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/highScoresFragment"
+        android:id="@+id/statisticsFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/spnGameType"

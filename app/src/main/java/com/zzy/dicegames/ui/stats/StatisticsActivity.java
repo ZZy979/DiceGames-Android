@@ -1,4 +1,4 @@
-package com.zzy.dicegames.ui.highscores;
+package com.zzy.dicegames.ui.stats;
 
 import android.os.Bundle;
 import android.view.View;
@@ -7,9 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.data.ScoreDatabase;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,14 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 /**
- * 用于展示最高分和统计数据的{@code Activity}<br>
+ * 用于展示统计数据的{@code Activity}<br>
  * 传入数据：<br>
  * <ul><li>{@link #GAME_TITLE}：一个字符串，游戏标题</li></ul>
  * 返回结果：无
  *
  * @author 赵正阳
  */
-public class HighScoresActivity extends AppCompatActivity {
+public class StatisticsActivity extends AppCompatActivity {
     /** 用于传入参数/保存和恢复状态：游戏标题 */
     public static final String GAME_TITLE = "gameTitle";
 
@@ -36,12 +34,12 @@ public class HighScoresActivity extends AppCompatActivity {
     private int mGameTitleIndex = -1;
 
     /** 展示区域 */
-    private Fragment mHighScoresFragment;
+    private Fragment mStatisticsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_high_scores);
+        setContentView(R.layout.activity_statistics);
 
         mSupportedGameTypes = Arrays.asList(
                 getString(R.string.fiveYahtzee),
@@ -54,7 +52,7 @@ public class HighScoresActivity extends AppCompatActivity {
             changeGameType(getIntent().getStringExtra(GAME_TITLE));
         else {
             mGameTitleIndex = savedInstanceState.getInt(GAME_TITLE);
-            mHighScoresFragment = getSupportFragmentManager().findFragmentById(R.id.highScoresFragment);
+            mStatisticsFragment = getSupportFragmentManager().findFragmentById(R.id.statisticsFragment);
         }
 
         Spinner spnGameType = findViewById(R.id.spnGameType);
@@ -84,34 +82,17 @@ public class HighScoresActivity extends AppCompatActivity {
             gameTitle = mSupportedGameTypes.get(0);
         if (mGameTitleIndex < 0 || !gameTitle.equals(mSupportedGameTypes.get(mGameTitleIndex))) {
             mGameTitleIndex = mSupportedGameTypes.indexOf(gameTitle);
-            ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
-            Bundle bundle = new Bundle();
             if (gameTitle.equals(getString(R.string.fiveYahtzee)))
-                mHighScoresFragment = new FiveYahtzeeStatsFragment();
+                mStatisticsFragment = new FiveYahtzeeStatsFragment();
             else if (gameTitle.equals(getString(R.string.sixYahtzee)))
-                mHighScoresFragment = new SixYahtzeeStatsFragment();
-            else if (gameTitle.equals(getString(R.string.balut))) {
-                mHighScoresFragment = new BalutHighScoresFragment();
-                var dao = scoreDatabase.balutScoreDao();
-                var stats = dao.statistics();
-                bundle.putSerializable(BalutHighScoresFragment.TOP10_SCORE, (Serializable) dao.findTop(10));
-                bundle.putInt(BalutHighScoresFragment.GAMES_PLAYED, stats.count);
-                bundle.putInt(BalutHighScoresFragment.MAX_SCORE, stats.maxScore);
-                bundle.putInt(BalutHighScoresFragment.MIN_SCORE, stats.minScore);
-                bundle.putDouble(BalutHighScoresFragment.AVERAGE_SCORE, stats.avgScore);
-                bundle.putInt(BalutHighScoresFragment.GOT_BALUT, stats.numBalut);
-            }
-            else if (gameTitle.equals(getString(R.string.farkle))) {
-                mHighScoresFragment = new FarkleHighScoresFragment();
-                var dao = scoreDatabase.farkleScoreDao();
-                var stats = dao.statistics();
-                bundle.putInt(FarkleHighScoresFragment.GAMES_PLAYED, stats.count);
-                bundle.putInt(FarkleHighScoresFragment.WON_GAMES, stats.winCount);
-            }
+                mStatisticsFragment = new SixYahtzeeStatsFragment();
+            else if (gameTitle.equals(getString(R.string.balut)))
+                mStatisticsFragment = new BalutStatsFragment();
+            else if (gameTitle.equals(getString(R.string.farkle)))
+                mStatisticsFragment = new FarkleStatsFragment();
 
-            mHighScoresFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.highScoresFragment, mHighScoresFragment)
+                    .replace(R.id.statisticsFragment, mStatisticsFragment)
                     .commit();
         }
     }

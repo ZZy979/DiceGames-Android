@@ -1,21 +1,17 @@
-package com.zzy.dicegames.ui.highscores;
+package com.zzy.dicegames.ui.stats;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.data.entity.YahtzeeStatistics;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -88,20 +84,7 @@ public abstract class BaseYahtzeeStatsFragment extends BaseStatsFragment {
         else {
             mHighScoresListView.setVisibility(View.VISIBLE);
             mNothingTextView.setVisibility(View.GONE);
-
-            List<Map<String, Object>> data = new ArrayList<>();
-            for (int i = 0; i < highScores.size(); ++i) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("rank", i + 1);
-                map.put("score", highScores.get(i).score);
-                map.put("date", highScores.get(i).date);
-                data.add(map);
-            }
-            mHighScoresListView.setAdapter(new SimpleAdapter(
-                    getContext(), data, R.layout.high_score_item,
-                    new String[] {"rank", "score", "date"},
-                    new int[] {R.id.tvRank, R.id.tvScore, R.id.tvDate}
-            ));
+            mHighScoresListView.setAdapter(createHighScoresListAdapter(highScores));
         }
     }
 

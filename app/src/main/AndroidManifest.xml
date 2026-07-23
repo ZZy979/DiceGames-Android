@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.help.HelpActivity" />
-        <activity android:name=".ui.highscores.HighScoresActivity" />
+        <activity android:name=".ui.stats.StatisticsActivity" />
     </application>
 
 </manifest>
