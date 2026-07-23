@@ -5,6 +5,7 @@ import com.zzy.dicegames.data.entity.YahtzeeStatistics;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -26,17 +27,20 @@ public interface SixYahtzeeScoreDao {
     SixYahtzeeScore findById(int id);
 
     @Query("SELECT * FROM six_yahtzee_score ORDER BY score DESC, date DESC LIMIT :n")
-    List<SixYahtzeeScore> findTop(int n);
+    LiveData<List<SixYahtzeeScore>> findTop(int n);
 
     @Query("SELECT COUNT(*) + 1 FROM six_yahtzee_score WHERE score > :score")
     int rank(int score);
+
+    @Query("SELECT COUNT(*) FROM six_yahtzee_score")
+    int count();
 
     @Query(
             "SELECT COUNT(*) AS count, MAX(score) AS maxScore, MIN(score) AS minScore, " +
             "    AVG(score) AS avgScore, SUM(has_bonus) AS numBonus, SUM(has_yahtzee) AS numYahtzee " +
             "FROM six_yahtzee_score"
     )
-    YahtzeeStatistics statistics();
+    LiveData<YahtzeeStatistics> statistics();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(SixYahtzeeScore score);

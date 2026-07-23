@@ -7,6 +7,7 @@ import com.zzy.dicegames.data.entity.SixYahtzeeScore;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -15,12 +16,16 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.room.Room;
 
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class SixYahtzeeScoreDaoTest {
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
     private ScoreDatabase database;
 
     private SixYahtzeeScoreDao dao;
@@ -82,14 +87,14 @@ public class SixYahtzeeScoreDaoTest {
 
     @Test
     public void testFindTop() {
-        var topScores = dao.findTop(5);
         int[] expected = {560, 530, 500, 470, 450};
-        assertEquals(5, topScores.size());
-        for (int i = 0; i < expected.length; i++)
-            assertEquals(expected[i], topScores.get(i).score);
+        dao.findTop(5).observeForever(topScores -> {
+            assertEquals(5, topScores.size());
+            for (int i = 0; i < expected.length; i++)
+                assertEquals(expected[i], topScores.get(i).score);
+        });
 
-        topScores = dao.findTop(100);
-        assertEquals(13, topScores.size());
+        dao.findTop(100).observeForever(topScores -> assertEquals(13, topScores.size()));
     }
 
     @Test
@@ -104,13 +109,14 @@ public class SixYahtzeeScoreDaoTest {
 
     @Test
     public void testStatistics() {
-        var stats = dao.statistics();
-        assertEquals(13, stats.count);
-        assertEquals(560, stats.maxScore);
-        assertEquals(190, stats.minScore);
-        assertEquals(390.0, stats.avgScore, 1e-6);
-        assertEquals(7, stats.numBonus);
-        assertEquals(4, stats.numYahtzee);
+        dao.statistics().observeForever(stats -> {
+            assertEquals(13, stats.count);
+            assertEquals(560, stats.maxScore);
+            assertEquals(190, stats.minScore);
+            assertEquals(390.0, stats.avgScore, 1e-6);
+            assertEquals(7, stats.numBonus);
+            assertEquals(4, stats.numYahtzee);
+        });
     }
 
     @Test
@@ -118,21 +124,34 @@ public class SixYahtzeeScoreDaoTest {
         for (int i = 0; i < testScores.size(); i++)
             testScores.get(i).id = i + 1;
         dao.deleteAll(testScores);
+        dao.statistics().observeForever(stats -> {
+            assertEquals(0, stats.count);
+            assertEquals(0, stats.maxScore);
+            assertEquals(0, stats.minScore);
+            assertEquals(0.0, stats.avgScore, 1e-6);
+            assertEquals(0, stats.numBonus);
+            assertEquals(0, stats.numYahtzee);
+        });
+    }
 
-        var stats = dao.statistics();
-        assertEquals(0, stats.count);
-        assertEquals(0, stats.maxScore);
-        assertEquals(0, stats.minScore);
-        assertEquals(0.0, stats.avgScore, 1e-6);
-        assertEquals(0, stats.numBonus);
-        assertEquals(0, stats.numYahtzee);
+    @Test
+    public void testStatisticsObserver() {
+        dao.insert(new SixYahtzeeScore("2025-02-14", 565, true, true));
+        dao.statistics().observeForever(stats -> {
+            assertEquals(14, stats.count);
+            assertEquals(565, stats.maxScore);
+            assertEquals(190, stats.minScore);
+            assertEquals(402.5, stats.avgScore, 1e-6);
+            assertEquals(8, stats.numBonus);
+            assertEquals(5, stats.numYahtzee);
+        });
     }
 
     @Test
     public void testInsert() {
         var score = new SixYahtzeeScore("2025-02-14", 425, true, false);
         dao.insert(score);
-        assertEquals(14, dao.statistics().count);
+        assertEquals(14, dao.count());
         var actual = dao.findById(14);
         assertNotNull(actual);
         assertEquals(425, actual.score);
@@ -143,7 +162,7 @@ public class SixYahtzeeScoreDaoTest {
         var score = new SixYahtzeeScore("2025-02-10", 565, true, true);
         score.id = 10;
         dao.insert(score);
-        assertEquals(13, dao.statistics().count);
+        assertEquals(13, dao.count());
         assertEquals(560, dao.findById(10).score);
     }
 
@@ -157,7 +176,7 @@ public class SixYahtzeeScoreDaoTest {
             scores.add(s);
         }
         dao.deleteAll(scores);
-        assertEquals(10, dao.statistics().count);
+        assertEquals(10, dao.count());
         for (int id : idsToDelete)
             assertNull(dao.findById(id));
     }

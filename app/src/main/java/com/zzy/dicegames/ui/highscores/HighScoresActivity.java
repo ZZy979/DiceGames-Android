@@ -86,21 +86,10 @@ public class HighScoresActivity extends AppCompatActivity {
             mGameTitleIndex = mSupportedGameTypes.indexOf(gameTitle);
             ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
             Bundle bundle = new Bundle();
-            if (gameTitle.equals(getString(R.string.fiveYahtzee))) {
+            if (gameTitle.equals(getString(R.string.fiveYahtzee)))
                 mHighScoresFragment = new FiveYahtzeeStatsFragment();
-            }
-            else if (gameTitle.equals(getString(R.string.sixYahtzee))) {
-                mHighScoresFragment = new YahtzeeHighScoresFragment();
-                var dao = scoreDatabase.sixYahtzeeScoreDao();
-                var stats = dao.statistics();
-                bundle.putSerializable(YahtzeeHighScoresFragment.TOP10_SCORE, (Serializable) dao.findTop(10));
-                bundle.putInt(YahtzeeHighScoresFragment.GAMES_PLAYED, stats.count);
-                bundle.putInt(YahtzeeHighScoresFragment.MAX_SCORE, stats.maxScore);
-                bundle.putInt(YahtzeeHighScoresFragment.MIN_SCORE, stats.minScore);
-                bundle.putDouble(YahtzeeHighScoresFragment.AVERAGE_SCORE, stats.avgScore);
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_BONUS, stats.numBonus);
-                bundle.putInt(YahtzeeHighScoresFragment.GOT_YAHTZEE, stats.numYahtzee);
-            }
+            else if (gameTitle.equals(getString(R.string.sixYahtzee)))
+                mHighScoresFragment = new SixYahtzeeStatsFragment();
             else if (gameTitle.equals(getString(R.string.balut))) {
                 mHighScoresFragment = new BalutHighScoresFragment();
                 var dao = scoreDatabase.balutScoreDao();
