@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.common.GameType;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 
 import java.util.List;
@@ -46,6 +47,11 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
     private RecyclerView mLogView;
 
     private LogAdapter mLogAdapter;
+
+    @Override
+    public GameType getGameType() {
+        return GameType.FARKLE;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

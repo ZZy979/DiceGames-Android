@@ -7,8 +7,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.common.GameType;
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.ui.dice.DiceView;
+import com.zzy.dicegames.ui.game.balut.BalutFragment;
+import com.zzy.dicegames.ui.game.farkle.FarkleFragment;
+import com.zzy.dicegames.ui.game.rolladice.RollADiceFragment;
+import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeFragment;
+import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeFragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
@@ -32,6 +38,20 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     protected Button mRollButton;
 
     protected V mViewModel;
+
+    /** 根据游戏类型创建游戏Fragment */
+    public static BaseGameFragment<?> createByGameType(GameType gameType) {
+        return switch (gameType) {
+            case FIVE_YAHTZEE -> new FiveYahtzeeFragment();
+            case SIX_YAHTZEE -> new SixYahtzeeFragment();
+            case BALUT -> new BalutFragment();
+            case ROLL_A_DICE -> new RollADiceFragment();
+            case FARKLE -> new FarkleFragment();
+        };
+    }
+
+    /** 返回游戏类型 */
+    public abstract GameType getGameType();
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

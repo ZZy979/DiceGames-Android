@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.common.GameType;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -15,6 +16,11 @@ import androidx.lifecycle.ViewModelProvider;
  * @author 赵正阳
  */
 public class FiveYahtzeeFragment extends BaseYahtzeeFragment {
+    @Override
+    public GameType getGameType() {
+        return GameType.FIVE_YAHTZEE;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_five_yahtzee, container, false);

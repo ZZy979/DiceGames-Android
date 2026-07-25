@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.common.GameType;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 
 import androidx.lifecycle.LifecycleOwner;
@@ -30,6 +31,11 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
 
     /** 游戏总分标签 */
     private TextView mTotalScoreTextView;
+
+    @Override
+    public GameType getGameType() {
+        return GameType.BALUT;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

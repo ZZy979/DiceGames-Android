@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.common.GameType;
 import com.zzy.dicegames.ui.help.HelpActivity;
 import com.zzy.dicegames.ui.stats.StatisticsActivity;
 import com.zzy.dicegames.data.ScoreDatabase;
@@ -17,11 +18,6 @@ import com.zzy.dicegames.data.entity.FarkleScore;
 import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.data.entity.SixYahtzeeScore;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
-import com.zzy.dicegames.ui.game.balut.BalutFragment;
-import com.zzy.dicegames.ui.game.farkle.FarkleFragment;
-import com.zzy.dicegames.ui.game.rolladice.RollADiceFragment;
-import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeFragment;
-import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeFragment;
 import com.zzy.dicegames.utils.ScoresParser;
 
 import org.xmlpull.v1.XmlSerializer;
@@ -33,11 +29,15 @@ import java.io.IOException;
 import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
 
 public class MainActivity extends AppCompatActivity {
-    private String[] mGameTypes;
+    private MainViewModel mViewModel;
 
     private BaseGameFragment<?> mGameFragment;
+
+    private String[] mGameTypeNames;
 
     /** 上次按返回键的时间 */
     private long mLastPressTime = 0;
@@ -50,14 +50,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGameTypes = getResources().getStringArray(R.array.gameTypes);
-        if (savedInstanceState == null) {
-            mGameFragment = new FiveYahtzeeFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.gameFragment, mGameFragment)
-                    .commit();
-        }
-        else
+        mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        setupObservers(this);
+
+        mGameTypeNames = GameType.getAllNames(this);
+
+        // 初次创建时会自动调用onGameTypeChanged()
+        if (savedInstanceState != null)
             mGameFragment = (BaseGameFragment<?>) getSupportFragmentManager().findFragmentById(R.id.gameFragment);
     }
 
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setIcon(R.mipmap.ic_launcher)
                     .setTitle(R.string.selectGameType)
-                    .setItems(mGameTypes, (dialog, which) -> changeGameType(mGameTypes[which]))
+                    .setItems(mGameTypeNames, (dialog, which) -> mViewModel.changeGameType(which))
                     .create().show();
         }
         else if (itemId == R.id.menuHelp) {
@@ -119,32 +118,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void changeGameType(String gameTitle) {
-        if (mGameFragment.getTitle().equals(gameTitle))
-            mGameFragment.startNewGame();
-        else {
-            // TODO createGameFragmentByGameType
-            BaseGameFragment<?> newGameFragment = null;
-            if (gameTitle.equals(getString(R.string.fiveYahtzee)))
-                newGameFragment = new FiveYahtzeeFragment();
-            else if (gameTitle.equals(getString(R.string.sixYahtzee)))
-                newGameFragment = new SixYahtzeeFragment();
-            else if (gameTitle.equals(getString(R.string.balut)))
-                newGameFragment = new BalutFragment();
-//            else if (gameTitle.equals(getString(R.string.liarDice)))
-//                ;
-            else if (gameTitle.equals(getString(R.string.rollADice)))
-                newGameFragment = new RollADiceFragment();
-            else if (gameTitle.equals(getString(R.string.farkle)))
-                newGameFragment = new FarkleFragment();
+    /** 设置ViewModel观察者 */
+    private void setupObservers(LifecycleOwner owner) {
+        mViewModel.getGameType().observe(owner, this::onGameTypeChanged);
+    }
 
-            if (newGameFragment != null) {
-                mGameFragment = newGameFragment;
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.gameFragment, mGameFragment)
-                        .commit();
-            }
-        }
+    /** 游戏类型更新时的回调 */
+    private void onGameTypeChanged(GameType gameType) {
+        if (mGameFragment != null && gameType == mGameFragment.getGameType())
+            return;
+
+        mGameFragment = BaseGameFragment.createByGameType(gameType);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.gameFragment, mGameFragment)
+                .commit();
     }
 
     /** 从XML文件中导入得分数据，导入成功则返回{@code true}，否则返回{@code false} */
