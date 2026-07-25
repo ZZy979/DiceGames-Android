@@ -4,7 +4,7 @@ import android.os.Handler;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.FarkleScore;
-import com.zzy.dicegames.utils.ArrayUtils;
+import com.zzy.dicegames.utils.ArrayUtil;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -129,12 +129,12 @@ public class FarkleViewModelTest {
         when(spyViewModel.generateRandomDiceNumbers()).thenReturn(numbers1, numbers2);
 
         // 初始状态
-        assertTrue(ArrayUtils.all(spyViewModel.getDiceEnabled().getValue(), false));
+        assertTrue(ArrayUtil.all(spyViewModel.getDiceEnabled().getValue(), false));
         assertFalse(spyViewModel.getBankButtonEnabled().getValue());
 
         // 本轮第一次掷骰子
         spyViewModel.rollDice();
-        assertTrue(ArrayUtils.all(spyViewModel.getDiceEnabled().getValue(), true));
+        assertTrue(ArrayUtil.all(spyViewModel.getDiceEnabled().getValue(), true));
         assertArrayEquals(numbers1, spyViewModel.getDiceNumbers().getValue());
         var gameLog = viewModel.getGameLog().getValue();
         assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logDiceRolled, "4,1,3,5,4,6");
@@ -331,8 +331,8 @@ public class FarkleViewModelTest {
         assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logHotDice, 1500);
         assertEquals(1500, viewModel.getEstimatedTurnScore().getValue().intValue());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
-        assertTrue(ArrayUtils.all(viewModel.getDiceLocked().getValue(), false));
-        assertTrue(ArrayUtils.all(viewModel.getDiceEnabled().getValue(), false));
+        assertTrue(ArrayUtil.all(viewModel.getDiceLocked().getValue(), false));
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
     }
 
@@ -364,8 +364,8 @@ public class FarkleViewModelTest {
         assertEquals(PLAYER_COMPUTER, viewModel.getCurrentPlayer().getValue().intValue());
         assertEquals(0, viewModel.getEstimatedTurnScore().getValue().intValue());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
-        assertTrue(ArrayUtils.all(viewModel.getDiceLocked().getValue(), false));
-        assertTrue(ArrayUtils.all(viewModel.getDiceEnabled().getValue(), false));
+        assertTrue(ArrayUtil.all(viewModel.getDiceLocked().getValue(), false));
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertFalse(viewModel.getRollButtonEnabled().getValue());
         var gameLog = viewModel.getGameLog().getValue();
         assertGameLogEquals(gameLog.get(gameLog.size() - 3), R.string.logSeparator);
@@ -428,8 +428,8 @@ public class FarkleViewModelTest {
     public void testReset() {
         viewModel.reset();
         assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
-        assertTrue(ArrayUtils.all(viewModel.getDiceLocked().getValue(), false));
-        assertTrue(ArrayUtils.all(viewModel.getDiceEnabled().getValue(), false));
+        assertTrue(ArrayUtil.all(viewModel.getDiceLocked().getValue(), false));
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
         assertFalse(viewModel.getNewGameButtonVisible().getValue());

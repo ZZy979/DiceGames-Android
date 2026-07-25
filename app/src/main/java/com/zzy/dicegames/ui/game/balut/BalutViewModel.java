@@ -2,7 +2,7 @@ package com.zzy.dicegames.ui.game.balut;
 
 import com.zzy.dicegames.data.entity.BalutScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
-import com.zzy.dicegames.utils.ArrayUtils;
+import com.zzy.dicegames.utils.ArrayUtil;
 
 import java.time.LocalDate;
 
@@ -118,7 +118,7 @@ public class BalutViewModel extends BaseGameViewModel {
     /** 判断是否满足Balut：所有骰子点数都相同 */
     private boolean isBalut() {
         int[] numbers = diceNumbers.getValue();
-        return numbers != null && ArrayUtils.all(numbers, numbers[0]);
+        return numbers != null && ArrayUtil.all(numbers, numbers[0]);
     }
 
     /** 选择指定的得分项，更新得分 */

@@ -3,7 +3,7 @@ package com.zzy.dicegames.ui.game.farkle;
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.FarkleScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
-import com.zzy.dicegames.utils.ArrayUtils;
+import com.zzy.dicegames.utils.ArrayUtil;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -121,15 +121,15 @@ public class FarkleViewModel extends BaseGameViewModel {
     }
 
     public int numLockedDice() {
-        return ArrayUtils.count(diceLocked.getValue(), true);
+        return ArrayUtil.count(diceLocked.getValue(), true);
     }
 
     public boolean isAllDiceLocked() {
-        return ArrayUtils.all(diceLocked.getValue(), true);
+        return ArrayUtil.all(diceLocked.getValue(), true);
     }
 
     public boolean isAllDiceDisabled() {
-        return ArrayUtils.all(diceEnabled.getValue(), false);
+        return ArrayUtil.all(diceEnabled.getValue(), false);
     }
 
     /**
@@ -160,7 +160,7 @@ public class FarkleViewModel extends BaseGameViewModel {
      * @param numbers 骰子点数
      */
     protected void addDiceNumbersLog(int resId, int[] numbers) {
-        addLog(resId, ArrayUtils.join(ArrayUtils.filter(numbers, x -> x != 0), ","));
+        addLog(resId, ArrayUtil.join(ArrayUtil.filter(numbers, x -> x != 0), ","));
     }
 
     /** 禁用本轮已保留的骰子 */

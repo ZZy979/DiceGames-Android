@@ -2,7 +2,7 @@ package com.zzy.dicegames.ui.game.yahtzee;
 
 import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
-import com.zzy.dicegames.utils.ArrayUtils;
+import com.zzy.dicegames.utils.ArrayUtil;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -111,7 +111,7 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
     /** 判断是否满足Yahtzee：所有骰子点数都相同 */
     protected boolean isYahtzee() {
         int[] numbers = diceNumbers.getValue();
-        return numbers != null && ArrayUtils.all(numbers, numbers[0]);
+        return numbers != null && ArrayUtil.all(numbers, numbers[0]);
     }
 
     /** 是否满足Joker规则：满足Yahtzee，且Yahtzee和上区对应的数字已经选过 */

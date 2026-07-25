@@ -3,7 +3,7 @@ package com.zzy.dicegames.utils;
 import java.util.Arrays;
 import java.util.function.IntPredicate;
 
-public class ArrayUtils {
+public class ArrayUtil {
 
     /** 创建长度为length、所有元素都为value的数组 */
     public static int[] create(int length, int value) {

@@ -3,7 +3,7 @@ package com.zzy.dicegames.ui.game.balut;
 import android.os.Handler;
 
 import com.zzy.dicegames.data.entity.BalutScore;
-import com.zzy.dicegames.utils.ArrayUtils;
+import com.zzy.dicegames.utils.ArrayUtil;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -204,7 +204,7 @@ public class BalutViewModelTest {
         spyViewModel.setGameOverAction(gameOverAction);
 
         spyViewModel.gameOver();
-        assertTrue(ArrayUtils.all(spyViewModel.getDiceEnabled().getValue(), false));
+        assertTrue(ArrayUtil.all(spyViewModel.getDiceEnabled().getValue(), false));
         assertFalse(spyViewModel.getRollButtonEnabled().getValue());
         verify(spyViewModel).createScoreEntity();
         verify(spyViewModel).saveScoreToDatabase(argThat(s -> s.score == 400));

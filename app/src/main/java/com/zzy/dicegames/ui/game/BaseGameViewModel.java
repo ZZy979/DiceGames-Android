@@ -4,7 +4,7 @@ import android.os.Handler;
 
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.ui.dice.DiceView;
-import com.zzy.dicegames.utils.ArrayUtils;
+import com.zzy.dicegames.utils.ArrayUtil;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -82,9 +82,9 @@ public class BaseGameViewModel extends ViewModel {
         this.numDice = numDice;
         this.maxRolls = maxRolls;
         this.remainingRolls.setValue(maxRolls);
-        this.diceNumbers.setValue(ArrayUtils.create(numDice, DiceView.MAX_NUMBER));
-        this.diceLocked.setValue(ArrayUtils.create(numDice, false));
-        this.diceEnabled.setValue(ArrayUtils.create(numDice, true));
+        this.diceNumbers.setValue(ArrayUtil.create(numDice, DiceView.MAX_NUMBER));
+        this.diceLocked.setValue(ArrayUtil.create(numDice, false));
+        this.diceEnabled.setValue(ArrayUtil.create(numDice, true));
     }
 
     public int getNumDice() {
@@ -121,15 +121,15 @@ public class BaseGameViewModel extends ViewModel {
     }
 
     protected void unlockAllDice() {
-        diceLocked.setValue(ArrayUtils.fill(diceLocked.getValue(), false));
+        diceLocked.setValue(ArrayUtil.fill(diceLocked.getValue(), false));
     }
 
     protected void enableAllDice() {
-        diceEnabled.setValue(ArrayUtils.fill(diceEnabled.getValue(), true));
+        diceEnabled.setValue(ArrayUtil.fill(diceEnabled.getValue(), true));
     }
 
     protected void disableAllDice() {
-        diceEnabled.setValue(ArrayUtils.fill(diceEnabled.getValue(), false));
+        diceEnabled.setValue(ArrayUtil.fill(diceEnabled.getValue(), false));
     }
 
     protected void setRollButtonEnabled(boolean enabled) {
@@ -229,7 +229,7 @@ public class BaseGameViewModel extends ViewModel {
 
         boolean enabled = remaining > 0;
         rollButtonEnabled.setValue(enabled);
-        diceEnabled.setValue(ArrayUtils.fill(diceEnabled.getValue(), enabled));
+        diceEnabled.setValue(ArrayUtil.fill(diceEnabled.getValue(), enabled));
     }
 
     /** 重置掷骰子次数，解锁骰子 */

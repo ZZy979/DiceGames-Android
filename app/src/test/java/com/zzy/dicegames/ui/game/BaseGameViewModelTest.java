@@ -2,7 +2,7 @@ package com.zzy.dicegames.ui.game;
 
 import android.os.Handler;
 
-import com.zzy.dicegames.utils.ArrayUtils;
+import com.zzy.dicegames.utils.ArrayUtil;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,9 +44,9 @@ public class BaseGameViewModelTest {
         assertEquals(4, viewModel.getNumDice());
         assertEquals(3, viewModel.getMaxRolls());
         assertEquals(3, viewModel.getRemainingRolls().getValue().intValue());
-        assertArrayEquals(ArrayUtils.create(4, 6), viewModel.getDiceNumbers().getValue());
-        assertArrayEquals(ArrayUtils.create(4, false), viewModel.getDiceLocked().getValue());
-        assertArrayEquals(ArrayUtils.create(4, true), viewModel.getDiceEnabled().getValue());
+        assertArrayEquals(ArrayUtil.create(4, 6), viewModel.getDiceNumbers().getValue());
+        assertArrayEquals(ArrayUtil.create(4, false), viewModel.getDiceLocked().getValue());
+        assertArrayEquals(ArrayUtil.create(4, true), viewModel.getDiceEnabled().getValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
     }
 
@@ -77,12 +77,12 @@ public class BaseGameViewModelTest {
         assertEquals(1, viewModel.getRemainingRolls().getValue().intValue());
         for (int n : viewModel.getDiceNumbers().getValue())
             assertTrue(n >= 1 && n <= 6);
-        assertTrue(ArrayUtils.all(viewModel.getDiceEnabled().getValue(), true));
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), true));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
 
         viewModel.rollDice();
         assertEquals(0, viewModel.getRemainingRolls().getValue().intValue());
-        assertTrue(ArrayUtils.all(viewModel.getDiceEnabled().getValue(), false));
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertFalse(viewModel.getRollButtonEnabled().getValue());
 
         viewModel.rollDice();  // 无效
@@ -143,18 +143,18 @@ public class BaseGameViewModelTest {
         viewModel.rollDice();
         assertEquals(1, viewModel.getRemainingRolls().getValue().intValue());
         assertTrue(viewModel.getDiceLocked().getValue()[3]);
-        assertArrayEquals(ArrayUtils.create(5, true), viewModel.getDiceEnabled().getValue());
+        assertArrayEquals(ArrayUtil.create(5, true), viewModel.getDiceEnabled().getValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
 
         viewModel.rollDice();
         assertEquals(0, viewModel.getRemainingRolls().getValue().intValue());
-        assertArrayEquals(ArrayUtils.create(5, false), viewModel.getDiceEnabled().getValue());
+        assertArrayEquals(ArrayUtil.create(5, false), viewModel.getDiceEnabled().getValue());
         assertFalse(viewModel.getRollButtonEnabled().getValue());
 
         viewModel.resetDiceWindow();
         assertEquals(2, viewModel.getRemainingRolls().getValue().intValue());
         assertFalse(viewModel.getDiceLocked().getValue()[3]);
-        assertArrayEquals(ArrayUtils.create(5, true), viewModel.getDiceEnabled().getValue());
+        assertArrayEquals(ArrayUtil.create(5, true), viewModel.getDiceEnabled().getValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
     }
 }
