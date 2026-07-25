@@ -13,13 +13,13 @@ import androidx.lifecycle.LiveData;
  * @author 赵正阳
  */
 public class SixYahtzeeStatsFragment extends BaseYahtzeeStatsFragment {
-   @Override
-   protected LiveData<List<SixYahtzeeScore>> getHighScores() {
-      return mScoreDatabase.sixYahtzeeScoreDao().findTop(10);
-   }
+    @Override
+    protected LiveData<List<SixYahtzeeScore>> getHighScores() {
+        return mScoreDatabase.sixYahtzeeScoreDao().findTop(10);
+    }
 
-   @Override
-   protected LiveData<YahtzeeStatistics> getStatistics() {
-      return mScoreDatabase.sixYahtzeeScoreDao().statistics();
-   }
+    @Override
+    protected LiveData<YahtzeeStatistics> getStatistics() {
+        return mScoreDatabase.sixYahtzeeScoreDao().statistics();
+    }
 }

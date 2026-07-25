@@ -2,7 +2,7 @@ package com.zzy.dicegames.ui.game.yahtzee;
 
 import android.os.Handler;
 
-import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
+import com.zzy.dicegames.data.entity.BaseYahtzeeScore;
 import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
 import com.zzy.dicegames.utils.ArrayUtil;
 
@@ -38,8 +38,8 @@ public class BaseYahtzeeViewModelTest {
    public void setUp() {
       viewModel = new BaseYahtzeeViewModel(5, 3, 10, 20, 8) {
          @Override public int calculateScore(int category) { return sumOfDice; }
-         @Override public AbstractYahtzeeScore createScoreEntity() { return null; }
-         @Override public int saveScoreToDatabase(AbstractYahtzeeScore score) { return 0; }
+         @Override public BaseYahtzeeScore createScoreEntity() { return null; }
+         @Override public int saveScoreToDatabase(BaseYahtzeeScore score) { return 0; }
       };
       viewModel.setHandler(mockHandler);
       spyViewModel = spy(viewModel);

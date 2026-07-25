@@ -3,7 +3,6 @@ package com.zzy.dicegames.ui;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -13,19 +12,10 @@ import com.zzy.dicegames.common.GameType;
 import com.zzy.dicegames.ui.help.HelpActivity;
 import com.zzy.dicegames.ui.stats.StatisticsActivity;
 import com.zzy.dicegames.data.ScoreDatabase;
-import com.zzy.dicegames.data.entity.BalutScore;
-import com.zzy.dicegames.data.entity.FarkleScore;
-import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
-import com.zzy.dicegames.data.entity.SixYahtzeeScore;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
-import com.zzy.dicegames.utils.ScoresParser;
-
-import org.xmlpull.v1.XmlSerializer;
+import com.zzy.dicegames.utils.score.ScoreUtil;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 
 import androidx.activity.OnBackPressedCallback;
@@ -54,13 +44,15 @@ public class MainActivity extends AppCompatActivity {
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         setupObservers(this);
 
+        // 初次创建时会自动调用onGameTypeChanged()
+        if (savedInstanceState != null)
+            mGameFragment = (BaseGameFragment<?>) getSupportFragmentManager().findFragmentById(R.id.gameFragment);
+
         mGameTypeNames = Arrays.stream(GameType.values())
                 .map(t -> getString(t.getNameResId()))
                 .toArray(String[]::new);
 
-        // 初次创建时会自动调用onGameTypeChanged()
-        if (savedInstanceState != null)
-            mGameFragment = (BaseGameFragment<?>) getSupportFragmentManager().findFragmentById(R.id.gameFragment);
+        ScoreUtil.setScoreDatabase(ScoreDatabase.getInstance(this));
 
         // 返回键事件回调
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -81,11 +73,7 @@ public class MainActivity extends AppCompatActivity {
             mGameFragment.startNewGame();
         }
         else if (itemId == R.id.menuGameType) {
-            new AlertDialog.Builder(this)
-                    .setIcon(R.mipmap.ic_launcher)
-                    .setTitle(R.string.selectGameType)
-                    .setItems(mGameTypeNames, (dialog, which) -> mViewModel.changeGameType(which))
-                    .create().show();
+            selectGameType();
         }
         else if (itemId == R.id.menuHelp) {
             Intent intent = new Intent(this, HelpActivity.class);
@@ -98,17 +86,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (itemId == R.id.menuImportScores) {
-            File file = new File(getExternalFilesDir(null), SCORES_FILENAME);
-            if (importScores(file))
-                Toast.makeText(this, R.string.importScoresSuccess, Toast.LENGTH_SHORT).show();
+            importScores();
         }
         else if (itemId == R.id.menuExportScores) {
-            File file = new File(getExternalFilesDir(null), SCORES_FILENAME);
-            if (exportScores(file))
-                Toast.makeText(this,
-                        String.format(getString(R.string.exportScoresSuccess), file.getAbsolutePath()),
-                        Toast.LENGTH_LONG
-                ).show();
+            exportScores();
         }
         return true;
     }
@@ -129,6 +110,15 @@ public class MainActivity extends AppCompatActivity {
         mViewModel.getGameType().observe(owner, this::onGameTypeChanged);
     }
 
+    /** 选择游戏类型 */
+    private void selectGameType() {
+        new AlertDialog.Builder(this)
+                .setIcon(R.mipmap.ic_launcher)
+                .setTitle(R.string.selectGameType)
+                .setItems(mGameTypeNames, (dialog, which) -> mViewModel.changeGameType(which))
+                .create().show();
+    }
+
     /** 游戏类型更新时的回调 */
     private void onGameTypeChanged(GameType gameType) {
         if (mGameFragment != null && gameType == mGameFragment.getGameType())
@@ -140,83 +130,32 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /** 从XML文件中导入得分数据，导入成功则返回{@code true}，否则返回{@code false} */
-    private boolean importScores(File file) {
-        ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
+    /** 返回导入/导出得分数据的文件 */
+    private File getScoreDataFile() {
+        return new File(getExternalFilesDir(null), SCORES_FILENAME);
+    }
+
+    /** 从文件中导入得分数据 */
+    private void importScores() {
         try {
-            ScoresParser parser = new ScoresParser(file);
-            parser.parse();
-            scoreDatabase.fiveYahtzeeScoreDao().insertAll(parser.getFiveYahtzeeScores());
-            scoreDatabase.sixYahtzeeScoreDao().insertAll(parser.getSixYahtzeeScores());
-            scoreDatabase.balutScoreDao().insertAll(parser.getBalutScores());
-            scoreDatabase.farkleScoreDao().insertAll(parser.getFarkleScores());
-            return true;
+            ScoreUtil.importScores(getScoreDataFile());
+            Toast.makeText(this, R.string.importScoresSuccess, Toast.LENGTH_SHORT).show();
         }
-        catch (FileNotFoundException e) {
-            return false;
+        catch (Exception e) {
+            Toast.makeText(this, getString(R.string.importScoresFailed, e.getMessage()), Toast.LENGTH_LONG).show();
         }
     }
 
-    /** 将得分数据导出到XML文件，导出成功则返回{@code true}，否则返回{@code false} */
-    private boolean exportScores(File file) {
+    /** 将得分数据导出到文件 */
+    private void exportScores() {
         try {
-            ScoreDatabase scoreDatabase = ScoreDatabase.getInstance(this);
-            FileOutputStream fos = new FileOutputStream(file);
-            XmlSerializer serializer = Xml.newSerializer();
-            serializer.setOutput(fos, "utf-8");
-            serializer.startDocument("utf-8", true);
-            serializer.startTag(null, "scores");
-
-            // 5骰Yahtzee
-            serializer.startTag(null, "FiveYahtzeeScores");
-            for (FiveYahtzeeScore fiveYahtzeeScore : scoreDatabase.fiveYahtzeeScoreDao().findAll())
-                serializer.startTag(null, "FiveYahtzeeScore")
-                        .attribute(null, "date", fiveYahtzeeScore.date)
-                        .attribute(null, "score", Integer.toString(fiveYahtzeeScore.score))
-                        .attribute(null, "has_bonus", Boolean.toString(fiveYahtzeeScore.hasBonus))
-                        .attribute(null, "has_yahtzee", Boolean.toString(fiveYahtzeeScore.hasYahtzee))
-                        .endTag(null, "FiveYahtzeeScore");
-            serializer.endTag(null, "FiveYahtzeeScores");
-
-            // 6骰Yahtzee
-            serializer.startTag(null, "SixYahtzeeScores");
-            for (SixYahtzeeScore sixYahtzeeScore : scoreDatabase.sixYahtzeeScoreDao().findAll())
-                serializer.startTag(null, "SixYahtzeeScore")
-                        .attribute(null, "date", sixYahtzeeScore.date)
-                        .attribute(null, "score", Integer.toString(sixYahtzeeScore.score))
-                        .attribute(null, "has_bonus", Boolean.toString(sixYahtzeeScore.hasBonus))
-                        .attribute(null, "has_yahtzee", Boolean.toString(sixYahtzeeScore.hasYahtzee))
-                        .endTag(null, "SixYahtzeeScore");
-            serializer.endTag(null, "SixYahtzeeScores");
-
-            // Balut
-            serializer.startTag(null, "BalutScores");
-            for (BalutScore balutScore : scoreDatabase.balutScoreDao().findAll())
-                serializer.startTag(null, "BalutScore")
-                        .attribute(null, "date", balutScore.date)
-                        .attribute(null, "score", Integer.toString(balutScore.score))
-                        .attribute(null, "num_balut", Integer.toString(balutScore.numBalut))
-                        .endTag(null, "BalutScore");
-            serializer.endTag(null, "BalutScores");
-
-            // Farkle
-            serializer.startTag(null, "FarkleScores");
-            for (FarkleScore farkleScore : scoreDatabase.farkleScoreDao().findAll())
-                serializer.startTag(null, "FarkleScore")
-                        .attribute(null, "date", farkleScore.date)
-                        .attribute(null, "score", Integer.toString(farkleScore.score))
-                        .attribute(null, "computer_score", Integer.toString(farkleScore.computerScore))
-                        .endTag(null, "FarkleScore");
-            serializer.endTag(null, "FarkleScores");
-
-            serializer.endTag(null, "scores");
-            serializer.endDocument();
-            fos.close();
-            return true;
+            File file = getScoreDataFile();
+            ScoreUtil.exportScores(file);
+            Toast.makeText(this,
+                    getString(R.string.exportScoresSuccess, file.getAbsolutePath()), Toast.LENGTH_LONG).show();
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        catch (Exception e) {
+            Toast.makeText(this, getString(R.string.exportScoresFailed, e.getMessage()), Toast.LENGTH_LONG).show();
         }
     }
 

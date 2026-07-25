@@ -1,6 +1,6 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
-import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
+import com.zzy.dicegames.data.entity.BaseYahtzeeScore;
 import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
 
 import java.time.LocalDate;
@@ -109,7 +109,7 @@ public class FiveYahtzeeViewModel extends BaseYahtzeeViewModel {
     }
 
     @Override
-    public int saveScoreToDatabase(AbstractYahtzeeScore score) {
+    public int saveScoreToDatabase(BaseYahtzeeScore score) {
         var dao = scoreDatabase.fiveYahtzeeScoreDao();
         dao.insert((FiveYahtzeeScore) score);
         return dao.rank(score.score);

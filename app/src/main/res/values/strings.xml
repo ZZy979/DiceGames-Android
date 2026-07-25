@@ -87,7 +87,9 @@
     <string name="gamesWon">Games won</string>
     <string name="winRate">Win rate</string>
 
-    <string name="importScoresSuccess">Scores successfully imported</string>
-    <string name="exportScoresSuccess">Scores successfully exported to %s</string>
+    <string name="importScoresSuccess">Successfully imported scores</string>
+    <string name="importScoresFailed">Failed to import scores: %s</string>
+    <string name="exportScoresSuccess">Successfully exported scores to %s</string>
+    <string name="exportScoresFailed">Failed to export scores: %s</string>
     <string name="zzy">Zhao Zhengyang</string>
 </resources>

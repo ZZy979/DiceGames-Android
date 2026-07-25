@@ -8,7 +8,7 @@ import androidx.room.ColumnInfo;
  *
  * @author 赵正阳
  */
-public abstract class AbstractYahtzeeScore extends BaseScore {
+public abstract class BaseYahtzeeScore extends BaseScore {
     /** 是否获得奖励分 */
     @ColumnInfo(name = "has_bonus")
     public boolean hasBonus;
@@ -17,7 +17,7 @@ public abstract class AbstractYahtzeeScore extends BaseScore {
     @ColumnInfo(name = "has_yahtzee")
     public boolean hasYahtzee;
 
-    public AbstractYahtzeeScore(@NonNull String date, int score, boolean hasBonus, boolean hasYahtzee) {
+    public BaseYahtzeeScore(@NonNull String date, int score, boolean hasBonus, boolean hasYahtzee) {
         super(date, score);
         this.hasBonus = hasBonus;
         this.hasYahtzee = hasYahtzee;

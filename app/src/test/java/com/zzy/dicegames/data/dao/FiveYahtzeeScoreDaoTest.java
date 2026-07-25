@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
+import com.zzy.dicegames.utils.score.ScoreUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -65,10 +66,7 @@ public class FiveYahtzeeScoreDaoTest {
         assertEquals(testScores.size(), scores.size());
         for (int i = 0; i < scores.size(); i++) {
             assertEquals(i + 1, scores.get(i).id);
-            assertEquals(testScores.get(i).date, scores.get(i).date);
-            assertEquals(testScores.get(i).score, scores.get(i).score);
-            assertEquals(testScores.get(i).hasBonus, scores.get(i).hasBonus);
-            assertEquals(testScores.get(i).hasYahtzee, scores.get(i).hasYahtzee);
+            assertTrue(ScoreUtil.isEqual(testScores.get(i), scores.get(i)));
         }
     }
 

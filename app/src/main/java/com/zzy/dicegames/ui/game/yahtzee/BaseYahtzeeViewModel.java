@@ -1,6 +1,6 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
-import com.zzy.dicegames.data.entity.AbstractYahtzeeScore;
+import com.zzy.dicegames.data.entity.BaseYahtzeeScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
 import com.zzy.dicegames.utils.ArrayUtil;
 
@@ -180,10 +180,10 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
     }
 
     /** 创建得分实体 */
-    public abstract AbstractYahtzeeScore createScoreEntity();
+    public abstract BaseYahtzeeScore createScoreEntity();
 
     /** 将得分保存到数据库，并返回排名 */
-    public abstract int saveScoreToDatabase(AbstractYahtzeeScore score);
+    public abstract int saveScoreToDatabase(BaseYahtzeeScore score);
 
     @Override
     public void reset() {

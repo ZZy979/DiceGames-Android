@@ -9,7 +9,7 @@ import androidx.room.Entity;
  * @author 赵正阳
  */
 @Entity(tableName = "five_yahtzee_score")
-public class FiveYahtzeeScore extends AbstractYahtzeeScore {
+public class FiveYahtzeeScore extends BaseYahtzeeScore {
     public FiveYahtzeeScore(@NonNull String date, int score, boolean hasBonus, boolean hasYahtzee) {
         super(date, score, hasBonus, hasYahtzee);
     }

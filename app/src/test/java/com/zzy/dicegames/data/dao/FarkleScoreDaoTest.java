@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.data.entity.FarkleScore;
+import com.zzy.dicegames.utils.score.ScoreUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -61,9 +62,7 @@ public class FarkleScoreDaoTest {
         assertEquals(testScores.size(), scores.size());
         for (int i = 0; i < scores.size(); i++) {
             assertEquals(i + 1, scores.get(i).id);
-            assertEquals(testScores.get(i).date, scores.get(i).date);
-            assertEquals(testScores.get(i).score, scores.get(i).score);
-            assertEquals(testScores.get(i).computerScore, scores.get(i).computerScore);
+            assertTrue(ScoreUtil.isEqual(testScores.get(i), scores.get(i)));
         }
     }
 
