@@ -7,8 +7,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.common.GameType;
 
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,21 +17,27 @@ import androidx.fragment.app.Fragment;
 /**
  * 用于展示统计数据的{@code Activity}<br>
  * 传入数据：<br>
- * <ul><li>{@link #GAME_TITLE}：一个字符串，游戏标题</li></ul>
+ * <ul><li>{@link #KEY_GAME_TYPE}：游戏类型</li></ul>
  * 返回结果：无
  *
  * @author 赵正阳
  */
 public class StatisticsActivity extends AppCompatActivity {
-    /** 用于传入参数/保存和恢复状态：游戏标题 */
-    public static final String GAME_TITLE = "gameTitle";
+    /** 用于传入参数/保存和恢复状态：游戏类型 */
+    public static final String KEY_GAME_TYPE = "gameType";
 
     /** 支持的游戏类型列表 */
-    private List<String> mSupportedGameTypes;
+    private static final List<GameType> SUPPORTED_GAME_TYPES = List.of(
+            GameType.FIVE_YAHTZEE,
+            GameType.SIX_YAHTZEE,
+            GameType.BALUT,
+            GameType.FARKLE
+    );
 
-    /** 当前展示的游戏类型在{@link #mSupportedGameTypes}中的索引 */
-    // TODO 替换为ViewModel
-    private int mGameTitleIndex = -1;
+    private String[] mGameTypeNames;
+
+    /** 当前游戏类型 */
+    private GameType mGameType;
 
     /** 展示区域 */
     private Fragment mStatisticsFragment;
@@ -41,29 +47,37 @@ public class StatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
 
-        mSupportedGameTypes = Arrays.asList(
-                getString(R.string.fiveYahtzee),
-                getString(R.string.sixYahtzee),
-                getString(R.string.balut),
-                getString(R.string.farkle)
-        );
+        mGameTypeNames = SUPPORTED_GAME_TYPES.stream()
+                .map(t -> getString(t.getNameResId()))
+                .toArray(String[]::new);
 
-        if (savedInstanceState == null)
-            changeGameType(getIntent().getStringExtra(GAME_TITLE));
+        if (savedInstanceState == null) {
+            changeGameType((GameType) getIntent().getSerializableExtra(KEY_GAME_TYPE));
+        }
         else {
-            mGameTitleIndex = savedInstanceState.getInt(GAME_TITLE);
+            mGameType = (GameType) savedInstanceState.getSerializable(KEY_GAME_TYPE);
             mStatisticsFragment = getSupportFragmentManager().findFragmentById(R.id.statisticsFragment);
         }
 
+        initViews();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(KEY_GAME_TYPE, mGameType);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void initViews() {
         Spinner spnGameType = findViewById(R.id.spnGameType);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mSupportedGameTypes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mGameTypeNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnGameType.setAdapter(adapter);
-        spnGameType.setSelection(mGameTitleIndex);
+        spnGameType.setSelection(SUPPORTED_GAME_TYPES.indexOf(mGameType));
         spnGameType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                changeGameType(mSupportedGameTypes.get(position));
+                changeGameType(SUPPORTED_GAME_TYPES.get(position));
             }
 
             @Override
@@ -71,30 +85,17 @@ public class StatisticsActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(GAME_TITLE, mGameTitleIndex);
-        super.onSaveInstanceState(outState);
-    }
+    private void changeGameType(GameType gameType) {
+        if (!SUPPORTED_GAME_TYPES.contains(gameType))
+            gameType = SUPPORTED_GAME_TYPES.get(0);
+        if (gameType == mGameType)
+            return;
 
-    private void changeGameType(String gameTitle) {
-        if (!mSupportedGameTypes.contains(gameTitle))
-            gameTitle = mSupportedGameTypes.get(0);
-        if (mGameTitleIndex < 0 || !gameTitle.equals(mSupportedGameTypes.get(mGameTitleIndex))) {
-            mGameTitleIndex = mSupportedGameTypes.indexOf(gameTitle);
-            if (gameTitle.equals(getString(R.string.fiveYahtzee)))
-                mStatisticsFragment = new FiveYahtzeeStatsFragment();
-            else if (gameTitle.equals(getString(R.string.sixYahtzee)))
-                mStatisticsFragment = new SixYahtzeeStatsFragment();
-            else if (gameTitle.equals(getString(R.string.balut)))
-                mStatisticsFragment = new BalutStatsFragment();
-            else if (gameTitle.equals(getString(R.string.farkle)))
-                mStatisticsFragment = new FarkleStatsFragment();
-
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.statisticsFragment, mStatisticsFragment)
-                    .commit();
-        }
+        mGameType = gameType;
+        mStatisticsFragment = BaseStatsFragment.createByGameType(gameType);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.statisticsFragment, mStatisticsFragment)
+                .commit();
     }
 
 }

@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,12 +54,15 @@ public class MainActivity extends AppCompatActivity {
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         setupObservers(this);
 
-        mGameTypeNames = GameType.getAllNames(this);
+        mGameTypeNames = Arrays.stream(GameType.values())
+                .map(t -> getString(t.getNameResId()))
+                .toArray(String[]::new);
 
         // 初次创建时会自动调用onGameTypeChanged()
         if (savedInstanceState != null)
             mGameFragment = (BaseGameFragment<?>) getSupportFragmentManager().findFragmentById(R.id.gameFragment);
 
+        // 返回键事件回调
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() { quitOrPrompt(); }
         });
@@ -72,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         int itemId = item.getItemId();
         if (itemId == R.id.menuNewGame) {
             mGameFragment.startNewGame();
@@ -85,13 +88,13 @@ public class MainActivity extends AppCompatActivity {
                     .create().show();
         }
         else if (itemId == R.id.menuHelp) {
-            intent = new Intent(this, HelpActivity.class);
-            intent.putExtra(HelpActivity.GAME_TITLE, mGameFragment.getTitle());
+            Intent intent = new Intent(this, HelpActivity.class);
+            intent.putExtra(HelpActivity.KEY_GAME_TYPE, mGameFragment.getGameType());
             startActivity(intent);
         }
         else if (itemId == R.id.menuStatistics) {
-            intent = new Intent(this, StatisticsActivity.class);
-            intent.putExtra(StatisticsActivity.GAME_TITLE, mGameFragment.getTitle());
+            Intent intent = new Intent(this, StatisticsActivity.class);
+            intent.putExtra(StatisticsActivity.KEY_GAME_TYPE, mGameFragment.getGameType());
             startActivity(intent);
         }
         else if (itemId == R.id.menuImportScores) {

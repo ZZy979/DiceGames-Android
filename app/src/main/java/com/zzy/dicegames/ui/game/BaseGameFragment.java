@@ -133,12 +133,6 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         mViewModel.rollDiceWithAnimation();
     }
 
-    /** 返回游戏标题 */
-    // TODO 替换为GameType枚举
-    public String getTitle() {
-        return mTitleTextView.getText().toString();
-    }
-
     /** 开始一次新游戏 */
     public void startNewGame() {
         mViewModel.reset();
@@ -151,16 +145,16 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
      * @param rank  排名
      */
     public void showScore(int score, int rank) {
-        String honor;
+        String text;
         if (rank == 1)
-            honor = getString(R.string.newHighScore);
+            text = getString(R.string.newHighScore);
         else if (rank >= 2 && rank <= 10)
-            honor = getString(R.string.rank, rank);
+            text = getString(R.string.rankN, rank);
         else
-            honor = getString(R.string.score);
+            text = getString(R.string.score);
         new AlertDialog.Builder(getContext())
                 .setTitle(getString(R.string.gameOver))
-                .setMessage(String.format("%s: %d", honor, score))
+                .setMessage(String.format("%s: %d", text, score))
                 .setPositiveButton(R.string.ok, (dialog, which) -> startNewGame())
                 .show();
     }

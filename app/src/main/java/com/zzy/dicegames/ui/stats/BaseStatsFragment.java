@@ -6,11 +6,11 @@ import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.common.GameType;
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.data.entity.BaseScore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +24,17 @@ import androidx.lifecycle.LifecycleOwner;
  */
 public abstract class BaseStatsFragment extends Fragment {
     protected ScoreDatabase mScoreDatabase;
+
+    /** 根据游戏类型创建统计数据Fragment */
+    public static BaseStatsFragment createByGameType(GameType gameType) {
+        return switch (gameType) {
+            case FIVE_YAHTZEE -> new FiveYahtzeeStatsFragment();
+            case SIX_YAHTZEE -> new SixYahtzeeStatsFragment();
+            case BALUT -> new BalutStatsFragment();
+            case FARKLE -> new FarkleStatsFragment();
+            default -> null;
+        };
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -42,12 +53,15 @@ public abstract class BaseStatsFragment extends Fragment {
 
     protected ListAdapter createHighScoresListAdapter(List<? extends BaseScore> highScores) {
         List<Map<String, Object>> data = new ArrayList<>();
+        data.add(Map.of(
+                "rank", getString(R.string.rank),
+                "score", getString(R.string.score),
+                "date", getString(R.string.date)));
         for (int i = 0; i < highScores.size(); ++i) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("rank", i + 1);
-            map.put("score", highScores.get(i).score);
-            map.put("date", highScores.get(i).date);
-            data.add(map);
+            data.add(Map.of(
+                    "rank", i + 1,
+                    "score", highScores.get(i).score,
+                    "date", highScores.get(i).date));
         }
         return new SimpleAdapter(
                 getContext(), data, R.layout.high_score_item,

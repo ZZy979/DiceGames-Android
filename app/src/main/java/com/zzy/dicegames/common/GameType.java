@@ -1,7 +1,5 @@
 package com.zzy.dicegames.common;
 
-import android.content.Context;
-
 import com.zzy.dicegames.R;
 
 /** 游戏类型 */
@@ -33,13 +31,5 @@ public enum GameType {
 
     public int getNameResId() {
         return nameResId;
-    }
-
-    /** 返回所有游戏类型名称的数组 */
-    public static String[] getAllNames(Context context) {
-        var names = new String[values().length];
-        for (int i = 0; i < values().length; i++)
-            names[i] = context.getString(values()[i].nameResId);
-        return names;
     }
 }

@@ -53,7 +53,7 @@
 
     <string name="gameOver">Game Over</string>
     <string name="newHighScore">New high score</string>
-    <string name="rank">#%d</string>
+    <string name="rankN">#%d</string>
 
     <string name="playerYou">You</string>
     <string name="playerComputer">Computer</string>
@@ -74,6 +74,8 @@
 
     <string name="top10">Top 10</string>
     <string name="nothing">Nothing</string>
+    <string name="rank">Rank</string>
+    <string name="date">Date</string>
     <string name="statistics">Statistics</string>
     <string name="gamesPlayed">Games played</string>
     <string name="maxScore">Maximum score</string>
