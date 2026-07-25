@@ -26,8 +26,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] mGameTypeNames;
 
     /** 上次按返回键的时间 */
-    private long mLastPressTime = 0;
+    private long mLastPressBackTime = 0;
 
     /** 导入和导出得分数据的文件名 */
     private static final String SCORES_FILENAME = "scores.xml";
@@ -58,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
         // 初次创建时会自动调用onGameTypeChanged()
         if (savedInstanceState != null)
             mGameFragment = (BaseGameFragment<?>) getSupportFragmentManager().findFragmentById(R.id.gameFragment);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() { quitOrPrompt(); }
+        });
     }
 
     @Override
@@ -106,14 +110,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public void onBackPressed() {
-        // TODO fix
-        super.onBackPressed();
-        long currentTime = new Date().getTime();
-        if (currentTime - mLastPressTime < 1000) finish();
+    private void quitOrPrompt() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - mLastPressBackTime < 1000) {
+            finish();
+        }
         else {
-            mLastPressTime = currentTime;
+            mLastPressBackTime = currentTime;
             Toast.makeText(this, R.string.quitPrompt, Toast.LENGTH_SHORT).show();
         }
     }
