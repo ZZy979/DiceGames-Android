@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
  *
  * @author 赵正阳
  */
-public class RollADiceFragment extends BaseGameFragment<RollADiceViewModel> {
+public class RollADiceGameFragment extends BaseGameFragment<RollADiceGameViewModel> {
     @Override
     public GameType getGameType() {
         return GameType.ROLL_A_DICE;
@@ -24,11 +24,11 @@ public class RollADiceFragment extends BaseGameFragment<RollADiceViewModel> {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_roll_a_dice, container, false);
+        return inflater.inflate(R.layout.fragment_roll_a_dice_game, container, false);
     }
 
     @Override
-    protected RollADiceViewModel createViewModel() {
-        return new ViewModelProvider(this).get(RollADiceViewModel.class);
+    protected RollADiceGameViewModel createViewModel() {
+        return new ViewModelProvider(this).get(RollADiceGameViewModel.class);
     }
 }

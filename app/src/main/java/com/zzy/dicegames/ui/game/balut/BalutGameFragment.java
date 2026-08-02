@@ -15,14 +15,14 @@ import com.zzy.dicegames.ui.game.BaseGameFragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
-import static com.zzy.dicegames.ui.game.balut.BalutViewModel.*;
+import static com.zzy.dicegames.ui.game.balut.BalutGameViewModel.*;
 
 /**
  * Balut游戏Fragment
  *
  * @author 赵正阳
  */
-public class BalutFragment extends BaseGameFragment<BalutViewModel> {
+public class BalutGameFragment extends BaseGameFragment<BalutGameViewModel> {
     /** 得分项按钮 */
     private Button[] mScoreButtons;
 
@@ -39,7 +39,7 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_balut, container, false);
+        return inflater.inflate(R.layout.fragment_balut_game, container, false);
     }
 
     @Override
@@ -85,8 +85,8 @@ public class BalutFragment extends BaseGameFragment<BalutViewModel> {
     }
 
     @Override
-    protected BalutViewModel createViewModel() {
-        return new ViewModelProvider(this).get(BalutViewModel.class);
+    protected BalutGameViewModel createViewModel() {
+        return new ViewModelProvider(this).get(BalutGameViewModel.class);
     }
 
     @Override

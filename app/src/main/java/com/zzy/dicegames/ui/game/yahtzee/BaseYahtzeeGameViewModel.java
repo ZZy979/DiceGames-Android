@@ -7,7 +7,7 @@ import com.zzy.dicegames.utils.ArrayUtil;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
+public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
     /** 上区得分项个数 */
     public static final int NUM_UPPER_CATEGORIES = 6;
 
@@ -39,7 +39,7 @@ public abstract class BaseYahtzeeViewModel extends BaseGameViewModel {
     /** 获得的游戏总分 */
     protected final MutableLiveData<Integer> totalScore = new MutableLiveData<>(0);
 
-    protected BaseYahtzeeViewModel(
+    protected BaseYahtzeeGameViewModel(
             int numDice, int maxRolls, int numCategories, int bonusThreshold, int bonusValue) {
         super(numDice, maxRolls);
         this.numCategories = numCategories;

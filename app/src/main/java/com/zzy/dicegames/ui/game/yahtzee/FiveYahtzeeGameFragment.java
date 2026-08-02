@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
  *
  * @author 赵正阳
  */
-public class FiveYahtzeeFragment extends BaseYahtzeeFragment {
+public class FiveYahtzeeGameFragment extends BaseYahtzeeGameFragment {
     @Override
     public GameType getGameType() {
         return GameType.FIVE_YAHTZEE;
@@ -23,12 +23,12 @@ public class FiveYahtzeeFragment extends BaseYahtzeeFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_five_yahtzee, container, false);
+        return inflater.inflate(R.layout.fragment_five_yahtzee_game, container, false);
     }
 
     @Override
-    protected BaseYahtzeeViewModel createViewModel() {
-        return new ViewModelProvider(this).get(FiveYahtzeeViewModel.class);
+    protected BaseYahtzeeGameViewModel createViewModel() {
+        return new ViewModelProvider(this).get(FiveYahtzeeGameViewModel.class);
     }
 
     @Override

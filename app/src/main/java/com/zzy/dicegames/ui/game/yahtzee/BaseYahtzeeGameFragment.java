@@ -16,7 +16,7 @@ import androidx.lifecycle.LifecycleOwner;
  *
  * @author 赵正阳
  */
-public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeViewModel> {
+public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtzeeGameViewModel> {
     /** 得分项按钮 */
     protected Button[] mScoreButtons;
 
@@ -70,7 +70,7 @@ public abstract class BaseYahtzeeFragment extends BaseGameFragment<BaseYahtzeeVi
     /** 得分项标签id */
     protected abstract int[] getScoreTextViewIds();
 
-    protected abstract BaseYahtzeeViewModel createViewModel();
+    protected abstract BaseYahtzeeGameViewModel createViewModel();
 
     @Override
     protected void setupObservers(LifecycleOwner owner) {

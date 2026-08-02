@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.game.yahtzee.FiveYahtzeeFragment">
+    tools:context=".ui.game.balut.BalutGameFragment">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -13,7 +13,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/fiveYahtzee"
+        android:text="@string/balut"
         android:textSize="40sp"
         android:textStyle="bold" />
 
@@ -25,85 +25,17 @@
 
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
 
             <TableRow>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="@string/score"
-                    android:textSize="18sp" />
-
-            </TableRow>
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/btn1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1"
-                    android:text="@string/s1" />
-
-                <TextView
-                    android:id="@+id/tv1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_weight="1"
-                    android:text="0"
-                    android:textSize="18sp" />
-
-            </TableRow>
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/btn2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1"
-                    android:text="@string/s2" />
-
-                <TextView
-                    android:id="@+id/tv2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_weight="1"
-                    android:text="0"
-                    android:textSize="18sp" />
-
-            </TableRow>
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/btn3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1"
-                    android:text="@string/s3" />
-
-                <TextView
-                    android:id="@+id/tv3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_weight="1"
-                    android:text="0"
+                    android:textAlignment="center"
                     android:textSize="18sp" />
 
             </TableRow>
@@ -119,10 +51,33 @@
                     android:text="@string/s4" />
 
                 <TextView
-                    android:id="@+id/tv4"
+                    android:id="@+id/tv41"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv42"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv43"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv44"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
@@ -140,10 +95,33 @@
                     android:text="@string/s5" />
 
                 <TextView
-                    android:id="@+id/tv5"
+                    android:id="@+id/tv51"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv52"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv53"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv54"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
@@ -161,58 +139,33 @@
                     android:text="@string/s6" />
 
                 <TextView
-                    android:id="@+id/tv6"
+                    android:id="@+id/tv61"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
 
-            </TableRow>
-
-            <TableRow
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
-
                 <TextView
+                    android:id="@+id/tv62"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1"
-                    android:text="@string/total"
-                    android:textAlignment="center"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/tvUpperTotal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
 
-            </TableRow>
-
-            <TableRow
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
-
                 <TextView
+                    android:id="@+id/tv63"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
                     android:layout_weight="1"
-                    android:text="@string/bonus"
-                    android:textAlignment="center"
+                    android:text="0"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvBonus"
+                    android:id="@+id/tv64"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
@@ -222,60 +175,41 @@
             <TableRow>
 
                 <Button
-                    android:id="@+id/btn2p"
+                    android:id="@+id/btnStraight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
-                    android:text="@string/s2p" />
+                    android:text="@string/straight" />
 
                 <TextView
-                    android:id="@+id/tv2p"
+                    android:id="@+id/tvStraight1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
 
-            </TableRow>
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/btn3e"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1"
-                    android:text="@string/s3e" />
-
                 <TextView
-                    android:id="@+id/tv3e"
+                    android:id="@+id/tvStraight2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
 
-            </TableRow>
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/btn4e"
+                <TextView
+                    android:id="@+id/tvStraight3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
                     android:layout_weight="1"
-                    android:text="@string/s4e" />
+                    android:text="0"
+                    android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv4e"
+                    android:id="@+id/tvStraight4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
@@ -293,10 +227,33 @@
                     android:text="@string/fullHouse" />
 
                 <TextView
-                    android:id="@+id/tvFullHouse"
+                    android:id="@+id/tvFullHouse1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvFullHouse2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvFullHouse3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvFullHouse4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
@@ -306,18 +263,41 @@
             <TableRow>
 
                 <Button
-                    android:id="@+id/btnSmallStraight"
+                    android:id="@+id/btnChoice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
-                    android:text="@string/smallStraight" />
+                    android:text="@string/choice" />
 
                 <TextView
-                    android:id="@+id/tvSmallStraight"
+                    android:id="@+id/tvChoice1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvChoice2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvChoice3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvChoice4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
@@ -327,60 +307,41 @@
             <TableRow>
 
                 <Button
-                    android:id="@+id/btnLargeStraight"
+                    android:id="@+id/btnBalut"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
-                    android:text="@string/largeStraight" />
+                    android:text="@string/balut" />
 
                 <TextView
-                    android:id="@+id/tvLargeStraight"
+                    android:id="@+id/tvBalut1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
 
-            </TableRow>
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/btnChance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_weight="1"
-                    android:text="@string/chance" />
-
                 <TextView
-                    android:id="@+id/tvChance"
+                    android:id="@+id/tvBalut2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
 
-            </TableRow>
-
-            <TableRow>
-
-                <Button
-                    android:id="@+id/btnYahtzee"
+                <TextView
+                    android:id="@+id/tvBalut3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
                     android:layout_weight="1"
-                    android:text="@string/yahtzee" />
+                    android:text="0"
+                    android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvYahtzee"
+                    android:id="@+id/tvBalut4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
                     android:textSize="18sp" />
@@ -404,9 +365,26 @@
                     android:id="@+id/tvGameTotal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:text="0"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:textSize="18sp" />
 
             </TableRow>

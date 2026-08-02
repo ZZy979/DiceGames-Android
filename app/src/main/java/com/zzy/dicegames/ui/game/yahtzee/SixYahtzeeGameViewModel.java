@@ -5,7 +5,7 @@ import com.zzy.dicegames.data.entity.SixYahtzeeScore;
 
 import java.time.LocalDate;
 
-public class SixYahtzeeViewModel extends BaseYahtzeeViewModel {
+public class SixYahtzeeGameViewModel extends BaseYahtzeeGameViewModel {
     // 得分项编号
     public static final int ONES = 0;
     public static final int TWOS = 1;
@@ -28,7 +28,7 @@ public class SixYahtzeeViewModel extends BaseYahtzeeViewModel {
     public static final int CHANCE = 18;
     public static final int YAHTZEE = 19;
 
-    public SixYahtzeeViewModel() {
+    public SixYahtzeeGameViewModel() {
         super(6, 3, 20, 84, 100);
     }
 

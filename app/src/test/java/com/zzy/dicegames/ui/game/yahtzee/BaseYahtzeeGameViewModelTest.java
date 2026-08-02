@@ -21,22 +21,22 @@ import androidx.lifecycle.Observer;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class BaseYahtzeeViewModelTest {
+public class BaseYahtzeeGameViewModelTest {
    @Rule
    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
    @Rule
    public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-   private BaseYahtzeeViewModel viewModel;
-   private BaseYahtzeeViewModel spyViewModel;
+   private BaseYahtzeeGameViewModel viewModel;
+   private BaseYahtzeeGameViewModel spyViewModel;
 
    @Mock
    private Handler mockHandler;
 
    @Before
    public void setUp() {
-      viewModel = new BaseYahtzeeViewModel(5, 3, 10, 20, 8) {
+      viewModel = new BaseYahtzeeGameViewModel(5, 3, 10, 20, 8) {
          @Override public int calculateScore(int category) { return sumOfDice; }
          @Override public BaseYahtzeeScore createScoreEntity() { return null; }
          @Override public int saveScoreToDatabase(BaseYahtzeeScore score) { return 0; }

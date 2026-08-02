@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class BalutViewModel extends BaseGameViewModel {
+public class BalutGameViewModel extends BaseGameViewModel {
     /** 得分项个数 */
     public static final int NUM_CATEGORIES = 7;
 
@@ -37,7 +37,7 @@ public class BalutViewModel extends BaseGameViewModel {
     /** 获得的游戏总分 */
     private final MutableLiveData<Integer> totalScore = new MutableLiveData<>(0);
 
-    public BalutViewModel() {
+    public BalutGameViewModel() {
         super(5, 3);
     }
 

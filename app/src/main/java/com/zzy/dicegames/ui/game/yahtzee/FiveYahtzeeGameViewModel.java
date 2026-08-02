@@ -5,7 +5,7 @@ import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
 
 import java.time.LocalDate;
 
-public class FiveYahtzeeViewModel extends BaseYahtzeeViewModel {
+public class FiveYahtzeeGameViewModel extends BaseYahtzeeGameViewModel {
     // 得分项编号
     public static final int ONES = 0;
     public static final int TWOS = 1;
@@ -22,7 +22,7 @@ public class FiveYahtzeeViewModel extends BaseYahtzeeViewModel {
     public static final int CHANCE = 12;
     public static final int YAHTZEE = 13;
 
-    public FiveYahtzeeViewModel() {
+    public FiveYahtzeeGameViewModel() {
         super(5, 3, 14, 63, 50);
     }
 

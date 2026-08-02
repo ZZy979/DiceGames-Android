@@ -20,14 +20,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.zzy.dicegames.ui.game.farkle.FarkleViewModel.*;
+import static com.zzy.dicegames.ui.game.farkle.FarkleGameViewModel.*;
 
 /**
  * Farkle游戏Fragment
  *
  * @author 赵正阳
  */
-public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
+public class FarkleGameFragment extends BaseGameFragment<FarkleGameViewModel> {
     /** 玩家名称标签 */
     private TextView[] mPlayerNameTextViews;
 
@@ -55,7 +55,7 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_farkle, container, false);
+        return inflater.inflate(R.layout.fragment_farkle_game, container, false);
     }
 
     @Override
@@ -87,8 +87,8 @@ public class FarkleFragment extends BaseGameFragment<FarkleViewModel> {
     }
 
     @Override
-    protected FarkleViewModel createViewModel() {
-        return new ViewModelProvider(this).get(FarkleViewModel.class);
+    protected FarkleGameViewModel createViewModel() {
+        return new ViewModelProvider(this).get(FarkleGameViewModel.class);
     }
 
     @Override

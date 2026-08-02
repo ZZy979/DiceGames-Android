@@ -18,26 +18,26 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
-import static com.zzy.dicegames.ui.game.farkle.FarkleViewModel.*;
+import static com.zzy.dicegames.ui.game.farkle.FarkleGameViewModel.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class FarkleViewModelTest {
+public class FarkleGameViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    private FarkleViewModel viewModel;
-    private FarkleViewModel spyViewModel;
+    private FarkleGameViewModel viewModel;
+    private FarkleGameViewModel spyViewModel;
 
     @Mock
     private Handler mockHandler;
 
     @Before
     public void setUp() {
-        viewModel = new FarkleViewModel();
+        viewModel = new FarkleGameViewModel();
         viewModel.setHandler(mockHandler);
         spyViewModel = spy(viewModel);
     }
@@ -158,7 +158,7 @@ public class FarkleViewModelTest {
         spyViewModel.updateDiceNumbers(4, 2, 4, 3, 2, 6);
         verify(spyViewModel).farkle();
 
-        spyViewModel = spy(new FarkleViewModel());
+        spyViewModel = spy(new FarkleGameViewModel());
         doNothing().when(spyViewModel).farkle();
         spyViewModel.beforeRollDice();
         spyViewModel.updateDiceNumbers(3, 2, 5, 1, 3, 6);
@@ -194,7 +194,7 @@ public class FarkleViewModelTest {
         spyViewModel.updateDiceNumbers(1, 1, 2, 2, 2, 5);
         verify(spyViewModel).hotDice(450);
 
-        spyViewModel = spy(new FarkleViewModel());
+        spyViewModel = spy(new FarkleGameViewModel());
         doNothing().when(spyViewModel).hotDice(anyInt());
         spyViewModel.beforeRollDice();
         spyViewModel.updateDiceNumbers(3, 3, 3, 5, 6, 6);

@@ -10,11 +10,11 @@ import com.zzy.dicegames.R;
 import com.zzy.dicegames.common.GameType;
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.ui.dice.DiceView;
-import com.zzy.dicegames.ui.game.balut.BalutFragment;
-import com.zzy.dicegames.ui.game.farkle.FarkleFragment;
-import com.zzy.dicegames.ui.game.rolladice.RollADiceFragment;
-import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeFragment;
-import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeFragment;
+import com.zzy.dicegames.ui.game.balut.BalutGameFragment;
+import com.zzy.dicegames.ui.game.farkle.FarkleGameFragment;
+import com.zzy.dicegames.ui.game.rolladice.RollADiceGameFragment;
+import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeGameFragment;
+import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeGameFragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
@@ -42,11 +42,11 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     /** 根据游戏类型创建游戏Fragment */
     public static BaseGameFragment<?> createByGameType(GameType gameType) {
         return switch (gameType) {
-            case FIVE_YAHTZEE -> new FiveYahtzeeFragment();
-            case SIX_YAHTZEE -> new SixYahtzeeFragment();
-            case BALUT -> new BalutFragment();
-            case ROLL_A_DICE -> new RollADiceFragment();
-            case FARKLE -> new FarkleFragment();
+            case FIVE_YAHTZEE -> new FiveYahtzeeGameFragment();
+            case SIX_YAHTZEE -> new SixYahtzeeGameFragment();
+            case BALUT -> new BalutGameFragment();
+            case ROLL_A_DICE -> new RollADiceGameFragment();
+            case FARKLE -> new FarkleGameFragment();
         };
     }
 

@@ -19,26 +19,26 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 import androidx.lifecycle.Observer;
 
-import static com.zzy.dicegames.ui.game.balut.BalutViewModel.*;
+import static com.zzy.dicegames.ui.game.balut.BalutGameViewModel.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class BalutViewModelTest {
+public class BalutGameViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    private BalutViewModel viewModel;
-    private BalutViewModel spyViewModel;
+    private BalutGameViewModel viewModel;
+    private BalutGameViewModel spyViewModel;
 
     @Mock
     private Handler mockHandler;
 
     @Before
     public void setUp() {
-        viewModel = new BalutViewModel();
+        viewModel = new BalutGameViewModel();
         viewModel.setHandler(mockHandler);
         spyViewModel = spy(viewModel);
     }

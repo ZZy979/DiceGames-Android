@@ -15,7 +15,7 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-public class FarkleViewModel extends BaseGameViewModel {
+public class FarkleGameViewModel extends BaseGameViewModel {
     /** 骰子个数 */
     public static final int NUM_DICE = 6;
 
@@ -64,7 +64,7 @@ public class FarkleViewModel extends BaseGameViewModel {
     /** 游戏日志 */
     private final MutableLiveData<List<Pair<Integer, Object[]>>> gameLog = new MutableLiveData<>(new ArrayList<>());
 
-    public FarkleViewModel() {
+    public FarkleGameViewModel() {
         super(NUM_DICE, UNLIMITED_ROLLS);
         disableAllDice();
         addGameBeginsLog();

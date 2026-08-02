@@ -14,26 +14,26 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
-import static com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeViewModel.*;
+import static com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeGameViewModel.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class FiveYahtzeeScoreBoardViewModelTest {
+public class FiveYahtzeeGameViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    private FiveYahtzeeViewModel viewModel;
-    private FiveYahtzeeViewModel spyViewModel;
+    private FiveYahtzeeGameViewModel viewModel;
+    private FiveYahtzeeGameViewModel spyViewModel;
 
     @Mock
     private Handler mockHandler;
 
     @Before
     public void setUp() {
-        viewModel = new FiveYahtzeeViewModel();
+        viewModel = new FiveYahtzeeGameViewModel();
         viewModel.setHandler(mockHandler);
         spyViewModel = spy(viewModel);
     }
