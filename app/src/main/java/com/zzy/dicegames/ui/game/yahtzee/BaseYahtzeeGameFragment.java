@@ -1,9 +1,7 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
@@ -17,9 +15,6 @@ import androidx.lifecycle.LifecycleOwner;
  * @author 赵正阳
  */
 public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtzeeGameViewModel> {
-    /** 得分项按钮 */
-    protected Button[] mScoreButtons;
-
     /** 得分标签 */
     protected TextView[] mScoreTextViews;
 
@@ -37,35 +32,26 @@ public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtz
         super.onViewCreated(view, savedInstanceState);
         mViewModel.setGameOverAction(this::onGameOver);
         if (savedInstanceState == null)
-            rollDice();
+            rollDice();  // TODO 改为手动掷骰子
     }
 
     @Override
     protected void initViews(View view) {
         super.initViews(view);
 
-        // 获取得分按钮和标签
-        int[] scoreButtonIds = getScoreButtonIds();
-        mScoreButtons = new Button[scoreButtonIds.length];
-        for (int i = 0; i < mScoreButtons.length; i++) {
-            int category = i;
-            mScoreButtons[i] = view.findViewById(scoreButtonIds[i]);
-            mScoreButtons[i].setOnClickListener(v -> select(category));
-        }
-
+        // 获取得分标签
         int[] scoreTextViewIds = getScoreTextViewIds();
         mScoreTextViews = new TextView[scoreTextViewIds.length];
         for (int i = 0; i < mScoreTextViews.length; i++) {
+            int category = i;
             mScoreTextViews[i] = view.findViewById(scoreTextViewIds[i]);
+            mScoreTextViews[i].setOnClickListener(v -> select(category));
         }
 
         mUpperTotalScoreTextView = view.findViewById(R.id.tvUpperTotal);
         mBonusScoreTextView = view.findViewById(R.id.tvBonus);
         mTotalScoreTextView = view.findViewById(R.id.tvGameTotal);
     }
-
-    /** 得分项按钮id */
-    protected abstract int[] getScoreButtonIds();
 
     /** 得分项标签id */
     protected abstract int[] getScoreTextViewIds();
@@ -91,8 +77,11 @@ public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtz
     /** 得分项选择状态更新时的回调 */
     protected void onSelectedChanged(boolean[] selected) {
         for (int i = 0; i < selected.length; i++) {
-            mScoreButtons[i].setEnabled(!selected[i]);
-            mScoreTextViews[i].setTextColor(selected[i] ? Color.RED : Color.BLACK);
+            mScoreTextViews[i].setEnabled(!selected[i]);
+            mScoreTextViews[i].setTextColor(getResources().getColor(
+                    selected[i] ? R.color.scorecard_text : R.color.scorecard_text_candidate, null));
+            mScoreTextViews[i].setBackgroundColor(getResources().getColor(
+                    selected[i] ? R.color.scorecard_background : R.color.scorecard_background_candidate, null));
         }
     }
 

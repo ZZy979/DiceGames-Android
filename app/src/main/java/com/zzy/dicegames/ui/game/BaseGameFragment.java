@@ -73,7 +73,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
             final int position = i;
             mDiceViews[i] = view.findViewById(diceViewIds[i]);
             mDiceViews[i].setOnClickListener(v -> clickDice(position));
-            mDiceViews[i].setVisibility(i < mViewModel.getNumDice() ? View.VISIBLE : View.INVISIBLE);
+            mDiceViews[i].setVisibility(i < mViewModel.getNumDice() ? View.VISIBLE : View.GONE);
         }
 
         mRollButton = view.findViewById(R.id.btnRoll);

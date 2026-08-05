@@ -32,15 +32,6 @@ public class FiveYahtzeeGameFragment extends BaseYahtzeeGameFragment {
     }
 
     @Override
-    protected int[] getScoreButtonIds() {
-        return new int[] {
-                R.id.btn1, R.id.btn2, R.id.btn3, R.id.btn4, R.id.btn5, R.id.btn6,
-                R.id.btn2p, R.id.btn3e, R.id.btn4e, R.id.btnFullHouse,
-                R.id.btnSmallStraight, R.id.btnLargeStraight, R.id.btnChance, R.id.btnYahtzee
-        };
-    }
-
-    @Override
     protected int[] getScoreTextViewIds() {
         return new int[] {
                 R.id.tv1, R.id.tv2, R.id.tv3, R.id.tv4, R.id.tv5, R.id.tv6,

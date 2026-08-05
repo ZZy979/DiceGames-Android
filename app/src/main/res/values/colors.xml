@@ -1,3 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="scorecard_border">#000000</color>
+    <color name="scorecard_background">#FFFFFF</color>
+    <color name="scorecard_text">#000000</color>
+    <color name="scorecard_text_candidate">#FF0000</color>
+    <color name="scorecard_background_candidate">#FFFFA0</color>
 </resources>
