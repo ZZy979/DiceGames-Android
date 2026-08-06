@@ -1,4 +1,6 @@
-package com.zzy.dicegames.data.entity;
+package com.zzy.dicegames.data.entity.farkle;
+
+import com.zzy.dicegames.data.entity.BaseScore;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

@@ -30,8 +30,8 @@ public class ScoreSerializer {
         serializer.startDocument("utf-8", true);
         serializer.startTag(null, "scores");
 
-        serializeFiveYahtzeeScores();
-        serializeSixYahtzeeScores();
+        serializeYahtzeeScores();
+        serializeMaxiYatzyScores();
         serializeBalutScores();
         serializeFarkleScores();
 
@@ -39,29 +39,29 @@ public class ScoreSerializer {
         serializer.endDocument();
     }
 
-    private void serializeFiveYahtzeeScores() throws IOException {
-        serializer.startTag(null, "FiveYahtzeeScores");
-        for (var score : scoresDTO.fiveYahtzeeScores) {
-            serializer.startTag(null, "FiveYahtzeeScore")
+    private void serializeYahtzeeScores() throws IOException {
+        serializer.startTag(null, "YahtzeeScores");
+        for (var score : scoresDTO.yahtzeeScores) {
+            serializer.startTag(null, "YahtzeeScore")
                     .attribute(null, "date", score.date)
                     .attribute(null, "score", Integer.toString(score.score))
                     .attribute(null, "has_bonus", Boolean.toString(score.hasBonus))
                     .attribute(null, "has_yahtzee", Boolean.toString(score.hasYahtzee))
-                    .endTag(null, "FiveYahtzeeScore");
+                    .endTag(null, "YahtzeeScore");
         }
-        serializer.endTag(null, "FiveYahtzeeScores");
+        serializer.endTag(null, "YahtzeeScores");
     }
 
-    private void serializeSixYahtzeeScores() throws IOException {
-        serializer.startTag(null, "SixYahtzeeScores");
-        for (var score : scoresDTO.sixYahtzeeScores)
-            serializer.startTag(null, "SixYahtzeeScore")
+    private void serializeMaxiYatzyScores() throws IOException {
+        serializer.startTag(null, "MaxiYatzyScores");
+        for (var score : scoresDTO.maxiYatzyScores)
+            serializer.startTag(null, "MaxiYatzyScore")
                     .attribute(null, "date", score.date)
                     .attribute(null, "score", Integer.toString(score.score))
                     .attribute(null, "has_bonus", Boolean.toString(score.hasBonus))
-                    .attribute(null, "has_yahtzee", Boolean.toString(score.hasYahtzee))
-                    .endTag(null, "SixYahtzeeScore");
-        serializer.endTag(null, "SixYahtzeeScores");
+                    .attribute(null, "has_yatzy", Boolean.toString(score.hasYatzy))
+                    .endTag(null, "MaxiYatzyScore");
+        serializer.endTag(null, "MaxiYatzyScores");
     }
 
     private void serializeBalutScores() throws IOException {

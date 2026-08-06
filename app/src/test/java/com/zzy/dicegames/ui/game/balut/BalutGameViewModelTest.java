@@ -2,7 +2,7 @@ package com.zzy.dicegames.ui.game.balut;
 
 import android.os.Handler;
 
-import com.zzy.dicegames.data.entity.BalutScore;
+import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.utils.ArrayUtil;
 
 import org.junit.Before;

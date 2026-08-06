@@ -1,6 +1,6 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
-import com.zzy.dicegames.data.entity.BaseYahtzeeScore;
+import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
 import com.zzy.dicegames.utils.ArrayUtil;
 
@@ -108,8 +108,8 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
     /** 根据当前骰子点数计算指定得分项的得分 */
     public abstract int calculateScore(int category);
 
-    /** 判断是否满足Yahtzee：所有骰子点数都相同 */
-    protected boolean isYahtzee() {
+    /** 是否所有骰子点数都相同 */
+    protected boolean isAllSame() {
         int[] numbers = diceNumbers.getValue();
         return numbers != null && ArrayUtil.all(numbers, numbers[0]);
     }
@@ -121,7 +121,7 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         if (numbers == null || isSelected == null)
             return false;
 
-        return isYahtzee() && isSelected[numbers[0] - 1] && isSelected[numCategories - 1];
+        return isAllSame() && isSelected[numbers[0] - 1] && isSelected[numCategories - 1];
     }
 
     /** 选择指定的得分项，更新得分 */
@@ -180,10 +180,10 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
     }
 
     /** 创建得分实体 */
-    public abstract BaseYahtzeeScore createScoreEntity();
+    public abstract BaseScore createScoreEntity();
 
     /** 将得分保存到数据库，并返回排名 */
-    public abstract int saveScoreToDatabase(BaseYahtzeeScore score);
+    public abstract int saveScoreToDatabase(BaseScore score);
 
     @Override
     public void reset() {

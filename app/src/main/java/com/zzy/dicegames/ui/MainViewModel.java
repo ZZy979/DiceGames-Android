@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
     /** 当前游戏类型 */
-    private final MutableLiveData<GameType> gameType = new MutableLiveData<>(GameType.FIVE_YAHTZEE);
+    private final MutableLiveData<GameType> gameType = new MutableLiveData<>(GameType.YAHTZEE);
 
     public LiveData<GameType> getGameType() {
         return gameType;

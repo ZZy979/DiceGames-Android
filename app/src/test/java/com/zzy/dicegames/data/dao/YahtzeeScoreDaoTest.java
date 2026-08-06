@@ -3,7 +3,7 @@ package com.zzy.dicegames.data.dao;
 import android.content.Context;
 
 import com.zzy.dicegames.data.ScoreDatabase;
-import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
+import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.utils.score.ScoreUtil;
 
 import org.junit.After;
@@ -23,27 +23,27 @@ import androidx.room.Room;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-public class FiveYahtzeeScoreDaoTest {
+public class YahtzeeScoreDaoTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     private ScoreDatabase database;
 
-    private FiveYahtzeeScoreDao dao;
+    private YahtzeeScoreDao dao;
 
-    private List<FiveYahtzeeScore> testScores = List.of(
-            new FiveYahtzeeScore("2025-01-01", 300, true, true),
-            new FiveYahtzeeScore("2025-01-02", 370, true, true),
-            new FiveYahtzeeScore("2025-01-03", 270, false, false),
-            new FiveYahtzeeScore("2025-01-04", 350, true, true),
-            new FiveYahtzeeScore("2025-01-05", 290, true, false),
-            new FiveYahtzeeScore("2025-01-06", 160, false, false),
-            new FiveYahtzeeScore("2025-01-07", 240, false, false),
-            new FiveYahtzeeScore("2025-01-08", 260, false, true),
-            new FiveYahtzeeScore("2025-01-09", 230, false, false),
-            new FiveYahtzeeScore("2025-01-10", 320, true, true),
-            new FiveYahtzeeScore("2025-01-11", 280, true, false),
-            new FiveYahtzeeScore("2025-01-12", 200, false, false)
+    private List<YahtzeeScore> testScores = List.of(
+            new YahtzeeScore("2025-01-01", 300, true, true),
+            new YahtzeeScore("2025-01-02", 370, true, true),
+            new YahtzeeScore("2025-01-03", 270, false, false),
+            new YahtzeeScore("2025-01-04", 350, true, true),
+            new YahtzeeScore("2025-01-05", 290, true, false),
+            new YahtzeeScore("2025-01-06", 160, false, false),
+            new YahtzeeScore("2025-01-07", 240, false, false),
+            new YahtzeeScore("2025-01-08", 260, false, true),
+            new YahtzeeScore("2025-01-09", 230, false, false),
+            new YahtzeeScore("2025-01-10", 320, true, true),
+            new YahtzeeScore("2025-01-11", 280, true, false),
+            new YahtzeeScore("2025-01-12", 200, false, false)
     );
 
     @Before
@@ -51,7 +51,7 @@ public class FiveYahtzeeScoreDaoTest {
         Context context = RuntimeEnvironment.getApplication();
         database = Room.inMemoryDatabaseBuilder(context, ScoreDatabase.class)
                 .allowMainThreadQueries().build();
-        dao = database.fiveYahtzeeScoreDao();
+        dao = database.yahtzeeScoreDao();
         dao.insertAll(testScores);
     }
 
@@ -62,7 +62,7 @@ public class FiveYahtzeeScoreDaoTest {
 
     @Test
     public void testFindAll() {
-        List<FiveYahtzeeScore> scores = dao.findAll();
+        List<YahtzeeScore> scores = dao.findAll();
         assertEquals(testScores.size(), scores.size());
         for (int i = 0; i < scores.size(); i++) {
             assertEquals(i + 1, scores.get(i).id);
@@ -134,7 +134,7 @@ public class FiveYahtzeeScoreDaoTest {
 
     @Test
     public void testStatisticsObserver() {
-        dao.insert(new FiveYahtzeeScore("2025-01-13", 375, true, true));
+        dao.insert(new YahtzeeScore("2025-01-13", 375, true, true));
         dao.statistics().observeForever(stats -> {
             assertEquals(13, stats.count);
             assertEquals(375, stats.maxScore);
@@ -147,7 +147,7 @@ public class FiveYahtzeeScoreDaoTest {
 
     @Test
     public void testInsert() {
-        var score = new FiveYahtzeeScore("2025-01-13", 255, true, false);
+        var score = new YahtzeeScore("2025-01-13", 255, true, false);
         dao.insert(score);
         assertEquals(13, dao.count());
         var actual = dao.findById(13);
@@ -157,7 +157,7 @@ public class FiveYahtzeeScoreDaoTest {
 
     @Test
     public void testInsertAlreadyExist() {
-        var score = new FiveYahtzeeScore("2025-01-07", 245, false, false);
+        var score = new YahtzeeScore("2025-01-07", 245, false, false);
         score.id = 7;
         dao.insert(score);
         assertEquals(12, dao.count());
@@ -167,9 +167,9 @@ public class FiveYahtzeeScoreDaoTest {
     @Test
     public void testDelete() {
         int[] idsToDelete = {2, 5, 10, 999};
-        List<FiveYahtzeeScore> scores = new ArrayList<>();
+        List<YahtzeeScore> scores = new ArrayList<>();
         for (int id : idsToDelete) {
-            var s = new FiveYahtzeeScore("", 0, false, false);
+            var s = new YahtzeeScore("", 0, false, false);
             s.id = id;
             scores.add(s);
         }

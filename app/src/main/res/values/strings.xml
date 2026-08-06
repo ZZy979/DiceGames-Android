@@ -3,8 +3,8 @@
     <string name="app_name">DiceGames</string>
 
     <!-- Game types -->
-    <string name="fiveYahtzee">5-dice Yahtzee</string>
-    <string name="sixYahtzee">6-dice Yahtzee</string>
+    <string name="yahtzee">Yahtzee</string>
+    <string name="maxiYatzy">Maxi Yatzy</string>
     <string name="balut">Balut</string>
     <string name="liarDice">Liar dice</string>
     <string name="rollADice">Roll-a-dice</string>
@@ -52,12 +52,11 @@
     <string name="largeStraight">Large Straight</string>
     <string name="fullStraight">Full Straight</string>
     <string name="fullHouse">Full House</string>
-    <string name="hut">Hut</string>
-    <string name="house">House</string>
+    <string name="castle">Castle</string>
     <string name="tower">Tower</string>
     <string name="chance">Chance</string>
     <string name="choice">Choice</string>
-    <string name="yahtzee">Yahtzee</string>
+    <string name="yatzy">Yatzy</string>
     <string name="upperTotal">Upper Total</string>
     <string name="bonus">Bonus</string>
     <string name="gameTotal">Game Total</string>
@@ -99,6 +98,7 @@
     <string name="averageScore">Average score</string>
     <string name="gotBonus">Got bonus</string>
     <string name="gotYahtzee">Got Yahtzee</string>
+    <string name="gotYatzy">Got Yatzy</string>
     <string name="gotBalut">Got Balut</string>
     <string name="gamesWon">Games won</string>
     <string name="winRate">Win rate</string>

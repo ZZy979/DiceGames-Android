@@ -1,7 +1,7 @@
 package com.zzy.dicegames.data.dao;
 
-import com.zzy.dicegames.data.entity.BalutScore;
-import com.zzy.dicegames.data.entity.BalutStatistics;
+import com.zzy.dicegames.data.entity.balut.BalutScore;
+import com.zzy.dicegames.data.entity.balut.BalutStatistics;
 
 import java.util.List;
 

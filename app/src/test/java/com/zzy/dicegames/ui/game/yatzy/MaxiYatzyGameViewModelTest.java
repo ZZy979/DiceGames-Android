@@ -1,4 +1,4 @@
-package com.zzy.dicegames.ui.game.yahtzee;
+package com.zzy.dicegames.ui.game.yatzy;
 
 import android.os.Handler;
 
@@ -14,26 +14,26 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
-import static com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeGameViewModel.*;
+import static com.zzy.dicegames.ui.game.yatzy.MaxiYatzyGameViewModel.Category.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class SixYahtzeeGameViewModelTest {
+public class MaxiYatzyGameViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    private SixYahtzeeGameViewModel viewModel;
-    private SixYahtzeeGameViewModel spyViewModel;
+    private MaxiYatzyGameViewModel viewModel;
+    private MaxiYatzyGameViewModel spyViewModel;
 
     @Mock
     private Handler mockHandler;
 
     @Before
     public void setUp() {
-        viewModel = new SixYahtzeeGameViewModel();
+        viewModel = new MaxiYatzyGameViewModel();
         viewModel.setHandler(mockHandler);
         spyViewModel = spy(viewModel);
     }
@@ -83,7 +83,7 @@ public class SixYahtzeeGameViewModelTest {
         assertEquals(0, viewModel.getBonusScore().getValue().intValue());
 
         viewModel.updateDiceNumbers(1, 1, 1, 1, 2, 2);
-        viewModel.select(ONES);
+        viewModel.select(ONES.ordinal());
         assertEquals(84, viewModel.getUpperTotalScore().getValue().intValue());
         assertEquals(100, viewModel.getBonusScore().getValue().intValue());
     }
@@ -100,9 +100,9 @@ public class SixYahtzeeGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second[0], viewModel.calculateScore(ONE_PAIR));
-            assertEquals(t.second[1], viewModel.calculateScore(TWO_PAIRS));
-            assertEquals(t.second[2], viewModel.calculateScore(THREE_PAIRS));
+            assertEquals(t.second[0], viewModel.calculateScore(ONE_PAIR.ordinal()));
+            assertEquals(t.second[1], viewModel.calculateScore(TWO_PAIRS.ordinal()));
+            assertEquals(t.second[2], viewModel.calculateScore(THREE_PAIRS.ordinal()));
         }
     }
 
@@ -117,9 +117,9 @@ public class SixYahtzeeGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second[0], viewModel.calculateScore(THREE_OF_A_KIND));
-            assertEquals(t.second[1], viewModel.calculateScore(FOUR_OF_A_KIND));
-            assertEquals(t.second[2], viewModel.calculateScore(FIVE_OF_A_KIND));
+            assertEquals(t.second[0], viewModel.calculateScore(THREE_OF_A_KIND.ordinal()));
+            assertEquals(t.second[1], viewModel.calculateScore(FOUR_OF_A_KIND.ordinal()));
+            assertEquals(t.second[2], viewModel.calculateScore(FIVE_OF_A_KIND.ordinal()));
         }
     }
 
@@ -134,14 +134,14 @@ public class SixYahtzeeGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second[0], viewModel.calculateScore(SMALL_STRAIGHT));
-            assertEquals(t.second[1], viewModel.calculateScore(LARGE_STRAIGHT));
-            assertEquals(t.second[2], viewModel.calculateScore(FULL_STRAIGHT));
+            assertEquals(t.second[0], viewModel.calculateScore(SMALL_STRAIGHT.ordinal()));
+            assertEquals(t.second[1], viewModel.calculateScore(LARGE_STRAIGHT.ordinal()));
+            assertEquals(t.second[2], viewModel.calculateScore(FULL_STRAIGHT.ordinal()));
         }
     }
 
     @Test
-    public void testHutHouseTower() {
+    public void testHouseCastleTower() {
         List<Pair<int[], int[]>> testCases = List.of(
                 Pair.create(arr(2, 2, 3, 5, 5, 6), arr(0, 0, 0)),
                 Pair.create(arr(2, 2, 5, 6, 6, 6), arr(22, 0, 0)),
@@ -152,9 +152,9 @@ public class SixYahtzeeGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second[0], viewModel.calculateScore(HUT));
-            assertEquals(t.second[1], viewModel.calculateScore(HOUSE));
-            assertEquals(t.second[2], viewModel.calculateScore(TOWER));
+            assertEquals(t.second[0], viewModel.calculateScore(FULL_HOUSE.ordinal()));
+            assertEquals(t.second[1], viewModel.calculateScore(CASTLE.ordinal()));
+            assertEquals(t.second[2], viewModel.calculateScore(TOWER.ordinal()));
         }
     }
 
@@ -167,7 +167,7 @@ public class SixYahtzeeGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second.intValue(), viewModel.calculateScore(CHANCE));
+            assertEquals(t.second.intValue(), viewModel.calculateScore(CHANCE.ordinal()));
         }
     }
 
@@ -180,29 +180,8 @@ public class SixYahtzeeGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second.intValue(), viewModel.calculateScore(YAHTZEE));
+            assertEquals(t.second.intValue(), viewModel.calculateScore(YATZY.ordinal()));
         }
-    }
-
-    @Test
-    public void testJoker() {
-        viewModel.updateDiceNumbers(1, 2, 3, 5, 6, 6);
-        viewModel.select(SIXES);
-        viewModel.select(YAHTZEE);
-
-        viewModel.updateDiceNumbers(6, 6, 6, 6, 6, 6);
-        assertEquals(36, viewModel.calculateScore(ONE_PAIR));
-        assertEquals(36, viewModel.calculateScore(TWO_PAIRS));
-        assertEquals(36, viewModel.calculateScore(THREE_PAIRS));
-        assertEquals(36, viewModel.calculateScore(THREE_OF_A_KIND));
-        assertEquals(36, viewModel.calculateScore(FOUR_OF_A_KIND));
-        assertEquals(36, viewModel.calculateScore(FIVE_OF_A_KIND));
-        assertEquals(15, viewModel.calculateScore(SMALL_STRAIGHT));
-        assertEquals(20, viewModel.calculateScore(LARGE_STRAIGHT));
-        assertEquals(21, viewModel.calculateScore(FULL_STRAIGHT));
-        assertEquals(36, viewModel.calculateScore(HUT));
-        assertEquals(36, viewModel.calculateScore(HOUSE));
-        assertEquals(36, viewModel.calculateScore(TOWER));
     }
 
     @Test
@@ -215,6 +194,6 @@ public class SixYahtzeeGameViewModelTest {
         var score = spyViewModel.createScoreEntity();
         assertEquals(256, score.score);
         assertFalse(score.hasBonus);
-        assertTrue(score.hasYahtzee);
+        assertTrue(score.hasYatzy);
     }
 }

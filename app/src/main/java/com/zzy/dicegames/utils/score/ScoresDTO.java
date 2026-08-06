@@ -1,36 +1,31 @@
 package com.zzy.dicegames.utils.score;
 
-import com.zzy.dicegames.data.entity.BalutScore;
-import com.zzy.dicegames.data.entity.FarkleScore;
-import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
-import com.zzy.dicegames.data.entity.SixYahtzeeScore;
+import com.zzy.dicegames.data.entity.balut.BalutScore;
+import com.zzy.dicegames.data.entity.farkle.FarkleScore;
+import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
+import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /** 导入/导出得分数据的中间结果 */
 public class ScoresDTO {
-    public List<FiveYahtzeeScore> fiveYahtzeeScores;
-    public List<SixYahtzeeScore> sixYahtzeeScores;
+    public List<YahtzeeScore> yahtzeeScores;
+    public List<MaxiYatzyScore> maxiYatzyScores;
     public List<BalutScore> balutScores;
     public List<FarkleScore> farkleScores;
 
     public ScoresDTO() {
-        this(
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>())
-        ;
+        this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public ScoresDTO(
-            List<FiveYahtzeeScore> fiveYahtzeeScores,
-            List<SixYahtzeeScore> sixYahtzeeScores,
+            List<YahtzeeScore> yahtzeeScores,
+            List<MaxiYatzyScore> maxiYatzyScores,
             List<BalutScore> balutScores,
             List<FarkleScore> farkleScores) {
-        this.fiveYahtzeeScores = fiveYahtzeeScores;
-        this.sixYahtzeeScores = sixYahtzeeScores;
+        this.yahtzeeScores = yahtzeeScores;
+        this.maxiYatzyScores = maxiYatzyScores;
         this.balutScores = balutScores;
         this.farkleScores = farkleScores;
     }

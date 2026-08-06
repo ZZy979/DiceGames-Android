@@ -1,6 +1,6 @@
 package com.zzy.dicegames.ui.game.balut;
 
-import com.zzy.dicegames.data.entity.BalutScore;
+import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
 import com.zzy.dicegames.utils.ArrayUtil;
 

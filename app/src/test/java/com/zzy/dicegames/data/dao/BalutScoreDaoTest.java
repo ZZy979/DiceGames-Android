@@ -3,7 +3,7 @@ package com.zzy.dicegames.data.dao;
 import android.content.Context;
 
 import com.zzy.dicegames.data.ScoreDatabase;
-import com.zzy.dicegames.data.entity.BalutScore;
+import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.utils.score.ScoreUtil;
 
 import org.junit.After;

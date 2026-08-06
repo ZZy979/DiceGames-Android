@@ -13,8 +13,8 @@ import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.ui.game.balut.BalutGameFragment;
 import com.zzy.dicegames.ui.game.farkle.FarkleGameFragment;
 import com.zzy.dicegames.ui.game.rolladice.RollADiceGameFragment;
-import com.zzy.dicegames.ui.game.yahtzee.FiveYahtzeeGameFragment;
-import com.zzy.dicegames.ui.game.yahtzee.SixYahtzeeGameFragment;
+import com.zzy.dicegames.ui.game.yahtzee.YahtzeeGameFragment;
+import com.zzy.dicegames.ui.game.yatzy.MaxiYatzyGameFragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
@@ -42,8 +42,8 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     /** 根据游戏类型创建游戏Fragment */
     public static BaseGameFragment<?> createByGameType(GameType gameType) {
         return switch (gameType) {
-            case FIVE_YAHTZEE -> new FiveYahtzeeGameFragment();
-            case SIX_YAHTZEE -> new SixYahtzeeGameFragment();
+            case YAHTZEE -> new YahtzeeGameFragment();
+            case MAXI_YATZY -> new MaxiYatzyGameFragment();
             case BALUT -> new BalutGameFragment();
             case ROLL_A_DICE -> new RollADiceGameFragment();
             case FARKLE -> new FarkleGameFragment();

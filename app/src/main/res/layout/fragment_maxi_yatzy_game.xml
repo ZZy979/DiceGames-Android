@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.game.yahtzee.FiveYahtzeeGameFragment">
+    tools:context=".ui.game.yatzy.MaxiYatzyGameFragment">
 
     <TextView
         android:id="@+id/tvTitle"
@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginVertical="10dp"
-        android:text="@string/fiveYahtzee"
+        android:text="@string/maxiYatzy"
         android:textSize="40sp"
         android:textStyle="bold" />
 
@@ -256,12 +256,60 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
+                    android:text="@string/s1p"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv1p"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginBottom="1dp"
+                android:background="@color/scorecard_background">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
                     android:text="@string/s2p"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv2p"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginBottom="1dp"
+                android:background="@color/scorecard_background">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="@string/s3p"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv3p"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -328,12 +376,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/fullHouse"
+                    android:text="@string/s5e"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvFullHouse"
+                    android:id="@+id/tv5e"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -400,6 +448,102 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
+                    android:text="@string/fullStraight"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvFullStraight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginBottom="1dp"
+                android:background="@color/scorecard_background">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="@string/fullHouse"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvFullHouse"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginBottom="1dp"
+                android:background="@color/scorecard_background">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="@string/castle"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvCastle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginBottom="1dp"
+                android:background="@color/scorecard_background">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="@string/tower"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvTower"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:text="0"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginBottom="1dp"
+                android:background="@color/scorecard_background">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
                     android:text="@string/chance"
                     android:textAlignment="center"
                     android:textSize="18sp" />
@@ -424,12 +568,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/yahtzee"
+                    android:text="@string/maxiYatzy"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvYahtzee"
+                    android:id="@+id/tvYatzy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"

@@ -3,7 +3,7 @@ package com.zzy.dicegames.data.dao;
 import android.content.Context;
 
 import com.zzy.dicegames.data.ScoreDatabase;
-import com.zzy.dicegames.data.entity.FarkleScore;
+import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.utils.score.ScoreUtil;
 
 import org.junit.After;

@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.room.PrimaryKey;
 
 /**
- * 游戏得分实体类基类
+ * 游戏得分实体基类
  *
  * @author 赵正阳
  */

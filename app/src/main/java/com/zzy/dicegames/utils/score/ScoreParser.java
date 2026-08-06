@@ -2,10 +2,10 @@ package com.zzy.dicegames.utils.score;
 
 import android.util.Xml;
 
-import com.zzy.dicegames.data.entity.BalutScore;
-import com.zzy.dicegames.data.entity.FarkleScore;
-import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
-import com.zzy.dicegames.data.entity.SixYahtzeeScore;
+import com.zzy.dicegames.data.entity.balut.BalutScore;
+import com.zzy.dicegames.data.entity.farkle.FarkleScore;
+import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
+import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -37,8 +37,8 @@ public class ScoreParser {
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_TAG) {
                 switch (parser.getName()) {
-                    case "FiveYahtzeeScore" -> parseFiveYahtzeeScores();
-                    case "SixYahtzeeScore" -> parseSixYahtzeeScores();
+                    case "YahtzeeScore" -> parseYahtzeeScores();
+                    case "MaxiYatzyScore" -> parseMaxiYatzyScores();
                     case "BalutScore" -> parseBalutScores();
                     case "FarkleScore" -> parseFarkleScores();
                 }
@@ -49,20 +49,20 @@ public class ScoreParser {
         return scoresDTO;
     }
 
-    private void parseFiveYahtzeeScores() {
+    private void parseYahtzeeScores() {
         String date = parser.getAttributeValue(null, "date");
         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
         boolean hasBonus = Boolean.parseBoolean(parser.getAttributeValue(null, "has_bonus"));
         boolean hasYahtzee = Boolean.parseBoolean(parser.getAttributeValue(null, "has_yahtzee"));
-        scoresDTO.fiveYahtzeeScores.add(new FiveYahtzeeScore(date, score, hasBonus, hasYahtzee));
+        scoresDTO.yahtzeeScores.add(new YahtzeeScore(date, score, hasBonus, hasYahtzee));
     }
 
-    private void parseSixYahtzeeScores() {
+    private void parseMaxiYatzyScores() {
         String date = parser.getAttributeValue(null, "date");
         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
         boolean hasBonus = Boolean.parseBoolean(parser.getAttributeValue(null, "has_bonus"));
-        boolean hasYahtzee = Boolean.parseBoolean(parser.getAttributeValue(null, "has_yahtzee"));
-        scoresDTO.sixYahtzeeScores.add(new SixYahtzeeScore(date, score, hasBonus, hasYahtzee));
+        boolean hasYatzy = Boolean.parseBoolean(parser.getAttributeValue(null, "has_yatzy"));
+        scoresDTO.maxiYatzyScores.add(new MaxiYatzyScore(date, score, hasBonus, hasYatzy));
     }
 
     private void parseBalutScores() {

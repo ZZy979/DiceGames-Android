@@ -2,8 +2,8 @@ package com.zzy.dicegames.ui.game.yahtzee;
 
 import android.os.Handler;
 
-import com.zzy.dicegames.data.entity.BaseYahtzeeScore;
-import com.zzy.dicegames.data.entity.FiveYahtzeeScore;
+import com.zzy.dicegames.data.entity.BaseScore;
+import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.utils.ArrayUtil;
 
 import org.junit.Before;
@@ -38,8 +38,8 @@ public class BaseYahtzeeGameViewModelTest {
    public void setUp() {
       viewModel = new BaseYahtzeeGameViewModel(5, 3, 10, 20, 8) {
          @Override public int calculateScore(int category) { return sumOfDice; }
-         @Override public BaseYahtzeeScore createScoreEntity() { return null; }
-         @Override public int saveScoreToDatabase(BaseYahtzeeScore score) { return 0; }
+         @Override public BaseScore createScoreEntity() { return null; }
+         @Override public int saveScoreToDatabase(BaseScore score) { return 0; }
       };
       viewModel.setHandler(mockHandler);
       spyViewModel = spy(viewModel);
@@ -59,12 +59,12 @@ public class BaseYahtzeeGameViewModelTest {
    }
 
    @Test
-   public void testIsYahtzee() {
+   public void testIsAllSame() {
       viewModel.updateDiceNumbers(5, 5, 2, 4, 5);
-      assertFalse(viewModel.isYahtzee());
+      assertFalse(viewModel.isAllSame());
 
       viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
-      assertTrue(viewModel.isYahtzee());
+      assertTrue(viewModel.isAllSame());
    }
 
    @Test
@@ -156,7 +156,7 @@ public class BaseYahtzeeGameViewModelTest {
 
    @Test
    public void testGameOver() {
-      doReturn(new FiveYahtzeeScore("2025-01-01", 300, true, false))
+      doReturn(new YahtzeeScore("2025-01-01", 300, true, false))
               .when(spyViewModel).createScoreEntity();
       doReturn(8).when(spyViewModel).saveScoreToDatabase(any());
       Consumer<Object[]> gameOverAction = mock(Consumer.class);

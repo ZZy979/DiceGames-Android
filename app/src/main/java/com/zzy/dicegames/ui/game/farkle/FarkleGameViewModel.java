@@ -1,7 +1,7 @@
 package com.zzy.dicegames.ui.game.farkle;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.data.entity.FarkleScore;
+import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
 import com.zzy.dicegames.utils.ArrayUtil;
 

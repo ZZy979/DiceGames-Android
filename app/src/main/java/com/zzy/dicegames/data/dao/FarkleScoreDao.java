@@ -1,7 +1,7 @@
 package com.zzy.dicegames.data.dao;
 
-import com.zzy.dicegames.data.entity.FarkleScore;
-import com.zzy.dicegames.data.entity.FarkleStatistics;
+import com.zzy.dicegames.data.entity.farkle.FarkleScore;
+import com.zzy.dicegames.data.entity.farkle.FarkleStatistics;
 
 import java.util.List;
 
@@ -30,7 +30,8 @@ public interface FarkleScoreDao {
     int count();
 
     @Query(
-            "SELECT COUNT(*) AS count, SUM(score > computer_score) AS winCount " +
+            "SELECT COUNT(*) AS count, MAX(score) AS maxScore, MIN(score) AS minScore," +
+            "    AVG(score) AS avgScore, SUM(score > computer_score) AS winCount " +
             "FROM farkle_score"
     )
     LiveData<FarkleStatistics> statistics();

@@ -1,10 +1,11 @@
 package com.zzy.dicegames.utils.score;
 
 import com.zzy.dicegames.data.ScoreDatabase;
-import com.zzy.dicegames.data.entity.BalutScore;
+import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.data.entity.BaseScore;
-import com.zzy.dicegames.data.entity.BaseYahtzeeScore;
-import com.zzy.dicegames.data.entity.FarkleScore;
+import com.zzy.dicegames.data.entity.farkle.FarkleScore;
+import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
+import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -32,8 +33,8 @@ public class ScoreUtil {
     public static void importScores(InputStream inputStream) throws IOException, XmlPullParserException {
         var parser = new ScoreParser(inputStream);
         ScoresDTO result = parser.parse();
-        scoreDatabase.fiveYahtzeeScoreDao().insertAll(result.fiveYahtzeeScores);
-        scoreDatabase.sixYahtzeeScoreDao().insertAll(result.sixYahtzeeScores);
+        scoreDatabase.yahtzeeScoreDao().insertAll(result.yahtzeeScores);
+        scoreDatabase.maxiYatzyScoreDao().insertAll(result.maxiYatzyScores);
         scoreDatabase.balutScoreDao().insertAll(result.balutScores);
         scoreDatabase.farkleScoreDao().insertAll(result.farkleScores);
     }
@@ -46,8 +47,8 @@ public class ScoreUtil {
 
     public static void exportScores(OutputStream outputStream) throws IOException {
         var scoresDTO = new ScoresDTO(
-                 scoreDatabase.fiveYahtzeeScoreDao().findAll(),
-                 scoreDatabase.sixYahtzeeScoreDao().findAll(),
+                 scoreDatabase.yahtzeeScoreDao().findAll(),
+                 scoreDatabase.maxiYatzyScoreDao().findAll(),
                  scoreDatabase.balutScoreDao().findAll(),
                  scoreDatabase.farkleScoreDao().findAll()
         );
@@ -59,8 +60,12 @@ public class ScoreUtil {
         return a.date.equals(b.date) && a.score == b.score;
     }
 
-    public static boolean isEqual(BaseYahtzeeScore a, BaseYahtzeeScore b) {
+    public static boolean isEqual(YahtzeeScore a, YahtzeeScore b) {
         return isEqual((BaseScore) a, b) && a.hasBonus == b.hasBonus && a.hasYahtzee == b.hasYahtzee;
+    }
+
+    public static boolean isEqual(MaxiYatzyScore a, MaxiYatzyScore b) {
+        return isEqual((BaseScore) a, b) && a.hasBonus == b.hasBonus && a.hasYatzy == b.hasYatzy;
     }
 
     public static boolean isEqual(BalutScore a, BalutScore b) {

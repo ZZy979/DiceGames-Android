@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.stats.YahtzeeStatsFragment">
+    tools:context=".ui.stats.MaxiYatzyStatsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -143,11 +143,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/gotYahtzee"
+                    android:text="@string/gotYatzy"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvGotYahtzee"
+                    android:id="@+id/tvGotYatzy"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

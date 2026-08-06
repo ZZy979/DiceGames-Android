@@ -7,9 +7,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.data.entity.FarkleStatistics;
+import com.zzy.dicegames.data.entity.BaseScore;
+import com.zzy.dicegames.data.entity.BaseStatistics;
+import com.zzy.dicegames.data.entity.farkle.FarkleStatistics;
+
+import java.util.List;
 
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 
 /**
  * Farkle统计数据Fragment
@@ -17,9 +22,6 @@ import androidx.lifecycle.LifecycleOwner;
  * @author 赵正阳
  */
 public class FarkleStatsFragment extends BaseStatsFragment {
-    /** 局数标签 */
-    private TextView mGamesPlayedTextView;
-
     /** 获胜局数标签 */
     private TextView mGamesWonTextView;
 
@@ -34,21 +36,34 @@ public class FarkleStatsFragment extends BaseStatsFragment {
     @Override
     protected void initViews(View view) {
         mGamesPlayedTextView = view.findViewById(R.id.tvGamesPlayed);
+        mMaxScoreTextView = view.findViewById(R.id.tvMaxScore);
+        mMinScoreTextView = view.findViewById(R.id.tvMinScore);
+        mAverageScoreTextView = view.findViewById(R.id.tvAverageScore);
         mGamesWonTextView = view.findViewById(R.id.tvGamesWon);
         mWinRateTextView = view.findViewById(R.id.tvWinRate);
     }
 
     @Override
-    protected void setupObservers(LifecycleOwner owner) {
-        var dao = mScoreDatabase.farkleScoreDao();
-        dao.statistics().observe(owner, this::onStatisticsChanged);
+    protected LiveData<? extends List<? extends BaseScore>> getHighScores() {
+        return null;
     }
 
-    /** 统计数据更新时的回调 */
-    private void onStatisticsChanged(FarkleStatistics stats) {
-        mGamesPlayedTextView.setText(Integer.toString(stats.count));
-        mGamesWonTextView.setText(Integer.toString(stats.winCount));
-        mWinRateTextView.setText(stats.count == 0 ? "-" : String.format(
-                "%.2f%%", (double) stats.winCount / stats.count * 100));
+    @Override
+    protected LiveData<? extends BaseStatistics> getStatistics() {
+        return mScoreDatabase.farkleScoreDao().statistics();
+    }
+
+    @Override
+    protected void setupObservers(LifecycleOwner owner) {
+        getStatistics().observe(owner, this::onStatisticsChanged);
+    }
+
+    @Override
+    protected void onStatisticsChanged(BaseStatistics stats) {
+        super.onStatisticsChanged(stats);
+        var s = (FarkleStatistics) stats;
+        mGamesWonTextView.setText(Integer.toString(s.winCount));
+        mWinRateTextView.setText(s.count == 0 ? "-" : String.format(
+                "%.2f%%", (double) s.winCount / s.count * 100));
     }
 }

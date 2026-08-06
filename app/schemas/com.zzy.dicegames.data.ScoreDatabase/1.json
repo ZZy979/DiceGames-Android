@@ -2,10 +2,10 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "de1ea2b3d788480664f6f3805c1eb435",
+    "identityHash": "e999174922c8a406644d1c54641575ee",
     "entities": [
       {
-        "tableName": "five_yahtzee_score",
+        "tableName": "yahtzee_score",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`has_bonus` INTEGER NOT NULL, `has_yahtzee` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `score` INTEGER NOT NULL)",
         "fields": [
           {
@@ -47,8 +47,8 @@
         }
       },
       {
-        "tableName": "six_yahtzee_score",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`has_bonus` INTEGER NOT NULL, `has_yahtzee` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `score` INTEGER NOT NULL)",
+        "tableName": "maxi_yatzy_score",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`has_bonus` INTEGER NOT NULL, `has_yatzy` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `score` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "hasBonus",
@@ -57,8 +57,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "hasYahtzee",
-            "columnName": "has_yahtzee",
+            "fieldPath": "hasYatzy",
+            "columnName": "has_yatzy",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -123,11 +123,47 @@
             "id"
           ]
         }
+      },
+      {
+        "tableName": "farkle_score",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`computer_score` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `score` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "computerScore",
+            "columnName": "computer_score",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score",
+            "columnName": "score",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'de1ea2b3d788480664f6f3805c1eb435')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e999174922c8a406644d1c54641575ee')"
     ]
   }
 }

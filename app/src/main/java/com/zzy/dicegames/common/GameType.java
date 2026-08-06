@@ -4,11 +4,11 @@ import com.zzy.dicegames.R;
 
 /** 游戏类型 */
 public enum GameType {
-    /** 5骰Yahtzee */
-    FIVE_YAHTZEE(R.string.fiveYahtzee),
+    /** Yahtzee */
+    YAHTZEE(R.string.yahtzee),
 
-    /** 6骰Yahtzee */
-    SIX_YAHTZEE(R.string.sixYahtzee),
+    /** Maxi Yatzy */
+    MAXI_YATZY(R.string.maxiYatzy),
 
     /** Balut */
     BALUT(R.string.balut),
@@ -23,7 +23,7 @@ public enum GameType {
     FARKLE(R.string.farkle);
 
     /** 游戏类型名称的字符串资源id */
-    private int nameResId;
+    private final int nameResId;
 
     GameType(int nameResId) {
         this.nameResId = nameResId;

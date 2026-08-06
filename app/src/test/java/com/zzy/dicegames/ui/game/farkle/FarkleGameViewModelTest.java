@@ -3,7 +3,7 @@ package com.zzy.dicegames.ui.game.farkle;
 import android.os.Handler;
 
 import com.zzy.dicegames.R;
-import com.zzy.dicegames.data.entity.FarkleScore;
+import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.utils.ArrayUtil;
 
 import org.junit.Before;
