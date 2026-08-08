@@ -32,22 +32,21 @@
     <string name="roll">掷</string>
     <string name="rollRemaining">掷(%d)</string>
 
-    <!-- Yahtzee -->
+    <!-- Yahtzee/Yatzy -->
     <string name="category">得分项</string>
     <string name="score">得分</string>
-    <string name="s1">1</string>
-    <string name="s2">2</string>
-    <string name="s3">3</string>
-    <string name="s4">4</string>
-    <string name="s5">5</string>
-    <string name="s6">6</string>
-    <string name="s1p">1对</string>
-    <string name="s2p">2对</string>
-    <string name="s3p">3对</string>
-    <string name="s3e">3个同点</string>
-    <string name="s4e">4个同点</string>
-    <string name="s5e">5个同点</string>
-    <string name="straight">连顺</string>
+    <string name="ones">1</string>
+    <string name="twos">2</string>
+    <string name="threes">3</string>
+    <string name="fours">4</string>
+    <string name="fives">5</string>
+    <string name="sixes">6</string>
+    <string name="onePair">1对</string>
+    <string name="twoPairs">2对</string>
+    <string name="threePairs">3对</string>
+    <string name="threeOfAKind">3个同点</string>
+    <string name="fourOfAKind">4个同点</string>
+    <string name="fiveOfAKind">5个同点</string>
     <string name="smallStraight">小顺</string>
     <string name="largeStraight">大顺</string>
     <string name="fullStraight">全连顺</string>
@@ -55,11 +54,16 @@
     <string name="castle">城堡</string>
     <string name="tower">高塔</string>
     <string name="chance">机会</string>
-    <string name="choice">选择</string>
     <string name="yatzy">Yatzy</string>
     <string name="upperTotal">上区总分</string>
     <string name="bonus">奖励分</string>
-    <string name="gameTotal">游戏总分</string>
+    <string name="totalScore">总分</string>
+
+    <!-- Balut -->
+    <string name="straight">连顺</string>
+    <string name="choice">选择</string>
+    <string name="points">点数</string>
+    <string name="totalPoints">总点数</string>
 
     <!-- 显示得分 -->
     <string name="gameOver">游戏结束</string>
@@ -93,9 +97,12 @@
     <string name="date">日期</string>
     <string name="statistics">统计数据</string>
     <string name="gamesPlayed">局数</string>
-    <string name="maxScore">最高分</string>
-    <string name="minScore">最低分</string>
+    <string name="highestScore">最高分</string>
+    <string name="lowestScore">最低分</string>
     <string name="averageScore">平均分</string>
+    <string name="highestPoints">最高点数</string>
+    <string name="lowestPoints">最低点数</string>
+    <string name="averagePoints">平均点数</string>
     <string name="gotBonus">得到奖励分</string>
     <string name="gotYahtzee">得到Yahtzee</string>
     <string name="gotYatzy">得到Yatzy</string>

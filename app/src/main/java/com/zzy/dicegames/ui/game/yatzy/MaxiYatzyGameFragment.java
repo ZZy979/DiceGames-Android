@@ -36,8 +36,8 @@ public class MaxiYatzyGameFragment extends BaseYahtzeeGameFragment {
     @Override
     protected int[] getScoreTextViewIds() {
         return new int[] {
-                R.id.tv1, R.id.tv2, R.id.tv3, R.id.tv4, R.id.tv5, R.id.tv6,
-                R.id.tv1p, R.id.tv2p, R.id.tv3p, R.id.tv3e, R.id.tv4e, R.id.tv5e,
+                R.id.tvOnes, R.id.tvTwos, R.id.tvThrees, R.id.tvFours, R.id.tvFives, R.id.tvSixes,
+                R.id.tvOnePair, R.id.tvTwoPairs, R.id.tvThreePairs, R.id.tvThreeOfAKind, R.id.tvFourOfAKind, R.id.tvFiveOfAKind,
                 R.id.tvSmallStraight, R.id.tvLargeStraight, R.id.tvFullStraight,
                 R.id.tvFullHouse, R.id.tvCastle, R.id.tvTower,
                 R.id.tvChance, R.id.tvYatzy

@@ -4,6 +4,7 @@ import android.os.Handler;
 
 import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.utils.ArrayUtil;
+import com.zzy.dicegames.utils.score.ScoreUtil;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -20,6 +21,7 @@ import androidx.core.util.Pair;
 import androidx.lifecycle.Observer;
 
 import static com.zzy.dicegames.ui.game.balut.BalutGameViewModel.*;
+import static com.zzy.dicegames.ui.game.balut.BalutGameViewModel.Category.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -54,7 +56,11 @@ public class BalutGameViewModelTest {
         assertArrayEquals(new int[NUM_CATEGORIES][MAX_SELECTIONS], viewModel.getScores().getValue());
         assertArrayEquals(new int[NUM_CATEGORIES], viewModel.getSelectCount().getValue());
         assertEquals(0, viewModel.getNumSelected());
+        assertArrayEquals(new int[NUM_CATEGORIES], viewModel.getCategoryScores().getValue());
+        assertArrayEquals(new int[NUM_CATEGORIES], viewModel.getCategoryPoints().getValue());
         assertEquals(0, viewModel.getTotalScore().getValue().intValue());
+        assertEquals(0, viewModel.getTotalScorePoints().getValue().intValue());
+        assertEquals(0, viewModel.getTotalPoints().getValue().intValue());
     }
 
     @Test
@@ -95,7 +101,7 @@ public class BalutGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second.intValue(), viewModel.calculateScore(STRAIGHT));
+            assertEquals(t.second.intValue(), viewModel.calculateScore(STRAIGHT.ordinal()));
         }
     }
 
@@ -109,7 +115,7 @@ public class BalutGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second.intValue(), viewModel.calculateScore(FULL_HOUSE));
+            assertEquals(t.second.intValue(), viewModel.calculateScore(FULL_HOUSE.ordinal()));
         }
     }
 
@@ -121,7 +127,7 @@ public class BalutGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second.intValue(), viewModel.calculateScore(CHOICE));
+            assertEquals(t.second.intValue(), viewModel.calculateScore(CHOICE.ordinal()));
         }
     }
 
@@ -138,52 +144,70 @@ public class BalutGameViewModelTest {
         );
         for (var t : testCases) {
             viewModel.updateDiceNumbers(t.first);
-            assertEquals(t.second.intValue(), viewModel.calculateScore(BALUT));
+            assertEquals(t.second.intValue(), viewModel.calculateScore(BALUT.ordinal()));
         }
     }
 
     @Test
     public void testSelect() {
+        int six = SIXES.ordinal();
         viewModel.updateDiceNumbers(1, 4, 5, 6, 6);
-        viewModel.select(SIXES);
-        assertArrayEquals(new int[] {12, 0, 0, 0}, viewModel.getScores().getValue()[SIXES]);
-        assertEquals(1, viewModel.getSelectCount().getValue()[SIXES]);
+        viewModel.select(six);
+        assertArrayEquals(new int[] {12, 0, 0, 0}, viewModel.getScores().getValue()[six]);
+        assertEquals(1, viewModel.getSelectCount().getValue()[six]);
         assertEquals(0, viewModel.getNumSelected());
+        assertEquals(12, viewModel.getCategoryScores().getValue()[six]);
         assertEquals(12, viewModel.getTotalScore().getValue().intValue());
+        assertEquals(0, viewModel.getCategoryPoints().getValue()[six]);
+        assertEquals(0, viewModel.getTotalPoints().getValue().intValue());
 
-        for (int i = 1; i <= 3; i++) {
-            viewModel.updateDiceNumbers(1, 4, 5, 6, 6);
-            viewModel.select(SIXES);
+        int balut = BALUT.ordinal();
+        for (int i = 1; i <= 4; i++) {
+            viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
+            viewModel.select(balut);
         }
-        assertArrayEquals(new int[] {12, 12, 12, 12}, viewModel.getScores().getValue()[SIXES]);
-        assertEquals(4, viewModel.getSelectCount().getValue()[SIXES]);
+        assertArrayEquals(new int[] {50, 50, 50, 50}, viewModel.getScores().getValue()[balut]);
+        assertEquals(4, viewModel.getSelectCount().getValue()[balut]);
         assertEquals(1, viewModel.getNumSelected());
-        assertEquals(48, viewModel.getTotalScore().getValue().intValue());
+        assertEquals(200, viewModel.getCategoryScores().getValue()[balut]);
+        assertEquals(212, viewModel.getTotalScore().getValue().intValue());
+        assertEquals(8, viewModel.getCategoryPoints().getValue()[balut]);
+        assertEquals(8, viewModel.getTotalPoints().getValue().intValue());
 
         // 已达到最大次数
         viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
-        viewModel.select(SIXES);
-        assertArrayEquals(new int[] {12, 12, 12, 12}, viewModel.getScores().getValue()[SIXES]);
-        assertEquals(4, viewModel.getSelectCount().getValue()[SIXES]);
+        viewModel.select(balut);
+        assertEquals(4, viewModel.getSelectCount().getValue()[balut]);
         assertEquals(1, viewModel.getNumSelected());
-        assertEquals(48, viewModel.getTotalScore().getValue().intValue());
+        assertEquals(212, viewModel.getTotalScore().getValue().intValue());
     }
 
     @Test
     public void testSelectObserver() {
         Observer<int[][]> scoresObserver = mock(Observer.class);
         Observer<int[]> selectCountObserver = mock(Observer.class);
+        Observer<int[]> categoryScoresObserver = mock(Observer.class);
+        Observer<int[]> categoryPointsObserver = mock(Observer.class);
         Observer<Integer> totalScoreObserver = mock(Observer.class);
+        Observer<Integer> totalPointsObserver = mock(Observer.class);
+
         viewModel.getScores().observeForever(scoresObserver);
         viewModel.getSelectCount().observeForever(selectCountObserver);
+        viewModel.getCategoryScores().observeForever(categoryScoresObserver);
+        viewModel.getCategoryPoints().observeForever(categoryPointsObserver);
         viewModel.getTotalScore().observeForever(totalScoreObserver);
+        viewModel.getTotalPoints().observeForever(totalPointsObserver);
 
+        int balut = BALUT.ordinal();
         viewModel.updateDiceNumbers(5, 5, 5, 5, 5);
-        viewModel.select(BALUT);
+        viewModel.select(balut);
 
-        verify(scoresObserver, atLeastOnce()).onChanged(argThat(a -> a[BALUT][0] == 45));
-        verify(selectCountObserver, atLeastOnce()).onChanged(argThat(a -> a[BALUT] == 1));
+        verify(scoresObserver, atLeastOnce()).onChanged(argThat(a -> a[balut][0] == 45));
+        verify(selectCountObserver, atLeastOnce()).onChanged(argThat(a -> a[balut] == 1));
+        verify(categoryScoresObserver, atLeastOnce()).onChanged(argThat(a -> a[balut] == 45));
+        verify(categoryPointsObserver, atLeastOnce()).onChanged(argThat(a -> a[balut] == 2));
         verify(totalScoreObserver).onChanged(45);
+        verify(totalPointsObserver).onChanged(2);
     }
 
     @Test
@@ -197,8 +221,47 @@ public class BalutGameViewModelTest {
     }
 
     @Test
+    public void testCalculatePoints() {
+        assertEquals(0, viewModel.calculatePoints(FOURS.ordinal(), arr(12, 8, 16, 12)));
+        assertEquals(2, viewModel.calculatePoints(FOURS.ordinal(), arr(12, 12, 16, 12)));
+        assertEquals(0, viewModel.calculatePoints(FIVES.ordinal(), arr(10, 5, 25, 20)));
+        assertEquals(2, viewModel.calculatePoints(FIVES.ordinal(), arr(15, 10, 25, 20)));
+        assertEquals(0, viewModel.calculatePoints(SIXES.ordinal(), arr(18, 12, 6, 0)));
+        assertEquals(2, viewModel.calculatePoints(SIXES.ordinal(), arr(18, 18, 18, 24)));
+        assertEquals(0, viewModel.calculatePoints(STRAIGHT.ordinal(), arr(15, 20, 0, 15)));
+        assertEquals(4, viewModel.calculatePoints(STRAIGHT.ordinal(), arr(15, 20, 20, 15)));
+        assertEquals(0, viewModel.calculatePoints(FULL_HOUSE.ordinal(), arr(0, 13, 0, 28)));
+        assertEquals(3, viewModel.calculatePoints(FULL_HOUSE.ordinal(), arr(7, 13, 22, 28)));
+        assertEquals(0, viewModel.calculatePoints(CHOICE.ordinal(), arr(20, 24, 18, 29)));
+        assertEquals(2, viewModel.calculatePoints(CHOICE.ordinal(), arr(24, 25, 26, 27)));
+        assertEquals(0, viewModel.calculatePoints(BALUT.ordinal(), arr(0, 0, 0, 0)));
+        assertEquals(2, viewModel.calculatePoints(BALUT.ordinal(), arr(0, 40, 0, 0)));
+        assertEquals(8, viewModel.calculatePoints(BALUT.ordinal(), arr(35, 40, 45, 50)));
+    }
+
+    @Test
+    public void testCalculateTotalScorePoints() {
+        List<Pair<Integer, Integer>> testCases = List.of(
+                Pair.create(100, -2),
+                Pair.create(299, -2),
+                Pair.create(321, -1),
+                Pair.create(369, 0),
+                Pair.create(444, 1),
+                Pair.create(482, 2),
+                Pair.create(520, 3),
+                Pair.create(575, 4),
+                Pair.create(649, 5),
+                Pair.create(650, 6),
+                Pair.create(800, 6)
+        );
+        for (var t : testCases)
+            assertEquals(t.second.intValue(), viewModel.calculateTotalScorePoints(t.first));
+    }
+
+    @Test
     public void testGameOver() {
-        doReturn(new BalutScore("2025-01-01", 400, 2)).when(spyViewModel).createScoreEntity();
+        var score = new BalutScore("2025-01-01", 400, 10, 2);
+        doReturn(score).when(spyViewModel).createScoreEntity();
         doReturn(6).when(spyViewModel).saveScoreToDatabase(any());
         Consumer<Object[]> gameOverAction = mock(Consumer.class);
         spyViewModel.setGameOverAction(gameOverAction);
@@ -207,8 +270,9 @@ public class BalutGameViewModelTest {
         assertTrue(ArrayUtil.all(spyViewModel.getDiceEnabled().getValue(), false));
         assertFalse(spyViewModel.getRollButtonEnabled().getValue());
         verify(spyViewModel).createScoreEntity();
-        verify(spyViewModel).saveScoreToDatabase(argThat(s -> s.score == 400));
-        verify(gameOverAction).accept(argThat(a -> (int) a[0] == 400 && (int) a[1] == 6));
+        verify(spyViewModel).saveScoreToDatabase(argThat(s -> ScoreUtil.isEqual(score, s)));
+        verify(gameOverAction).accept(argThat(args ->
+            ScoreUtil.isEqual(score, (BalutScore) args[0]) && (int) args[1] == 6));
     }
 
     @Test
@@ -222,24 +286,33 @@ public class BalutGameViewModelTest {
         }
         var score = spyViewModel.createScoreEntity();
         assertEquals(440, score.score);
+        assertEquals(13, score.points);
         assertEquals(4, score.numBalut);
     }
 
     @Test
     public void testReset() {
+        int balut = BALUT.ordinal();
         for (int i = 1; i <= 4; i++) {
             viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
-            viewModel.select(BALUT);
+            viewModel.select(balut);
         }
-        assertArrayEquals(new int[] {50, 50, 50, 50}, viewModel.getScores().getValue()[BALUT]);
-        assertEquals(4, viewModel.getSelectCount().getValue()[BALUT]);
+        assertArrayEquals(new int[] {50, 50, 50, 50}, viewModel.getScores().getValue()[balut]);
+        assertEquals(4, viewModel.getSelectCount().getValue()[balut]);
         assertEquals(1, viewModel.getNumSelected());
+        assertEquals(200, viewModel.getCategoryScores().getValue()[balut]);
+        assertEquals(8, viewModel.getCategoryPoints().getValue()[balut]);
         assertEquals(200, viewModel.getTotalScore().getValue().intValue());
+        assertEquals(8, viewModel.getTotalPoints().getValue().intValue());
 
         viewModel.reset();
         assertArrayEquals(new int[NUM_CATEGORIES][MAX_SELECTIONS], viewModel.getScores().getValue());
         assertArrayEquals(new int[NUM_CATEGORIES], viewModel.getSelectCount().getValue());
         assertEquals(0, viewModel.getNumSelected());
+        assertArrayEquals(new int[NUM_CATEGORIES], viewModel.getCategoryScores().getValue());
+        assertArrayEquals(new int[NUM_CATEGORIES], viewModel.getCategoryPoints().getValue());
         assertEquals(0, viewModel.getTotalScore().getValue().intValue());
+        assertEquals(0, viewModel.getTotalScorePoints().getValue().intValue());
+        assertEquals(0, viewModel.getTotalPoints().getValue().intValue());
     }
 }

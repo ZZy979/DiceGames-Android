@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.utils.ArrayUtil;
+import com.zzy.dicegames.utils.score.ScoreUtil;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -156,8 +157,8 @@ public class BaseYahtzeeGameViewModelTest {
 
    @Test
    public void testGameOver() {
-      doReturn(new YahtzeeScore("2025-01-01", 300, true, false))
-              .when(spyViewModel).createScoreEntity();
+      var score = new YahtzeeScore("2025-01-01", 300, true, false);
+      doReturn(score).when(spyViewModel).createScoreEntity();
       doReturn(8).when(spyViewModel).saveScoreToDatabase(any());
       Consumer<Object[]> gameOverAction = mock(Consumer.class);
       spyViewModel.setGameOverAction(gameOverAction);
@@ -166,8 +167,9 @@ public class BaseYahtzeeGameViewModelTest {
       assertTrue(ArrayUtil.all(spyViewModel.getDiceEnabled().getValue(), false));
       assertFalse(spyViewModel.getRollButtonEnabled().getValue());
       verify(spyViewModel).createScoreEntity();
-      verify(spyViewModel).saveScoreToDatabase(argThat(s -> s.score == 300));
-      verify(gameOverAction).accept(argThat(a -> (int) a[0] == 300 && (int) a[1] == 8));
+      verify(spyViewModel).saveScoreToDatabase(argThat(s -> ScoreUtil.isEqual(score, (YahtzeeScore) s)));
+      verify(gameOverAction).accept(argThat(args ->
+              ScoreUtil.isEqual(score, (YahtzeeScore) args[0]) && (int) args[1] == 8));
    }
 
    @Test

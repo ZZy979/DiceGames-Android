@@ -81,6 +81,19 @@ public class ArrayUtil {
         return res;
     }
 
+    /** 返回数组中所有元素之和 */
+    public static int sum(int[] a) {
+        return sum(a, 0, a.length);
+    }
+
+    /** 返回子数组a[start:end]的所有元素之和（不包括end） */
+    public static int sum(int[] a, int start, int end) {
+        int res = 0;
+        for (int i = start; i < end; i++)
+            res += a[i];
+        return res;
+    }
+
     /** 返回满足给定条件的元素构成的数组 */
     public static int[] filter(int[] a, IntPredicate p) {
         if (a == null) return null;

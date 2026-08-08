@@ -25,7 +25,7 @@ public class ScoreSerializerTest {
                 new YahtzeeScore("2026-01-02", 270, false, false)
         );
         var maxiYatzyScores = List.of(new MaxiYatzyScore("2026-02-01", 470, true, false));
-        var balutScores = List.of(new BalutScore("2026-03-01", 400, 1));
+        var balutScores = List.of(new BalutScore("2026-03-01", 400, 10, 1));
         var farkleScores = List.of(new FarkleScore("2026-04-01", 10000, 9000));
         var scoresDTO = new ScoresDTO(yahtzeeScores, maxiYatzyScores, balutScores, farkleScores);
 
@@ -36,7 +36,7 @@ public class ScoreSerializerTest {
                 </YahtzeeScores><MaxiYatzyScores>
                 <MaxiYatzyScore date="2026-02-01" score="470" has_bonus="true" has_yatzy="false" />
                 </MaxiYatzyScores><BalutScores>
-                <BalutScore date="2026-03-01" score="400" num_balut="1" />
+                <BalutScore date="2026-03-01" score="400" points="10" num_balut="1" />
                 </BalutScores><FarkleScores>
                 <FarkleScore date="2026-04-01" score="10000" computer_score="9000" />
                 </FarkleScores></scores>

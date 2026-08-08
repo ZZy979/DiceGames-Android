@@ -9,10 +9,22 @@
 </head>
 <body>
 <h1 style="text-align:center;">Balut游戏规则</h1>
+<h3>游戏目标</h3>
+<p>游戏的目标是通过掷5个骰子达成特定的组合，得到尽可能高的点数。</p>
+
 <h3>游戏玩法</h3>
-<p>基本规则与5骰Yahtzee相同，不过总共有7种得分项，每个得分项可以选择4次，且计分规则有所差异。</p>
+<p>
+    玩家共有28轮得分机会，每轮至多可以掷3次骰子。
+    第一次掷所有骰子，然后玩家可以点击想要保留的骰子，并重新掷剩余的骰子。
+    玩家不必恰好掷3次骰子。在第三次掷骰子后（或更早），玩家必须从计分板中选择一个得分项。
+</p>
+<p>
+    总共有7种得分项，每个得分项可以选择4次。
+    如果玩家不能得分，则只能选择一个0分。
+</p>
 
 <h3>计分规则</h3>
+<p>计分板包含以下得分项：</p>
 <table align="center" border="1">
     <thead>
     <tr>
@@ -56,6 +68,102 @@
         <td>Balut</td>
         <td>5个相同点数的骰子</td>
         <td>20+所有骰子点数之和</td>
+    </tr>
+    </tbody>
+</table>
+
+<h3>点数</h3>
+<p>玩家根据每个得分项的分数获得点数：</p>
+<table align="center" border="1">
+    <thead>
+    <tr>
+        <th>得分项</th>
+        <th>要求</th>
+        <th>点数</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>4</td>
+        <td>52及以上</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>65及以上</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>78及以上</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>连顺</td>
+        <td>全部得分</td>
+        <td>4</td>
+    </tr>
+    <tr>
+        <td>葫芦</td>
+        <td>全部得分</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>选择</td>
+        <td>100及以上</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>Balut</td>
+        <td>每个Balut</td>
+        <td>2</td>
+    </tr>
+    </tbody>
+</table>
+<p>最后，根据游戏总分获得额外点数：</p>
+<table align="center" border="1">
+    <thead>
+    <tr>
+        <th>总分</th>
+        <th>点数</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>0-299</td>
+        <td>-2</td>
+    </tr>
+    <tr>
+        <td>300-349</td>
+        <td>-1</td>
+    </tr>
+    <tr>
+        <td>350-399</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>400-449</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>450-499</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>500-549</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>550-599</td>
+        <td>4</td>
+    </tr>
+    <tr>
+        <td>600-649</td>
+        <td>5</td>
+    </tr>
+    <tr>
+        <td>650及以上</td>
+        <td>6</td>
     </tr>
     </tbody>
 </table>

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e999174922c8a406644d1c54641575ee",
+    "identityHash": "d0cfdaf8239d2cca3849080c2c33a901",
     "entities": [
       {
         "tableName": "yahtzee_score",
@@ -90,8 +90,14 @@
       },
       {
         "tableName": "balut_score",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`num_balut` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `score` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`points` INTEGER NOT NULL, `num_balut` INTEGER NOT NULL, `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `score` INTEGER NOT NULL)",
         "fields": [
+          {
+            "fieldPath": "points",
+            "columnName": "points",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
           {
             "fieldPath": "numBalut",
             "columnName": "num_balut",
@@ -163,7 +169,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e999174922c8a406644d1c54641575ee')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd0cfdaf8239d2cca3849080c2c33a901')"
     ]
   }
 }

@@ -70,6 +70,7 @@ public class ScoreSerializer {
             serializer.startTag(null, "BalutScore")
                     .attribute(null, "date", score.date)
                     .attribute(null, "score", Integer.toString(score.score))
+                    .attribute(null, "points", Integer.toString(score.points))
                     .attribute(null, "num_balut", Integer.toString(score.numBalut))
                     .endTag(null, "BalutScore");
         serializer.endTag(null, "BalutScores");

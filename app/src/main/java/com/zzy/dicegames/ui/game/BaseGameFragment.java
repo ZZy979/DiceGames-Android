@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.common.GameType;
 import com.zzy.dicegames.data.ScoreDatabase;
+import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.ui.game.balut.BalutGameFragment;
 import com.zzy.dicegames.ui.game.farkle.FarkleGameFragment;
@@ -138,25 +139,26 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         mViewModel.reset();
     }
 
-    /**
-     * 弹出窗口，显示得分
-     *
-     * @param score 得分
-     * @param rank  排名
-     */
-    public void showScore(int score, int rank) {
-        String text;
+    /** 弹出窗口，显示得分 */
+    public void showScore(BaseScore score, int rank) {
+        showGameOverDialog(getScoreMessage(score, rank));
+    }
+
+    public String getScoreMessage(BaseScore score, int rank) {
+        StringBuilder message = new StringBuilder();
         if (rank == 1)
-            text = getString(R.string.newHighScore);
+            message.append(getString(R.string.newHighScore)).append('\n');
         else if (rank >= 2 && rank <= 10)
-            text = getString(R.string.rankN, rank);
-        else
-            text = getString(R.string.score);
+            message.append(getString(R.string.rankN, rank)).append('\n');
+        message.append(String.format("%s %d", getString(R.string.score), score.score));
+        return message.toString();
+    }
+
+    public void showGameOverDialog(String message) {
         new AlertDialog.Builder(getContext())
                 .setTitle(getString(R.string.gameOver))
-                .setMessage(String.format("%s: %d", text, score))
+                .setMessage(message)
                 .setPositiveButton(R.string.ok, (dialog, which) -> startNewGame())
                 .show();
     }
-
 }

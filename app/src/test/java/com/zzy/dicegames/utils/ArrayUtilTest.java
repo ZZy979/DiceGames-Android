@@ -76,6 +76,17 @@ public class ArrayUtilTest {
     }
 
     @Test
+    public void testSum() {
+        int[] a1 = {1, 2, 3, 4, 5}, a2 = {42}, a3 = {};
+        assertEquals(15, ArrayUtil.sum(a1));
+        assertEquals(42, ArrayUtil.sum(a2));
+        assertEquals(0, ArrayUtil.sum(a3));
+        assertEquals(10, ArrayUtil.sum(a1, 0, 4));
+        assertEquals(5, ArrayUtil.sum(a1, 1, 3));
+        assertEquals(0, ArrayUtil.sum(a1, 2, 2));
+    }
+
+    @Test
     public void testFilter() {
         int[] a1 = {1, 2, 3, 4, 5, 6, 7, 8}, a2 = {888}, a3 = {};
         assertArrayEquals(new int[] {2, 4, 6, 8}, ArrayUtil.filter(a1, x -> x % 2 == 0));

@@ -69,7 +69,7 @@ public class ScoreUtil {
     }
 
     public static boolean isEqual(BalutScore a, BalutScore b) {
-        return isEqual((BaseScore) a, b) && a.numBalut == b.numBalut;
+        return isEqual((BaseScore) a, b) && a.points == b.points && a.numBalut == b.numBalut;
     }
 
     public static boolean isEqual(FarkleScore a, FarkleScore b) {

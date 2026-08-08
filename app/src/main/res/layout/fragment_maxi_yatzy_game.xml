@@ -62,12 +62,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s1"
+                    android:text="@string/ones"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv1"
+                    android:id="@+id/tvOnes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -86,12 +86,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s2"
+                    android:text="@string/twos"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv2"
+                    android:id="@+id/tvTwos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -110,12 +110,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s3"
+                    android:text="@string/threes"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv3"
+                    android:id="@+id/tvThrees"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -134,12 +134,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s4"
+                    android:text="@string/fours"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv4"
+                    android:id="@+id/tvFours"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -158,12 +158,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s5"
+                    android:text="@string/fives"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv5"
+                    android:id="@+id/tvFives"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -182,12 +182,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s6"
+                    android:text="@string/sixes"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv6"
+                    android:id="@+id/tvSixes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -256,12 +256,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s1p"
+                    android:text="@string/onePair"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv1p"
+                    android:id="@+id/tvOnePair"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -280,12 +280,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s2p"
+                    android:text="@string/twoPairs"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv2p"
+                    android:id="@+id/tvTwoPairs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -304,12 +304,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s3p"
+                    android:text="@string/threePairs"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv3p"
+                    android:id="@+id/tvThreePairs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -328,12 +328,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s3e"
+                    android:text="@string/threeOfAKind"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv3e"
+                    android:id="@+id/tvThreeOfAKind"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -352,12 +352,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s4e"
+                    android:text="@string/fourOfAKind"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv4e"
+                    android:id="@+id/tvFourOfAKind"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -376,12 +376,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/s5e"
+                    android:text="@string/fiveOfAKind"
                     android:textAlignment="center"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tv5e"
+                    android:id="@+id/tvFiveOfAKind"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
@@ -592,13 +592,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"
-                    android:text="@string/gameTotal"
+                    android:text="@string/totalScore"
                     android:textAlignment="center"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvGameTotal"
+                    android:id="@+id/tvTotalScore"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="4dp"

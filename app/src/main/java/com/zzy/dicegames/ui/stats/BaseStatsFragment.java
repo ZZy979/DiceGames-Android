@@ -40,10 +40,10 @@ public abstract class BaseStatsFragment extends Fragment {
     protected TextView mGamesPlayedTextView;
 
     /** 最高分标签 */
-    protected TextView mMaxScoreTextView;
+    protected TextView mHighestScoreTextView;
 
     /** 最低分标签 */
-    protected TextView mMinScoreTextView;
+    protected TextView mLowestScoreTextView;
 
     /** 平均分标签 */
     protected TextView mAverageScoreTextView;
@@ -73,8 +73,8 @@ public abstract class BaseStatsFragment extends Fragment {
         mHighScoresListView = view.findViewById(R.id.lvHighScores);
         mNothingTextView = view.findViewById(R.id.tvNothing);
         mGamesPlayedTextView = view.findViewById(R.id.tvGamesPlayed);
-        mMaxScoreTextView = view.findViewById(R.id.tvMaxScore);
-        mMinScoreTextView = view.findViewById(R.id.tvMinScore);
+        mHighestScoreTextView = view.findViewById(R.id.tvHighestScore);
+        mLowestScoreTextView = view.findViewById(R.id.tvLowestScore);
         mAverageScoreTextView = view.findViewById(R.id.tvAverageScore);
     }
 
@@ -106,8 +106,8 @@ public abstract class BaseStatsFragment extends Fragment {
     /** 统计数据更新时的回调 */
     protected void onStatisticsChanged(BaseStatistics stats) {
         mGamesPlayedTextView.setText(Integer.toString(stats.count));
-        mMaxScoreTextView.setText(Integer.toString(stats.maxScore));
-        mMinScoreTextView.setText(Integer.toString(stats.minScore));
+        mHighestScoreTextView.setText(Integer.toString(stats.maxScore));
+        mLowestScoreTextView.setText(Integer.toString(stats.minScore));
         mAverageScoreTextView.setText(String.format("%.2f", stats.avgScore));
     }
 

@@ -14,6 +14,14 @@
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/tvPoints"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+    <TextView
         android:id="@+id/tvScore"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -26,18 +26,21 @@ public interface BalutScoreDao {
     @Query("SELECT * FROM balut_score WHERE id = :id")
     BalutScore findById(int id);
 
-    @Query("SELECT * FROM balut_score ORDER BY score DESC, date DESC LIMIT :n")
+    @Query("SELECT * FROM balut_score ORDER BY points DESC, score DESC, date DESC LIMIT :n")
     LiveData<List<BalutScore>> findTop(int n);
 
-    @Query("SELECT COUNT(*) + 1 FROM balut_score WHERE score > :score")
-    int rank(int score);
+    @Query("SELECT COUNT(*) + 1 FROM balut_score " +
+            "WHERE points > :points OR (points = :points AND score > :score)")
+    int rank(int points, int score);
 
     @Query("SELECT COUNT(*) FROM balut_score")
     int count();
 
     @Query(
-            "SELECT COUNT(*) AS count, MAX(score) AS maxScore, MIN(score) AS minScore, " +
-            "    AVG(score) AS avgScore, SUM(num_balut) AS numBalut " +
+            "SELECT COUNT(*) AS count, " +
+            "    MAX(score) AS maxScore, MIN(score) AS minScore, AVG(score) AS avgScore, " +
+            "    MAX(points) AS maxPoints, MIN(points) AS minPoints, AVG(points) AS avgPoints, " +
+            "    SUM(num_balut) AS numBalut " +
             "FROM balut_score"
     )
     LiveData<BalutStatistics> statistics();

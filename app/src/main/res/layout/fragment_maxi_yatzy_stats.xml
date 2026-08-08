@@ -67,11 +67,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/maxScore"
+                    android:text="@string/highestScore"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvMaxScore"
+                    android:id="@+id/tvHighestScore"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -86,11 +86,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/minScore"
+                    android:text="@string/lowestScore"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvMinScore"
+                    android:id="@+id/tvLowestScore"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

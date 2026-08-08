@@ -68,8 +68,9 @@ public class ScoreParser {
     private void parseBalutScores() {
         String date = parser.getAttributeValue(null, "date");
         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
+        int points = Integer.parseInt(parser.getAttributeValue(null, "points"));
         int numBalut = Integer.parseInt(parser.getAttributeValue(null, "num_balut"));
-        scoresDTO.balutScores.add(new BalutScore(date, score, numBalut));
+        scoresDTO.balutScores.add(new BalutScore(date, score, points, numBalut));
     }
 
     private void parseFarkleScores() {

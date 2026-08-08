@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.utils.ArrayUtil;
+import com.zzy.dicegames.utils.score.ScoreUtil;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -386,7 +387,8 @@ public class FarkleGameViewModelTest {
 
     @Test
     public void testGameOver() {
-        doReturn(new FarkleScore("2025-01-01", 10000, 8000)).when(spyViewModel).createScoreEntity();
+        var score = new FarkleScore("2025-01-01", 10000, 8000);
+        doReturn(score).when(spyViewModel).createScoreEntity();
         doNothing().when(spyViewModel).saveScoreToDatabase(any());
 
         spyViewModel.gameOver();
@@ -395,8 +397,7 @@ public class FarkleGameViewModelTest {
         assertFalse(spyViewModel.getBankButtonEnabled().getValue());
         assertTrue(spyViewModel.getNewGameButtonVisible().getValue());
         verify(spyViewModel).createScoreEntity();
-        verify(spyViewModel).saveScoreToDatabase(
-                argThat(s -> s.score == 10000 && s.computerScore == 8000));
+        verify(spyViewModel).saveScoreToDatabase(argThat(s -> ScoreUtil.isEqual(score, s)));
     }
 
     @Test

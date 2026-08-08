@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 
 import androidx.lifecycle.LifecycleOwner;
@@ -50,7 +51,7 @@ public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtz
 
         mUpperTotalScoreTextView = view.findViewById(R.id.tvUpperTotal);
         mBonusScoreTextView = view.findViewById(R.id.tvBonus);
-        mTotalScoreTextView = view.findViewById(R.id.tvGameTotal);
+        mTotalScoreTextView = view.findViewById(R.id.tvTotalScore);
     }
 
     /** 得分项标签id */
@@ -113,7 +114,7 @@ public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtz
 
     /** 游戏结束时的回调函数 */
     protected void onGameOver(Object[] args) {
-        showScore((int) args[0], (int) args[1]);
+        showScore((BaseScore) args[0], (int) args[1]);
     }
 
 }

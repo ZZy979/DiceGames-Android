@@ -132,16 +132,17 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
 
         currentSelected[category] = true;
         selected.setValue(currentSelected);
+        numSelected++;
+
         // 掷骰子后已计算过预估得分，此处无需更新scores
         updateBonusAndTotalScore();
-        numSelected++;
 
         if (numSelected == numCategories) {
             gameOver();
         }
         else {
             resetDiceWindow();
-            rollDiceWithAnimation();
+            rollDiceWithAnimation();  // TODO 改为手动掷骰子
         }
     }
 
@@ -176,7 +177,7 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         var score = createScoreEntity();
         int rank = saveScoreToDatabase(score);
         if (gameOverAction != null)
-            gameOverAction.accept(new Object[] {score.score, rank});
+            gameOverAction.accept(new Object[] {score, rank});
     }
 
     /** 创建得分实体 */

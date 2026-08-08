@@ -32,22 +32,21 @@
     <string name="roll">Roll</string>
     <string name="rollRemaining">Roll(%d)</string>
 
-    <!-- Yahtzee -->
+    <!-- Yahtzee/Yatzy -->
     <string name="category">Category</string>
     <string name="score">Score</string>
-    <string name="s1">Ones</string>
-    <string name="s2">Twos</string>
-    <string name="s3">Threes</string>
-    <string name="s4">Fours</string>
-    <string name="s5">Fives</string>
-    <string name="s6">Sixes</string>
-    <string name="s1p">One pair</string>
-    <string name="s2p">Two pairs</string>
-    <string name="s3p">Three pairs</string>
-    <string name="s3e">Three of a kind</string>
-    <string name="s4e">Four of a kind</string>
-    <string name="s5e">Five of a kind</string>
-    <string name="straight">Straight</string>
+    <string name="ones">Ones</string>
+    <string name="twos">Twos</string>
+    <string name="threes">Threes</string>
+    <string name="fours">Fours</string>
+    <string name="fives">Fives</string>
+    <string name="sixes">Sixes</string>
+    <string name="onePair">One pair</string>
+    <string name="twoPairs">Two pairs</string>
+    <string name="threePairs">Three pairs</string>
+    <string name="threeOfAKind">Three of a kind</string>
+    <string name="fourOfAKind">Four of a kind</string>
+    <string name="fiveOfAKind">Five of a kind</string>
     <string name="smallStraight">Small Straight</string>
     <string name="largeStraight">Large Straight</string>
     <string name="fullStraight">Full Straight</string>
@@ -55,11 +54,16 @@
     <string name="castle">Castle</string>
     <string name="tower">Tower</string>
     <string name="chance">Chance</string>
-    <string name="choice">Choice</string>
     <string name="yatzy">Yatzy</string>
     <string name="upperTotal">Upper Total</string>
     <string name="bonus">Bonus</string>
-    <string name="gameTotal">Game Total</string>
+    <string name="totalScore">Total Score</string>
+
+    <!-- Balut -->
+    <string name="straight">Straight</string>
+    <string name="choice">Choice</string>
+    <string name="points">Points</string>
+    <string name="totalPoints">Total Points</string>
 
     <!-- Show score -->
     <string name="gameOver">Game Over</string>
@@ -93,9 +97,12 @@
     <string name="date">Date</string>
     <string name="statistics">Statistics</string>
     <string name="gamesPlayed">Games played</string>
-    <string name="maxScore">Maximum score</string>
-    <string name="minScore">Minimum score</string>
+    <string name="highestScore">Highest score</string>
+    <string name="lowestScore">Lowest score</string>
     <string name="averageScore">Average score</string>
+    <string name="highestPoints">Highest points</string>
+    <string name="lowestPoints">Lowest points</string>
+    <string name="averagePoints">Average points</string>
     <string name="gotBonus">Got bonus</string>
     <string name="gotYahtzee">Got Yahtzee</string>
     <string name="gotYatzy">Got Yatzy</string>

@@ -36,8 +36,8 @@ public class FarkleStatsFragment extends BaseStatsFragment {
     @Override
     protected void initViews(View view) {
         mGamesPlayedTextView = view.findViewById(R.id.tvGamesPlayed);
-        mMaxScoreTextView = view.findViewById(R.id.tvMaxScore);
-        mMinScoreTextView = view.findViewById(R.id.tvMinScore);
+        mHighestScoreTextView = view.findViewById(R.id.tvHighestScore);
+        mLowestScoreTextView = view.findViewById(R.id.tvLowestScore);
         mAverageScoreTextView = view.findViewById(R.id.tvAverageScore);
         mGamesWonTextView = view.findViewById(R.id.tvGamesWon);
         mWinRateTextView = view.findViewById(R.id.tvWinRate);

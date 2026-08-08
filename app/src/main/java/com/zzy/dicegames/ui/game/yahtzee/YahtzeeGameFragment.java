@@ -34,8 +34,8 @@ public class YahtzeeGameFragment extends BaseYahtzeeGameFragment {
     @Override
     protected int[] getScoreTextViewIds() {
         return new int[] {
-                R.id.tv1, R.id.tv2, R.id.tv3, R.id.tv4, R.id.tv5, R.id.tv6,
-                R.id.tv3e, R.id.tv4e, R.id.tvFullHouse,
+                R.id.tvOnes, R.id.tvTwos, R.id.tvThrees, R.id.tvFours, R.id.tvFives, R.id.tvSixes,
+                R.id.tvThreeOfAKind, R.id.tvFourOfAKind, R.id.tvFullHouse,
                 R.id.tvSmallStraight, R.id.tvLargeStraight, R.id.tvChance, R.id.tvYahtzee
         };
     }

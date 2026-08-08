@@ -39,63 +39,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/maxScore"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tvMaxScore"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/minScore"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tvMinScore"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/averageScore"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tvAverageScore"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0"
-                android:textSize="18sp" />
-
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/gamesWon"
                 android:textSize="18sp" />
 
@@ -124,6 +67,63 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"
+                android:textSize="18sp" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/highestScore"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvHighestScore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0"
+                android:textSize="18sp" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/lowestScore"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvLowestScore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0"
+                android:textSize="18sp" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/averageScore"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvAverageScore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0"
                 android:textSize="18sp" />
 
         </TableRow>
