@@ -1,6 +1,7 @@
 package com.zzy.dicegames.ui.stats;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.common.GameType;
@@ -16,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * @author 赵正阳
  */
 public class StatisticsActivity extends AppCompatActivity {
-    /** 用于传入参数：游戏类型 */
+    /** 传入参数：游戏类型 */
     public static final String KEY_GAME_TYPE = "gameType";
 
     @Override
@@ -24,18 +25,21 @@ public class StatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
 
+        GameType gameType = (GameType) getIntent().getSerializableExtra(KEY_GAME_TYPE);
         if (savedInstanceState == null)
-            loadData((GameType) getIntent().getSerializableExtra(KEY_GAME_TYPE));
+            loadData(gameType);
+
+        TextView titleTextView = findViewById(R.id.tvTitle);
+        titleTextView.setText(getString(R.string.gameTypeStatistics, getString(gameType.getNameResId())));
     }
 
     private void loadData(GameType gameType) {
         var statsFragment = BaseStatsFragment.createByGameType(gameType);
-        if (statsFragment == null)
-            return;
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.statisticsFragment, statsFragment)
-                .commit();
+        if (statsFragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.statisticsFragment, statsFragment)
+                    .commit();
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import com.zzy.dicegames.common.GameType;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
@@ -22,39 +23,45 @@ public class HelpActivity extends AppCompatActivity {
     /** 传入参数：游戏类型 */
     public static final String KEY_GAME_TYPE = "gameType";
 
+    /** 用于保存和恢复WebView状态 */
+    public static final String KEY_WEBVIEW_STATE = "webViewState";
+
     /** 支持的语言列表 */
     private static final List<String> SUPPORTED_LANG = List.of("en", "zh");
 
-    /** 当前游戏类型 */
-    private GameType mGameType;
+    private WebView mWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
-        if (savedInstanceState == null)
-            mGameType = (GameType) getIntent().getSerializableExtra(KEY_GAME_TYPE);
-        else
-            mGameType = (GameType) savedInstanceState.getSerializable(KEY_GAME_TYPE);
-
-        loadPage();
+        mWebView = findViewById(R.id.wvHelp);
+        if (savedInstanceState == null) {
+            loadPage((GameType) getIntent().getSerializableExtra(KEY_GAME_TYPE));
+        }
+        else {
+            var bundle = savedInstanceState.getBundle(KEY_WEBVIEW_STATE);
+            if (bundle != null)
+                mWebView.restoreState(bundle);
+        }
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(KEY_GAME_TYPE, mGameType);
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        var bundle = new Bundle();
+        mWebView.saveState(bundle);
+        outState.putBundle(KEY_WEBVIEW_STATE, bundle);
     }
 
-    private void loadPage() {
+    private void loadPage(GameType gameType) {
         String lang = getResources().getConfiguration().getLocales().get(0).getLanguage();
         if (!SUPPORTED_LANG.contains(lang))
             lang = SUPPORTED_LANG.get(0);
 
-        WebView webView = findViewById(R.id.wvHelp);
-        String url = String.format("file:///android_asset/help/%s_%s.html", mGameType.name().toLowerCase(), lang);
-        webView.loadUrl(url);
+        String url = String.format("file:///android_asset/help/%s_%s.html", gameType.name().toLowerCase(), lang);
+        mWebView.loadUrl(url);
     }
 
 }

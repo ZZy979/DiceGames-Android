@@ -96,6 +96,7 @@
     <string name="rank">Rank</string>
     <string name="date">Date</string>
     <string name="statistics">Statistics</string>
+    <string name="gameTypeStatistics">%s Statistics</string>
     <string name="gamesPlayed">Games played</string>
     <string name="highestScore">Highest score</string>
     <string name="lowestScore">Lowest score</string>
