@@ -70,6 +70,7 @@ public class ArrayUtilTest {
         int[] a1 = {8, 6, 5, 8, 8, 7, 8}, a2 = {42}, a3 = {};
         assertEquals(3, ArrayUtil.count(a1, x -> x < 8));
         assertEquals(0, ArrayUtil.count(a1, x -> x > 10));
+        assertEquals(2, ArrayUtil.count(a1, (i, x) -> i < 4 && x == 8));
         assertEquals(1, ArrayUtil.count(a2, x -> x % 2 == 0));
         assertEquals(0, ArrayUtil.count(a3, x -> x != 0));
         assertEquals(0, ArrayUtil.count(null, x -> x != 0));

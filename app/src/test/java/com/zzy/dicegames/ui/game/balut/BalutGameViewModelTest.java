@@ -222,21 +222,51 @@ public class BalutGameViewModelTest {
 
     @Test
     public void testCalculatePoints() {
-        assertEquals(0, viewModel.calculatePoints(FOURS.ordinal(), arr(12, 8, 16, 12)));
-        assertEquals(2, viewModel.calculatePoints(FOURS.ordinal(), arr(12, 12, 16, 12)));
-        assertEquals(0, viewModel.calculatePoints(FIVES.ordinal(), arr(10, 5, 25, 20)));
-        assertEquals(2, viewModel.calculatePoints(FIVES.ordinal(), arr(15, 10, 25, 20)));
-        assertEquals(0, viewModel.calculatePoints(SIXES.ordinal(), arr(18, 12, 6, 0)));
-        assertEquals(2, viewModel.calculatePoints(SIXES.ordinal(), arr(18, 18, 18, 24)));
-        assertEquals(0, viewModel.calculatePoints(STRAIGHT.ordinal(), arr(15, 20, 0, 15)));
-        assertEquals(4, viewModel.calculatePoints(STRAIGHT.ordinal(), arr(15, 20, 20, 15)));
-        assertEquals(0, viewModel.calculatePoints(FULL_HOUSE.ordinal(), arr(0, 13, 0, 28)));
-        assertEquals(3, viewModel.calculatePoints(FULL_HOUSE.ordinal(), arr(7, 13, 22, 28)));
-        assertEquals(0, viewModel.calculatePoints(CHOICE.ordinal(), arr(20, 24, 18, 29)));
-        assertEquals(2, viewModel.calculatePoints(CHOICE.ordinal(), arr(24, 25, 26, 27)));
-        assertEquals(0, viewModel.calculatePoints(BALUT.ordinal(), arr(0, 0, 0, 0)));
-        assertEquals(2, viewModel.calculatePoints(BALUT.ordinal(), arr(0, 40, 0, 0)));
-        assertEquals(8, viewModel.calculatePoints(BALUT.ordinal(), arr(35, 40, 45, 50)));
+        record TestCase(int category, int selectCount, int[] scores, int expected) {}
+        TestCase[] testCases = {
+                new TestCase(FOURS.ordinal(), 4, arr(12, 8, 16, 12), 0),
+                new TestCase(FOURS.ordinal(), 4, arr(12, 12, 16, 12), 2),
+                new TestCase(FOURS.ordinal(), 3, arr(12, 12, 16, 12), 0),
+                new TestCase(FIVES.ordinal(), 4, arr(10, 5, 25, 20), 0),
+                new TestCase(FIVES.ordinal(), 4, arr(15, 10, 25, 20), 2),
+                new TestCase(SIXES.ordinal(), 4, arr(18, 12, 6, 0), 0),
+                new TestCase(SIXES.ordinal(), 4, arr(18, 18, 18, 24), 2),
+                new TestCase(STRAIGHT.ordinal(), 4, arr(15, 20, 0, 15), 0),
+                new TestCase(STRAIGHT.ordinal(), 4, arr(15, 20, 20, 15), 4),
+                new TestCase(FULL_HOUSE.ordinal(), 4, arr(0, 13, 0, 28), 0),
+                new TestCase(FULL_HOUSE.ordinal(), 4, arr(7, 13, 22, 28), 3),
+                new TestCase(CHOICE.ordinal(), 4, arr(20, 24, 18, 29), 0),
+                new TestCase(CHOICE.ordinal(), 4, arr(24, 25, 26, 27), 2),
+                new TestCase(BALUT.ordinal(), 4, arr(0, 0, 0, 0), 0),
+                new TestCase(BALUT.ordinal(), 4, arr(0, 40, 0, 0), 2),
+                new TestCase(BALUT.ordinal(), 4, arr(35, 40, 45, 50), 8)
+        };
+        for (var t : testCases)
+            assertEquals(t.expected(), viewModel.calculatePoints(t.category(), t.selectCount(), t.scores()));
+    }
+
+    @Test
+    public void testCalculatePointsOnlyForObtainedScore() {
+        int fullHouse = FULL_HOUSE.ordinal(), choice = CHOICE.ordinal();
+        for (int i = 1; i <= 3; i++) {
+            viewModel.updateDiceNumbers(6, 6, 6, 5, 5);
+            viewModel.select(fullHouse);
+            viewModel.updateDiceNumbers(5, 5, 5, 5, 5);
+            viewModel.select(choice);
+        }
+        viewModel.updateDiceNumbers(6, 6, 5, 5, 5);
+        assertArrayEquals(new int[] {28, 28, 28, 27}, viewModel.getScores().getValue()[fullHouse]);  // 最后一个是预估得分
+        assertEquals(84, viewModel.getCategoryScores().getValue()[fullHouse]);
+        assertEquals(0, viewModel.getCategoryPoints().getValue()[fullHouse]);
+        assertArrayEquals(new int[] {25, 25, 25, 27}, viewModel.getScores().getValue()[choice]);  // 最后一个是预估得分
+        assertEquals(75, viewModel.getCategoryScores().getValue()[choice]);
+        assertEquals(0, viewModel.getCategoryPoints().getValue()[choice]);
+
+        // 验证预估得分不参与计算点数
+        viewModel.select(FIVES.ordinal());
+        assertEquals(0, viewModel.getCategoryPoints().getValue()[fullHouse]);
+        assertEquals(0, viewModel.getCategoryPoints().getValue()[choice]);
+        assertEquals(0, viewModel.getTotalPoints().getValue().intValue());
     }
 
     @Test

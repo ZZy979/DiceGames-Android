@@ -1,6 +1,7 @@
 package com.zzy.dicegames.utils;
 
 import java.util.Arrays;
+import java.util.function.BiPredicate;
 import java.util.function.IntPredicate;
 
 public class ArrayUtil {
@@ -81,12 +82,22 @@ public class ArrayUtil {
         return res;
     }
 
+    /** 返回数组中满足给定条件的(i, a[i])对个数 */
+    public static int count(int[] a, BiPredicate<Integer, Integer> p) {
+        if (a == null) return 0;
+        int res = 0;
+        for (int i = 0; i < a.length; i++)
+            if (p.test(i, a[i]))
+                res++;
+        return res;
+    }
+
     /** 返回数组中所有元素之和 */
     public static int sum(int[] a) {
         return sum(a, 0, a.length);
     }
 
-    /** 返回子数组a[start:end]的所有元素之和（不包括end） */
+    /** 返回子数组a[start:end)的所有元素之和 */
     public static int sum(int[] a, int start, int end) {
         int res = 0;
         for (int i = start; i < end; i++)

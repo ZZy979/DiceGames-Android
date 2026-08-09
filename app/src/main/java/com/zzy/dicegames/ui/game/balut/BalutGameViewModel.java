@@ -188,14 +188,16 @@ public class BalutGameViewModel extends BaseGameViewModel {
 
     private void updatePoints() {
         int[][] currentScores = scores.getValue();
+        int[] currentSelectCount = selectCount.getValue();
         int[] currentCategoryPoints = categoryPoints.getValue();
-        if (currentScores == null || currentCategoryPoints == null || totalScore.getValue() == null)
+        if (currentScores == null || currentSelectCount == null || currentCategoryPoints == null
+                || totalScore.getValue() == null)
             return;
 
         int newTotalScorePoints = 0;
         int newTotalPoints = 0;
         for (int i = 0; i < NUM_CATEGORIES; i++) {
-            currentCategoryPoints[i] = calculatePoints(i, currentScores[i]);
+            currentCategoryPoints[i] = calculatePoints(i, currentSelectCount[i], currentScores[i]);
             newTotalPoints += currentCategoryPoints[i];
         }
         if (numSelected == NUM_CATEGORIES) {
@@ -209,9 +211,9 @@ public class BalutGameViewModel extends BaseGameViewModel {
     }
 
     /** 根据指定得分项的得分计算点数 */
-    public int calculatePoints(int category, int[] scores) {
-        int total = ArrayUtil.sum(scores);
-        int numScored = ArrayUtil.count(scores, x -> x > 0);
+    public int calculatePoints(int category, int selectCount, int[] scores) {
+        int total = ArrayUtil.sum(scores, 0, selectCount);
+        int numScored = ArrayUtil.count(scores, (i, x) -> i < selectCount && x > 0);
         return switch (Category.values()[category]) {
             case FOURS, FIVES, SIXES -> total >= (category + 4) * 13 ? 2 : 0;
             case STRAIGHT -> numScored == MAX_SELECTIONS ? 4 : 0;
