@@ -13,8 +13,8 @@ public enum GameType {
     /** Balut */
     BALUT(R.string.balut),
 
-//    /** 大话骰子 */
-//    LIAR_DICE(R.string.liarDice),
+    /** 大话骰 */
+    LIARS_DICE(R.string.liarsDice),
 
     /** 掷骰子 */
     ROLL_A_DICE(R.string.rollADice),

@@ -6,7 +6,7 @@
     <string name="yahtzee">Yahtzee</string>
     <string name="maxiYatzy">Maxi Yatzy</string>
     <string name="balut">Balut</string>
-    <string name="liarDice">大话骰子</string>
+    <string name="liarsDice">大话骰</string>
     <string name="rollADice">掷骰子</string>
     <string name="farkle">Farkle</string>
 
@@ -73,6 +73,45 @@
     <!-- 玩家标签 -->
     <string name="playerYou">你</string>
     <string name="playerComputer">计算机</string>
+
+    <!-- 大话骰 -->
+    <string name="players">人数</string>
+    <string name="playersFormat">人数：%1$d</string>
+    <string name="selectNumPlayers">选择玩家数量</string>
+    <string name="numPlayersFormat">%1$d人</string>
+    <string name="currentBidFormat">当前叫数：%1$s（%2$s）</string>
+    <string name="noBid">等待开叫</string>
+    <string name="call">叫数</string>
+    <string name="challenge">开</string>
+    <string name="quantity">数量</string>
+    <string name="quantityFormat">%1$d</string>
+    <string name="face">点数</string>
+    <string name="zhai">斋</string>
+    <string name="bidCallFei">%1$d个%2$d飞</string>
+    <string name="bidCallZhai">%1$d个%2$d斋</string>
+    <string name="onesAreWild">1为万能</string>
+    <string name="onesNotWild">1不为万能</string>
+    <string name="playerComputerN">电脑%1$d</string>
+    <string name="playerComputer1">弈辰</string>
+    <string name="playerComputer2">风语</string>
+    <string name="playerComputer3">孤影</string>
+    <string name="roundIndicator">第%1$d/%2$d局</string>
+    <string name="winLossRecord">%1$s\n%2$d胜%3$d负</string>
+    <string name="rankingFormat">第%1$d名：%2$s（%3$d胜%4$d负）</string>
+    <string name="revealTitle">开骰</string>
+    <string name="revealBidInfo">叫数：%1$s</string>
+    <string name="revealActualCount">实际个数：%1$d</string>
+    <string name="revealChallengerLoses">%1$s质疑失败，饮酒1杯</string>
+    <string name="revealBidderLoses">%1$s吹牛失败，饮酒1杯</string>
+    <string name="logRoundBegins">第%1$d局开始</string>
+    <string name="logPlayerTurn">轮到%1$s</string>
+    <string name="logBidFei">%1$s叫数：%2$d个%3$d飞</string>
+    <string name="logBidZhai">%1$s叫数：%2$d个%3$d斋</string>
+    <string name="logBidTrue">%1$s质疑失败（叫数属实：实际%2$d个%3$d）</string>
+    <string name="logBidFalse">%1$s吹牛失败（实际只有%2$d个%3$d）</string>
+    <string name="logLoseRound">%1$s输掉本局并饮酒1杯</string>
+    <string name="logPlayerNWins">%1$s获胜！</string>
+    <string name="logOpen">%1$s开了%2$s</string>
 
     <!-- Farkle -->
     <string name="turnScore">本轮得分</string>

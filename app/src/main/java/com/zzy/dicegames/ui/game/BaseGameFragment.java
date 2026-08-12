@@ -13,6 +13,7 @@ import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.ui.game.balut.BalutGameFragment;
 import com.zzy.dicegames.ui.game.farkle.FarkleGameFragment;
+import com.zzy.dicegames.ui.game.liarsdice.LiarsDiceGameFragment;
 import com.zzy.dicegames.ui.game.rolladice.RollADiceGameFragment;
 import com.zzy.dicegames.ui.game.yahtzee.YahtzeeGameFragment;
 import com.zzy.dicegames.ui.game.yatzy.MaxiYatzyGameFragment;
@@ -46,6 +47,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
             case YAHTZEE -> new YahtzeeGameFragment();
             case MAXI_YATZY -> new MaxiYatzyGameFragment();
             case BALUT -> new BalutGameFragment();
+            case LIARS_DICE -> new LiarsDiceGameFragment();
             case ROLL_A_DICE -> new RollADiceGameFragment();
             case FARKLE -> new FarkleGameFragment();
         };
