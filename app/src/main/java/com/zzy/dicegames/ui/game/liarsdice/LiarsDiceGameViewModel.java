@@ -109,78 +109,6 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         initGame(numPlayers);
     }
 
-    /**
-     * 叫数，由数量、点数和是否斋组成
-     */
-    public static class Bid {
-        /** 数量 */
-        public final int quantity;
-
-        /** 点数，1~6 */
-        public final int face;
-
-        /** 是否斋（1不作为万能） */
-        public final boolean zhai;
-
-        public Bid(int quantity, int face, boolean zhai) {
-            this.quantity = quantity;
-            this.face = face;
-            this.zhai = zhai;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (!(o instanceof Bid))
-                return false;
-            Bid bid = (Bid) o;
-            return quantity == bid.quantity && face == bid.face && zhai == bid.zhai;
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * (31 * quantity + face) + (zhai ? 1 : 0);
-        }
-    }
-
-    /**
-     * 开骰结果
-     */
-    public static class RevealResult {
-        /** 玩家数量 */
-        public final int numPlayers;
-
-        /** 所有玩家的骰子点数 */
-        public final int[][] dice;
-
-        /** 被质疑的叫数 */
-        public final Bid bid;
-
-        /** 实际个数 */
-        public final int actualCount;
-
-        /** 质疑的玩家 */
-        public final int challenger;
-
-        /** 输家（本局输家） */
-        public final int loser;
-
-        /** 叫数是否属实（属实则质疑者输，否则上家输） */
-        public final boolean bidTrue;
-
-        RevealResult(int numPlayers, int[][] dice, Bid bid, int actualCount,
-                     int challenger, int loser, boolean bidTrue) {
-            this.numPlayers = numPlayers;
-            this.dice = dice;
-            this.bid = bid;
-            this.actualCount = actualCount;
-            this.challenger = challenger;
-            this.loser = loser;
-            this.bidTrue = bidTrue;
-        }
-    }
-
     public LiveData<Integer> getCurrentPlayer() {
         return currentPlayer;
     }
@@ -383,10 +311,10 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
      * 判断叫数是否合法（数量在起叫个数~场上骰子总数之间，点数在1~6之间，叫1点时必须是斋）
      */
     public boolean isBidValid(Bid bid) {
-        return bid != null && bid.quantity >= getMinQuantity(bid.face, bid.zhai)
-                && bid.quantity <= getTotalDice()
-                && bid.face >= 1 && bid.face <= 6
-                && (bid.face >= 2 || bid.zhai);
+        return bid != null && bid.quantity() >= getMinQuantity(bid.face(), bid.zhai())
+                && bid.quantity() <= getTotalDice()
+                && bid.face() >= 1 && bid.face() <= 6
+                && (bid.face() >= 2 || bid.zhai());
     }
 
     /**
@@ -404,20 +332,20 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
             return true;
         if (!isBidValid(prev))
             return false;
-        if (prev.zhai == next.zhai) {
+        if (prev.zhai() == next.zhai()) {
             // 同模式：数量更大，或同数量点数更大
-            if (next.quantity > prev.quantity)
+            if (next.quantity() > prev.quantity())
                 return true;
-            if (next.quantity == prev.quantity && faceRank(next.face) > faceRank(prev.face))
+            if (next.quantity() == prev.quantity() && faceRank(next.face()) > faceRank(prev.face()))
                 return true;
             return false;
         }
-        if (prev.zhai) {
+        if (prev.zhai()) {
             // 斋→飞：数量至少+2
-            return next.quantity >= prev.quantity + 2;
+            return next.quantity() >= prev.quantity() + 2;
         }
         // 飞→斋：数量至少-1
-        return next.quantity >= prev.quantity - 1;
+        return next.quantity() >= prev.quantity() - 1;
     }
 
     /** 点数大小：1为最高，2~6按数值 */
@@ -468,8 +396,8 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         if (!isBidRaiseValid(prev, bid))
             return;
         currentBid.setValue(bid);
-        addLog(bid.zhai ? R.string.logBidZhai : R.string.logBidFei,
-                currentPlayer.getValue(), bid.quantity, bid.face);
+        addLog(bid.zhai() ? R.string.logBidZhai : R.string.logBidFei,
+                currentPlayer.getValue(), bid.quantity(), bid.face());
         int next = getNextPlayer(currentPlayer.getValue());
         currentPlayer.setValue(next);
         addLog(R.string.logPlayerTurn, next);
@@ -485,8 +413,8 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
             return;
         int prevBidder = getPreviousPlayer(challenger);
         addLog(R.string.logOpen, challenger, prevBidder);
-        int actual = countBid(bid.face, bid.zhai);
-        boolean bidTrue = actual >= bid.quantity;
+        int actual = countBid(bid.face(), bid.zhai());
+        boolean bidTrue = actual >= bid.quantity();
         // 叫数属实则质疑者输，否则上家输
         int loser = bidTrue ? challenger : prevBidder;
         int winner = bidTrue ? prevBidder : challenger;
@@ -500,7 +428,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         nextRoundStarter = loser;
 
         revealing = true;
-        addLog(bidTrue ? R.string.logBidTrue : R.string.logBidFalse, loser, actual, bid.face);
+        addLog(bidTrue ? R.string.logBidTrue : R.string.logBidFalse, loser, actual, bid.face());
         addLog(R.string.logLoseRound, loser);
 
         // 高亮人类骰子窗口中对应点数的骰子
@@ -618,17 +546,17 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         }
         else {
             int maxQuantity = getTotalDice();
-            if (prev.quantity < maxQuantity) {
+            if (prev.quantity() < maxQuantity) {
                 // 最小加码：同模式、数量+1
-                selectedQuantity.setValue(prev.quantity + 1);
-                selectedFace.setValue(prev.face);
-                selectedZhai.setValue(prev.zhai);
+                selectedQuantity.setValue(prev.quantity() + 1);
+                selectedFace.setValue(prev.face());
+                selectedZhai.setValue(prev.zhai());
             }
             else {
                 // 数量已到上限，只能同数量提高点数
-                selectedQuantity.setValue(prev.quantity);
-                selectedFace.setValue(nextHigherFace(prev.face));
-                selectedZhai.setValue(prev.zhai);
+                selectedQuantity.setValue(prev.quantity());
+                selectedFace.setValue(nextHigherFace(prev.face()));
+                selectedZhai.setValue(prev.zhai());
             }
         }
         if (selectedFace.getValue() == 1)
@@ -653,7 +581,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
     private void setHumanDiceLockedForReveal(Bid bid) {
         boolean[] locked = new boolean[NUM_DICE_PER_PLAYER];
         for (int i = 0; i < NUM_DICE_PER_PLAYER; i++)
-            locked[i] = shouldLock(dicePerPlayer[PLAYER_HUMAN][i], bid.face, bid.zhai);
+            locked[i] = shouldLock(dicePerPlayer[PLAYER_HUMAN][i], bid.face(), bid.zhai());
         diceLocked.setValue(locked);
     }
 
@@ -766,14 +694,14 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
 
     /** 估计叫数属实（实际个数 >= 数量）的概率 */
     private double bidTrueProbability(Bid bid) {
-        int own = countOwn(bid.face, bid.zhai);
+        int own = countOwn(bid.face(), bid.zhai());
         int oppDice = getTotalDice() - NUM_DICE_PER_PLAYER;
-        double p = probabilityPerDie(bid.face, bid.zhai);
+        double p = probabilityPerDie(bid.face(), bid.zhai());
         double mean = own + p * oppDice;
         double sd = Math.sqrt(oppDice * p * (1 - p));
         if (sd == 0)
-            return bid.quantity <= own ? 1.0 : 0.0;
-        double z = (bid.quantity - 0.5 - mean) / sd;  // 连续性校正
+            return bid.quantity() <= own ? 1.0 : 0.0;
+        double z = (bid.quantity() - 0.5 - mean) / sd;  // 连续性校正
         return 1 - normalCdf(z);
     }
 
@@ -798,7 +726,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         for (Bid b : candidates) {
             double prob = bidTrueProbability(b);
             // 数量增加越多得分越低，偏向小幅加码
-            double score = prob - 0.2 * Math.max(0, b.quantity - prev.quantity)
+            double score = prob - 0.2 * Math.max(0, b.quantity() - prev.quantity())
                     + random.nextDouble() * 0.03;
             if (score > bestScore) {
                 bestScore = score;

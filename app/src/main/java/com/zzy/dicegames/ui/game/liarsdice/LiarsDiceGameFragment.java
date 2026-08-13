@@ -332,7 +332,7 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
                 DiceView diceView = row.findViewById(diceViewIds[i]);
                 int d = result.dice[p][i];
                 diceView.setNumber(d);
-                diceView.setLocked(shouldLock(d, result.bid.face, result.bid.zhai));
+                diceView.setLocked(shouldLock(d, result.bid.face(), result.bid.zhai()));
             }
             container.addView(row);
         }
@@ -357,9 +357,9 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
 
     /** 格式化叫数 */
     private String formatBid(Bid bid) {
-        return bid.zhai
-                ? getString(R.string.bidCallZhai, bid.quantity, bid.face)
-                : getString(R.string.bidCallFei, bid.quantity, bid.face);
+        return bid.zhai()
+                ? getString(R.string.bidCallZhai, bid.quantity(), bid.face())
+                : getString(R.string.bidCallFei, bid.quantity(), bid.face());
     }
 
     /** 返回玩家名称 */
