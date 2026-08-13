@@ -74,12 +74,12 @@ public class LiarsDiceGameViewModelTest {
 
     @Test
     public void testIsBidValid() {
-        // 默认2人：起叫个数为3（飞/斋）
+        // 默认2人：喊1点/斋/飞 起叫个数为 2/2/3
         assertTrue(viewModel.isBidValid(bid(3, 5, false)));
-        assertTrue(viewModel.isBidValid(bid(3, 1, true)));
-        assertTrue(viewModel.isBidValid(bid(3, 2, true)));
-        assertFalse(viewModel.isBidValid(bid(3, 1, false)));  // 叫1点必须是斋
-        assertFalse(viewModel.isBidValid(bid(2, 5, false)));  // 低于起叫个数
+        assertTrue(viewModel.isBidValid(bid(2, 1, true)));   // 喊1点只需2个
+        assertTrue(viewModel.isBidValid(bid(2, 2, true)));   // 喊斋只需2个
+        assertFalse(viewModel.isBidValid(bid(3, 1, false))); // 叫1点必须是斋
+        assertFalse(viewModel.isBidValid(bid(2, 5, false))); // 低于飞起叫个数3
         assertFalse(viewModel.isBidValid(bid(0, 5, false)));
         assertFalse(viewModel.isBidValid(bid(3, 7, false)));
         // 数量上限为场上骰子总数（默认2人：10）
@@ -89,17 +89,24 @@ public class LiarsDiceGameViewModelTest {
 
     @Test
     public void testMinQuantity() {
-        // 2人：斋3、飞3
-        assertEquals(3, viewModel.getMinQuantity(true));
-        assertEquals(3, viewModel.getMinQuantity(false));
-        // 3人：斋4、飞5
+        // 2人：喊1点2、斋2、飞3
+        assertEquals(2, viewModel.getMinQuantity(1, true));
+        assertEquals(2, viewModel.getMinQuantity(2, true));
+        assertEquals(3, viewModel.getMinQuantity(2, false));
+        // 3人：喊1点3、斋4、飞5
         viewModel.newGame(3);
-        assertEquals(4, viewModel.getMinQuantity(true));
-        assertEquals(5, viewModel.getMinQuantity(false));
-        // 4人：斋5、飞7
+        assertEquals(3, viewModel.getMinQuantity(1, true));
+        assertEquals(4, viewModel.getMinQuantity(2, true));
+        assertEquals(5, viewModel.getMinQuantity(2, false));
+        // 喊1点比喊斋的起叫个数更少
+        assertTrue(viewModel.isBidValid(bid(3, 1, true)));
+        assertFalse(viewModel.isBidValid(bid(3, 5, true)));
+        assertTrue(viewModel.isBidValid(bid(4, 5, true)));
+        // 4人：喊1点4、斋5、飞6
         viewModel.newGame(4);
-        assertEquals(5, viewModel.getMinQuantity(true));
-        assertEquals(7, viewModel.getMinQuantity(false));
+        assertEquals(4, viewModel.getMinQuantity(1, true));
+        assertEquals(5, viewModel.getMinQuantity(2, true));
+        assertEquals(6, viewModel.getMinQuantity(2, false));
     }
 
     @Test
@@ -138,8 +145,8 @@ public class LiarsDiceGameViewModelTest {
         assertTrue(viewModel.isBidRaiseValid(bid(6, 3, false), bid(5, 2, true)));
         assertTrue(viewModel.isBidRaiseValid(bid(6, 3, false), bid(6, 3, true)));
         assertFalse(viewModel.isBidRaiseValid(bid(6, 3, false), bid(4, 3, true)));
-        // 加码也不能低于起叫个数
-        assertFalse(viewModel.isBidRaiseValid(bid(3, 5, false), bid(2, 3, true)));  // 2 < 斋起叫3
+        // 开叫不能低于起叫个数（2人飞起叫3）
+        assertFalse(viewModel.isBidRaiseValid(null, bid(2, 5, false)));
     }
 
     @Test

@@ -268,12 +268,18 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         return numPlayers * NUM_DICE_PER_PLAYER;
     }
 
-    /** 起叫个数（叫骰的最小数量） */
-    public int getMinQuantity(boolean zhai) {
+    /**
+     * 起叫个数（叫骰的最小数量），分别针对喊1点、喊斋、喊飞<br>
+     * 2人：2/2/3；3人：3/4/5；4人：4/5/6
+     */
+    public int getMinQuantity(int face, boolean zhai) {
+        if (face == 1)
+            return numPlayers;  // 喊1点：2人2、3人3、4人4
         return switch (numPlayers) {
-            case 3 -> zhai ? 4 : 5;
-            case 4 -> zhai ? 5 : 7;
-            default -> 3;  // 2人：斋3、飞3
+            case 2 -> zhai ? 2 : 3;  // 斋2、飞3
+            case 3 -> zhai ? 4 : 5;  // 斋4、飞5
+            case 4 -> zhai ? 5 : 6;  // 斋5、飞6
+            default -> 3;
         };
     }
 
@@ -287,7 +293,8 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
 
     /** 设置选择的叫数数量（范围：起叫个数~场上骰子总数） */
     public void setSelectedQuantity(int quantity) {
-        int minQuantity = getMinQuantity(Boolean.TRUE.equals(selectedZhai.getValue()));
+        Integer face = selectedFace.getValue();
+        int minQuantity = getMinQuantity(face == null ? 2 : face, Boolean.TRUE.equals(selectedZhai.getValue()));
         if (quantity < minQuantity || quantity > getTotalDice())
             return;
         selectedQuantity.setValue(quantity);
@@ -301,6 +308,11 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         selectedFace.setValue(face);
         if (face == 1)
             selectedZhai.setValue(true);  // 叫1点默认斋
+        // 若数量低于该点数的最小值，自动提高到最小值
+        int minQuantity = getMinQuantity(face, Boolean.TRUE.equals(selectedZhai.getValue()));
+        Integer quantity = selectedQuantity.getValue();
+        if (quantity != null && quantity < minQuantity)
+            selectedQuantity.setValue(minQuantity);
         updateTurnButtons();
     }
 
@@ -310,17 +322,12 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
             zhai = true;  // 叫1点时只能斋
         selectedZhai.setValue(zhai);
         // 若数量低于新模式的最小值，自动提高到最小值
-        int minQuantity = getMinQuantity(zhai);
+        Integer face = selectedFace.getValue();
+        int minQuantity = getMinQuantity(face == null ? 2 : face, zhai);
         Integer quantity = selectedQuantity.getValue();
         if (quantity != null && quantity < minQuantity)
             selectedQuantity.setValue(minQuantity);
         updateTurnButtons();
-    }
-
-    /** 翻转选择的叫数是否斋 */
-    public void toggleSelectedZhai() {
-        Boolean zhai = selectedZhai.getValue();
-        setSelectedZhai(zhai == null || !zhai);
     }
 
     /** 人类玩家叫数 */
@@ -376,7 +383,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
      * 判断叫数是否合法（数量在起叫个数~场上骰子总数之间，点数在1~6之间，叫1点时必须是斋）
      */
     public boolean isBidValid(Bid bid) {
-        return bid != null && bid.quantity >= getMinQuantity(bid.zhai)
+        return bid != null && bid.quantity >= getMinQuantity(bid.face, bid.zhai)
                 && bid.quantity <= getTotalDice()
                 && bid.face >= 1 && bid.face <= 6
                 && (bid.face >= 2 || bid.zhai);
@@ -605,7 +612,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
                 }
             }
             boolean zhai = bestFace == 1;
-            selectedQuantity.setValue(Math.max(getMinQuantity(zhai), Math.max(1, bestCount)));
+            selectedQuantity.setValue(Math.max(getMinQuantity(bestFace, zhai), Math.max(1, bestCount)));
             selectedFace.setValue(bestFace);
             selectedZhai.setValue(zhai);  // 叫1点默认斋
         }
@@ -746,7 +753,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
             }
         }
         boolean zhai = bestFace == 1;
-        int q = Math.max(getMinQuantity(zhai), Math.max(1, bestCount));
+        int q = Math.max(getMinQuantity(bestFace, zhai), Math.max(1, bestCount));
         return new Bid(q, bestFace, zhai);  // 叫1点默认斋
     }
 

@@ -6,7 +6,7 @@
     <string name="yahtzee">Yahtzee</string>
     <string name="maxiYatzy">Maxi Yatzy</string>
     <string name="balut">Balut</string>
-    <string name="liarsDice">Liar\'s dice</string>
+    <string name="liarsDice">Liar\'s Dice</string>
     <string name="rollADice">Roll-a-dice</string>
     <string name="farkle">Farkle</string>
 
@@ -76,42 +76,40 @@
 
     <!-- Liar's Dice -->
     <string name="players">Players</string>
-    <string name="playersFormat">Players: %1$d</string>
+    <string name="playersFormat">Players: %d</string>
     <string name="selectNumPlayers">Select number of players</string>
-    <string name="numPlayersFormat">%1$d players</string>
-    <string name="currentBidFormat">Current bid: %1$s (%2$s)</string>
+    <string name="numPlayersFormat">%d players</string>
+    <string name="currentBidFormat">Current bid: %s</string>
     <string name="noBid">No bid yet</string>
     <string name="call">Call</string>
     <string name="challenge">Liar!</string>
     <string name="quantity">Quantity</string>
-    <string name="quantityFormat">%1$d</string>
+    <string name="quantityFormat">%d</string>
     <string name="face">Face</string>
     <string name="zhai">Zhai</string>
-    <string name="bidCallFei">%1$d x %2$d Fei</string>
-    <string name="bidCallZhai">%1$d x %2$d Zhai</string>
-    <string name="onesAreWild">1s are wild</string>
-    <string name="onesNotWild">1s are not wild</string>
-    <string name="playerComputerN">Computer %1$d</string>
+    <string name="bidCallFei">%d x %d Fei</string>
+    <string name="bidCallZhai">%d x %d Zhai</string>
+    <string name="playerComputerN">Computer %d</string>
     <string name="playerComputer1">Alice</string>
     <string name="playerComputer2">Bob</string>
     <string name="playerComputer3">Cindy</string>
-    <string name="roundIndicator">Round %1$d/%2$d</string>
-    <string name="winLossRecord">%1$s\n%2$dW %3$dL</string>
-    <string name="rankingFormat">#%1$d: %2$s (%3$dW %4$dL)</string>
+    <string name="roundIndicator">Round %d/%d</string>
+    <string name="winLossRecord">%s\n%dW %dL</string>
+    <string name="rankingFormat">#%d: %s (%dW %dL)</string>
     <string name="revealTitle">Reveal</string>
-    <string name="revealBidInfo">Bid: %1$s</string>
-    <string name="revealActualCount">Actual count: %1$d</string>
-    <string name="revealChallengerLoses">%1$s challenged and loses. Takes a drink.</string>
-    <string name="revealBidderLoses">%1$s was bluffing and loses. Takes a drink.</string>
-    <string name="logRoundBegins">Round %1$d begins</string>
-    <string name="logPlayerTurn">%1$s\'s turn</string>
-    <string name="logBidFei">%1$s calls: %2$d x %3$d Fei</string>
-    <string name="logBidZhai">%1$s calls: %2$d x %3$d Zhai</string>
-    <string name="logBidTrue">%1$s loses the challenge (bid was true: actual %2$d x %3$d)</string>
-    <string name="logBidFalse">%1$s loses (bid was false: only %2$d x %3$d)</string>
-    <string name="logLoseRound">%1$s loses this round and takes a drink</string>
-    <string name="logPlayerNWins">%1$s wins!</string>
-    <string name="logOpen">%1$s challenges %2$s</string>
+    <string name="revealBidInfo">Bid: %s</string>
+    <string name="revealActualCount">Actual count: %d</string>
+    <string name="revealChallengerLoses">%s challenged and loses. Takes a drink.</string>
+    <string name="revealBidderLoses">%s was bluffing and loses. Takes a drink.</string>
+    <string name="logRoundBegins">Round %d begins</string>
+    <string name="logPlayerTurn">%s\'s turn</string>
+    <string name="logBidFei">%s calls: %d x %d Fei</string>
+    <string name="logBidZhai">%s calls: %d x %d Zhai</string>
+    <string name="logBidTrue">%s loses the challenge (bid was true: actual %d x %d)</string>
+    <string name="logBidFalse">%s loses (bid was false: only %d x %d)</string>
+    <string name="logLoseRound">%s loses this round and takes a drink</string>
+    <string name="logPlayerNWins">%s wins!</string>
+    <string name="logOpen">%s challenges %s</string>
 
     <!-- Farkle -->
     <string name="turnScore">Turn Score</string>

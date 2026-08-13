@@ -201,14 +201,10 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
 
     /** 当前叫数更新时的回调 */
     private void onCurrentBidChanged(Bid bid) {
-        if (bid == null) {
+        if (bid == null)
             mBidInfoTextView.setText(R.string.noBid);
-        }
-        else {
-            String call = formatBid(bid);
-            String wild = bid.zhai ? getString(R.string.onesNotWild) : getString(R.string.onesAreWild);
-            mBidInfoTextView.setText(getString(R.string.currentBidFormat, call, wild));
-        }
+        else
+            mBidInfoTextView.setText(getString(R.string.currentBidFormat, formatBid(bid)));
     }
 
     /** 选择的叫数数量更新时的回调 */
@@ -331,7 +327,6 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
                     .inflate(R.layout.liars_dice_reveal_player, container, false);
             TextView nameTextView = row.findViewById(R.id.tvPlayerName);
             nameTextView.setText(getPlayerName(p));
-            nameTextView.setTextColor(p == PLAYER_HUMAN ? Color.RED : Color.BLACK);
 
             for (int i = 0; i < diceViewIds.length; i++) {
                 DiceView diceView = row.findViewById(diceViewIds[i]);
@@ -352,8 +347,7 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
 
     /** 构造开骰结果消息 */
     private String buildRevealMessage(RevealResult result) {
-        String bidInfo = formatBid(result.bid) + "（"
-                + (result.bid.zhai ? getString(R.string.onesNotWild) : getString(R.string.onesAreWild)) + "）";
+        String bidInfo = formatBid(result.bid);
         String actual = getString(R.string.revealActualCount, result.actualCount);
         String outcome = result.bidTrue
                 ? getString(R.string.revealChallengerLoses, getPlayerName(result.challenger))
