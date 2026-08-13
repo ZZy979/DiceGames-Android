@@ -3,22 +3,25 @@
 * [Yahtzee](https://en.wikipedia.org/wiki/Yahtzee)
 * [Maxi Yatzy](https://en.wikipedia.org/wiki/Yatzy#Maxi_Yatzy)
 * [Balut](https://www.balut.org/rules.html)
-* 大话骰子（暂未完成）
+* [大话骰](https://en.wikipedia.org/wiki/Liar's_dice)
 * 掷骰子
 * [Farkle](https://en.wikipedia.org/wiki/Farkle)
 
 ## 屏幕截图
 ### Yahtzee
-<img src="screenshots/Yahtzee.png" width="300" alt="Yahtzee" />
+<img src="screenshots/Yahtzee.jpg" width="300" alt="Yahtzee" />
 
 ### Maxi Yatzy
-<img src="screenshots/Maxi_Yatzy.png" width="300" alt="Maxi Yatzy" />
+<img src="screenshots/Maxi%20Yatzy.jpg" width="300" alt="Maxi Yatzy" />
 
 ### Balut
-<img src="screenshots/Balut.png" width="300" alt="Balut" />
+<img src="screenshots/Balut.jpg" width="300" alt="Balut" />
+
+### 大话骰
+<img src="screenshots/Liar's%20Dice.jpg" width="300" alt="Liar's Dice" />
 
 ### 掷骰子
-<img src="screenshots/Roll-a-dice.png" width="300" alt="Roll-a-dice" />
+<img src="screenshots/Roll-a-dice.jpg" width="300" alt="Roll-a-dice" />
 
 ### Farkle
-<img src="screenshots/Farkle.png" width="300" alt="Farkle" />
+<img src="screenshots/Farkle.jpg" width="300" alt="Farkle" />
