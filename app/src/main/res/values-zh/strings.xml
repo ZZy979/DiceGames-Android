@@ -73,6 +73,10 @@
     <!-- 玩家标签 -->
     <string name="playerYou">你</string>
     <string name="playerComputer">计算机</string>
+    <string name="playerComputerN">计算机%d</string>
+    <string name="playerComputer1">弈辰</string>
+    <string name="playerComputer2">风语</string>
+    <string name="playerComputer3">孤影</string>
 
     <!-- 大话骰 -->
     <string name="players">人数</string>
@@ -84,30 +88,25 @@
     <string name="call">叫骰</string>
     <string name="challenge">开</string>
     <string name="quantity">数量</string>
-    <string name="quantityFormat">%d</string>
     <string name="face">点数</string>
     <string name="zhai">斋</string>
     <string name="bidCallFei">%d个%d飞</string>
     <string name="bidCallZhai">%d个%d斋</string>
-    <string name="playerComputerN">电脑%d</string>
-    <string name="playerComputer1">弈辰</string>
-    <string name="playerComputer2">风语</string>
-    <string name="playerComputer3">孤影</string>
     <string name="roundIndicator">第%d/%d局</string>
     <string name="winLossRecord">%s\n%d胜%d负</string>
     <string name="rankingFormat">第%d名：%s（%d胜%d负）</string>
     <string name="revealTitle">开骰</string>
     <string name="revealBidInfo">叫数：%s</string>
     <string name="revealActualCount">实际个数：%d</string>
-    <string name="revealChallengerLoses">%s质疑失败，饮酒1杯</string>
-    <string name="revealBidderLoses">%s吹牛失败，饮酒1杯</string>
+    <string name="revealChallengerLoses">%s质疑失败</string>
+    <string name="revealBidderLoses">%s吹牛失败</string>
     <string name="logRoundBegins">第%d局开始</string>
     <string name="logPlayerTurn">轮到%s</string>
     <string name="logBidFei">%s叫数：%d个%d飞</string>
     <string name="logBidZhai">%s叫数：%d个%d斋</string>
     <string name="logBidTrue">%s质疑失败（叫数属实：实际%d个%d）</string>
     <string name="logBidFalse">%s吹牛失败（实际只有%d个%d）</string>
-    <string name="logLoseRound">%s输掉本局并饮酒1杯</string>
+    <string name="logLoseRound">%s输掉本局</string>
     <string name="logPlayerNWins">%s获胜！</string>
     <string name="logOpen">%s开了%s</string>
 

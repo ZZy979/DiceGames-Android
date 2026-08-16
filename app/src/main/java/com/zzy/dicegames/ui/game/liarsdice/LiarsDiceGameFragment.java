@@ -209,7 +209,7 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
 
     /** 选择的叫数数量更新时的回调 */
     private void onSelectedQuantityChanged(int quantity) {
-        mQuantityTextView.setText(getString(R.string.quantityFormat, quantity));
+        mQuantityTextView.setText(Integer.toString(quantity));
         updateSelectedBidPreview();
     }
 

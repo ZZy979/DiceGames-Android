@@ -6,53 +6,65 @@
 </head>
 <body>
 <h1 style="text-align:center;">Liar's Dice Rules</h1>
-<h3>Objective</h3>
-<p>2-4 players each roll 5 dice and can only see their own dice. The game is fixed at 10 rounds.
-    At the end, players are ranked by the most rounds won, then the fewest rounds lost.</p>
-
 <h3>Gameplay</h3>
 <p>
-    At the beginning of each round, all players roll their dice at the same time
-    (the computer rolls automatically in this game). Players take turns in seat order
-    making a <strong>bid</strong>, guessing the total count of a certain face value among all dice on the table,
-    for example "3 x 5 Fei" means "I think there are at least three 5s among everyone's dice".
+    2-4 players each roll 5 dice and can only see their own dice.
+    Players take turns to make a <strong>bid</strong>, guessing the total count
+    of a certain face value among all dice of <strong>all players</strong>.
+    For example, "3 x 5" means there are at least three 5s among everyone's dice.
 </p>
-<p>The bid format is <strong>"X of face Y Fei/Zhai"</strong>:</p>
-<p><strong>Fei (default)</strong>: 1s are wild and count as any number.</p>
-<p><strong>Zhai</strong>: 1s are not wild. For example "3 x 5 Zhai" means there must actually be three 5s
-    without using 1s.</p>
-<p><strong>Calling 1</strong>: always uses Zhai mode.</p>
-<p><strong>Minimum bid</strong> (face 1 / Zhai / Fei): 2 players: 2/2/3;
-    3 players: 3/4/5; 4 players: 4/5/6.</p>
+
+<h3>Bid format</h3>
+<p><strong>"X x Y Fei/Zhai"</strong></p>
+<ul>
+    <li><strong>Fei (default)</strong>: 1s are wild and count as any number.
+        For example, "3 x 5 Fei" means there are at least three 1s or 5s.</li>
+    <li><strong>Zhai</strong>: 1s are not wild.
+        For example, "3 x 5 Zhai" means there are at least three 5s without using 1s.</li>
+    <li><strong>Calling 1</strong>: always uses Zhai mode.</li>
+</ul>
+
+<h3>Minimum bid</h3>
+<p>The minumun quantity of the first player's bid in each round (calling 1 / Zhai / Fei):</p>
+<ul>
+    <li>2 players: 2/2/3</li>
+    <li>3 players: 3/4/5</li>
+    <li>4 players: 4/5/6</li>
+</ul>
 
 <h3>Raising</h3>
-<p>On your turn you must bid higher than the previous bid:</p>
-<p><strong>Same mode</strong> (keeping Fei/Zhai): either a higher quantity (any face),
-    or the same quantity with a higher face (face 1 is the highest).
-    The maximum quantity is the total number of dice on the table (players × 5).</p>
-<p><strong>Zhai to Fei</strong>: the quantity must be at least 2 higher.
-    E.g. after "3 x 3 Zhai" you must call at least "5 x X Fei".</p>
-<p><strong>Fei to Zhai</strong>: the quantity may be 1 lower.
-    E.g. after "6 x 3 Fei" you can call "5 x X Zhai".</p>
+<p>Each player must bid higher than the previous one:</p>
+<ul>
+    <li><strong>Same mode</strong> (keeping Fei/Zhai): either a higher quantity (any face),
+        or the same quantity with a higher face (face 1 is the highest).</li>
+    <li><strong>Zhai to Fei</strong>: the quantity must be at least 2 higher.
+        E.g. after "3 x 3 Zhai" you must call at least "5 x X Fei".</li>
+    <li><strong>Fei to Zhai</strong>: the quantity may be 1 lower.
+        E.g. after "6 x 3 Fei" you can call "5 x X Zhai".</li>
+</ul>
+<p>The maximum quantity is the total number of dice of all players, that is players × 5.</p>
 
 <h3>Revealing</h3>
 <p>
     If you suspect the previous bidder is bluffing, you can call "Liar!", and all dice are revealed.
-    If the actual count &ge; the bid quantity, the challenger loses; otherwise the previous bidder loses.
+    If the bid is true (actual count &ge; bid quantity), the challenger loses; otherwise the bidder loses.
 </p>
 <p>
-    The loser receives a <strong>drinking penalty</strong> and gets 1 loss; all other players get 1 win.
-    The loser starts the next round. The game is fixed at 10 rounds, and at the end players are ranked
+    The winner gets 1 win; the loser receives a penalty and gets 1 loss; all other players don't change.
+    The loser starts the next round.
+    The game is fixed at 10 rounds, and at the end players are ranked
     by the most rounds won, then the fewest rounds lost.
 </p>
 
 <h3>Example</h3>
 <p>A 2-player game, each with 5 dice:</p>
-<p>Player A: "two 4s Fei" (conservative start)</p>
-<p>Player B: "three 4s Fei" (raise the quantity)</p>
-<p>Player A: "three 5s Fei" (same quantity, higher face)</p>
+<p>Player A: "3 x 4 Fei"</p>
+<p>Player B: "4 x 4 Fei" (raise the quantity)</p>
+<p>Player A: "4 x 5 Fei" (same quantity, higher face)</p>
 <p>Player B: "Liar!" (challenge)</p>
-<p>Result: reveal all dice and count. If there are indeed at least three 5s, Player B loses;
-    if there are fewer than three 5s, Player A loses.</p>
+<p>
+    Result: reveal all dice. If there are indeed at least four 5s, Player B loses;
+    if there are fewer than four 5s, Player A loses.
+</p>
 </body>
 </html>
