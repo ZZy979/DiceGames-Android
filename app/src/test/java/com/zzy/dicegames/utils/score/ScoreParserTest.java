@@ -2,6 +2,7 @@ package com.zzy.dicegames.utils.score;
 
 import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
+import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
@@ -28,7 +29,9 @@ public class ScoreParserTest {
                 <MaxiYatzyScore date="2026-02-01" score="470" has_bonus="true" has_yahtzee="false" />
                 </MaxiYatzyScores><BalutScores>
                 <BalutScore date="2026-03-01" score="400" points="10" num_balut="1" />
-                </BalutScores><FarkleScores>
+                </BalutScores><LiarsDiceScores>
+                <LiarsDiceScore date="2026-05-01" score="0" num_players="2" wins="5" losses="5" />
+                </LiarsDiceScores><FarkleScores>
                 <FarkleScore date="2026-04-01" score="10000" computer_score="9000" />
                 </FarkleScores></scores>
                 """.replace("\n", "");
@@ -40,7 +43,8 @@ public class ScoreParserTest {
         var maxiYatzyScores = List.of(new MaxiYatzyScore("2026-02-01", 470, true, false));
         var balutScores = List.of(new BalutScore("2026-03-01", 400, 10, 1));
         var farkleScores = List.of(new FarkleScore("2026-04-01", 10000, 9000));
-        var expected = new ScoresDTO(yahtzeeScores, maxiYatzyScores, balutScores, farkleScores);
+        var liarsDiceScores = List.of(new LiarsDiceScore("2026-05-01", 2, 5, 5));
+        var expected = new ScoresDTO(yahtzeeScores, maxiYatzyScores, balutScores, liarsDiceScores, farkleScores);
 
         try (var inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8))) {
             var parser = new ScoreParser(inputStream);
@@ -80,6 +84,10 @@ public class ScoreParserTest {
         assertEquals(a.balutScores.size(), b.balutScores.size());
         for (int i = 0; i < a.balutScores.size(); i++)
             assertTrue(ScoreUtil.isEqual(a.balutScores.get(i), b.balutScores.get(i)));
+
+        assertEquals(a.liarsDiceScores.size(), b.liarsDiceScores.size());
+        for (int i = 0; i < a.liarsDiceScores.size(); i++)
+            assertTrue(ScoreUtil.isEqual(a.liarsDiceScores.get(i), b.liarsDiceScores.get(i)));
 
         assertEquals(a.farkleScores.size(), b.farkleScores.size());
         for (int i = 0; i < a.farkleScores.size(); i++)

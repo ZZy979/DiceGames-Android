@@ -4,6 +4,7 @@ import android.util.Xml;
 
 import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
+import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
@@ -41,6 +42,7 @@ public class ScoreParser {
                     case "MaxiYatzyScore" -> parseMaxiYatzyScores();
                     case "BalutScore" -> parseBalutScores();
                     case "FarkleScore" -> parseFarkleScores();
+                    case "LiarsDiceScore" -> parseLiarsDiceScores();
                 }
             }
             eventType = parser.next();
@@ -71,6 +73,14 @@ public class ScoreParser {
         int points = Integer.parseInt(parser.getAttributeValue(null, "points"));
         int numBalut = Integer.parseInt(parser.getAttributeValue(null, "num_balut"));
         scoresDTO.balutScores.add(new BalutScore(date, score, points, numBalut));
+    }
+
+    private void parseLiarsDiceScores() {
+        String date = parser.getAttributeValue(null, "date");
+        int numPlayers = Integer.parseInt(parser.getAttributeValue(null, "num_players"));
+        int wins = Integer.parseInt(parser.getAttributeValue(null, "wins"));
+        int losses = Integer.parseInt(parser.getAttributeValue(null, "losses"));
+        scoresDTO.liarsDiceScores.add(new LiarsDiceScore(date, numPlayers, wins, losses));
     }
 
     private void parseFarkleScores() {
