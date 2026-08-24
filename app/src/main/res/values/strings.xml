@@ -146,6 +146,8 @@
     <string name="gotBalut">Got Balut</string>
     <string name="gamesWon">Games won</string>
     <string name="winRate">Win rate</string>
+    <string name="liarsDiceStatsFormat">%d-player game: %d Wins/%d Losses, win rate %.2f%%</string>
+    <string name="liarsDiceTotalStatsFormat">Total: %d Wins/%d Losses, win rate %.2f%%</string>
 
     <string name="zzy">Zhao Zhengyang</string>
 </resources>

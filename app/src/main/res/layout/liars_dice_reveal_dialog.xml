@@ -14,8 +14,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="10dp"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:text="@string/revealBidInfo"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:id="@+id/revealContainer"

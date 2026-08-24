@@ -4,16 +4,21 @@ import android.content.Context;
 
 import com.zzy.dicegames.data.dao.BalutScoreDao;
 import com.zzy.dicegames.data.dao.FarkleScoreDao;
+import com.zzy.dicegames.data.dao.LiarsDiceScoreDao;
 import com.zzy.dicegames.data.dao.MaxiYatzyScoreDao;
 import com.zzy.dicegames.data.dao.YahtzeeScoreDao;
 import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
+import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
+import androidx.room.AutoMigration;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 /**
  * 游戏得分数据库<br>
@@ -22,8 +27,13 @@ import androidx.room.RoomDatabase;
  * @author 赵正阳
  */
 @Database(
-        entities = {YahtzeeScore.class, MaxiYatzyScore.class, BalutScore.class, FarkleScore.class},
-        version = 1
+        entities = {
+                YahtzeeScore.class, MaxiYatzyScore.class, BalutScore.class,
+                LiarsDiceScore.class, FarkleScore.class},
+        version = 2,
+        autoMigrations = {
+                @AutoMigration(from = 1, to = 2)
+        }
 )
 public abstract class ScoreDatabase extends RoomDatabase {
     /** 唯一实例 */
@@ -45,6 +55,8 @@ public abstract class ScoreDatabase extends RoomDatabase {
     public abstract MaxiYatzyScoreDao maxiYatzyScoreDao();
 
     public abstract BalutScoreDao balutScoreDao();
+
+    public abstract LiarsDiceScoreDao liarsDiceScoreDao();
 
     public abstract FarkleScoreDao farkleScoreDao();
 

@@ -3,6 +3,7 @@ package com.zzy.dicegames.ui.game.liarsdice;
 import android.os.Handler;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,10 +12,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.time.LocalDate;
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
 import static com.zzy.dicegames.ui.game.liarsdice.LiarsDiceGameViewModel.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class LiarsDiceGameViewModelTest {
     @Rule
@@ -326,5 +330,39 @@ public class LiarsDiceGameViewModelTest {
         int[][] records = viewModel.getWinLossRecords().getValue();
         for (int p = 0; p < viewModel.getNumPlayers(); p++)
             assertEquals(TOTAL_ROUNDS, records[p][0] + records[p][1]);
+    }
+
+    @Test
+    public void testCreateScoreEntity() {
+        viewModel.setDiceForTest(new int[][] {
+                {5, 5, 1, 3, 4},  // 玩家0：3个有效5
+                {2, 2, 3, 4, 6}   // 玩家1：0个
+        });
+        viewModel.doBid(bid(3, 5, false));  // 玩家0开叫"3个5飞"
+        viewModel.doChallenge(1);           // 玩家1质疑（叫数属实，质疑者输）
+
+        var score = viewModel.createScoreEntity();
+        assertNotNull(score);
+        assertEquals(0, score.score);
+        assertEquals(2, score.numPlayers);
+        assertEquals(1, score.wins);   // 玩家0（人类）胜
+        assertEquals(0, score.losses);
+        assertEquals(LocalDate.now().toString(), score.date);
+    }
+
+    @Test
+    public void testGameOverSavesScore() {
+        var spy = spy(viewModel);
+        doNothing().when(spy).saveScoreToDatabase(any());
+        // 进行10局
+        for (int i = 0; i < TOTAL_ROUNDS; i++) {
+            spy.doBid(bid(3, 2, false));
+            spy.doChallenge(0);
+            spy.continueAfterReveal();
+        }
+        assertNotNull(spy.getRanking().getValue());
+        verify(spy).createScoreEntity();
+        verify(spy).saveScoreToDatabase(argThat((LiarsDiceScore s) ->
+                s != null && s.score == 0 && s.numPlayers == 2));
     }
 }

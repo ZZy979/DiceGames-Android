@@ -1,8 +1,10 @@
 package com.zzy.dicegames.ui.game.liarsdice;
 
 import com.zzy.dicegames.R;
+import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.ui.game.BaseGameViewModel;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -283,8 +285,11 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         unlockAllDice();
 
         if (roundNumber >= TOTAL_ROUNDS) {
-            // 所有局结束，计算最终排名
+            // 所有局结束，保存得分并计算最终排名
             addLog(R.string.logSeparator);
+            var score = createScoreEntity();
+            if (score != null)
+                saveScoreToDatabase(score);
             List<Integer> order = computeRanking();
             addLog(order.get(0) == PLAYER_HUMAN ? R.string.logYouWin : R.string.logPlayerNWins, order.get(0));
             ranking.setValue(order);
@@ -305,6 +310,23 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
             throw new IllegalArgumentException("玩家数量必须在2~4之间");
         this.numPlayers = numPlayers;
         initGame(numPlayers);
+    }
+
+    /** 创建得分实体 */
+    public LiarsDiceScore createScoreEntity() {
+        int[][] records = winLossRecords.getValue();
+        if (records == null)
+            return null;
+        return new LiarsDiceScore(
+                LocalDate.now().toString(), numPlayers, records[PLAYER_HUMAN][0], records[PLAYER_HUMAN][1]);
+    }
+
+    /** 将得分保存到数据库 */
+    public void saveScoreToDatabase(LiarsDiceScore score) {
+        if (scoreDatabase == null || score == null)
+            return;
+        var dao = scoreDatabase.liarsDiceScoreDao();
+        dao.insert(score);
     }
 
     /**
