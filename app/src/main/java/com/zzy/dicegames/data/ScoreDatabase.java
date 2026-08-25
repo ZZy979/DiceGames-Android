@@ -6,10 +6,12 @@ import com.zzy.dicegames.data.dao.BalutScoreDao;
 import com.zzy.dicegames.data.dao.FarkleScoreDao;
 import com.zzy.dicegames.data.dao.LiarsDiceScoreDao;
 import com.zzy.dicegames.data.dao.MaxiYatzyScoreDao;
+import com.zzy.dicegames.data.dao.PigScoreDao;
 import com.zzy.dicegames.data.dao.YahtzeeScoreDao;
 import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
+import com.zzy.dicegames.data.entity.pig.PigScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
@@ -17,8 +19,6 @@ import androidx.room.AutoMigration;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 /**
  * 游戏得分数据库<br>
@@ -29,10 +29,12 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 @Database(
         entities = {
                 YahtzeeScore.class, MaxiYatzyScore.class, BalutScore.class,
-                LiarsDiceScore.class, FarkleScore.class},
-        version = 2,
+                LiarsDiceScore.class, FarkleScore.class, PigScore.class
+        },
+        version = 3,
         autoMigrations = {
-                @AutoMigration(from = 1, to = 2)
+                @AutoMigration(from = 1, to = 2),
+                @AutoMigration(from = 2, to = 3)
         }
 )
 public abstract class ScoreDatabase extends RoomDatabase {
@@ -60,4 +62,5 @@ public abstract class ScoreDatabase extends RoomDatabase {
 
     public abstract FarkleScoreDao farkleScoreDao();
 
+    public abstract PigScoreDao pigScoreDao();
 }

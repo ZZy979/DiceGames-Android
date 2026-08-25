@@ -3,6 +3,7 @@ package com.zzy.dicegames.utils.score;
 import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
+import com.zzy.dicegames.data.entity.pig.PigScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
@@ -16,9 +17,10 @@ public class ScoresDTO {
     public List<BalutScore> balutScores;
     public List<LiarsDiceScore> liarsDiceScores;
     public List<FarkleScore> farkleScores;
+    public List<PigScore> pigScores;
 
     public ScoresDTO() {
-        this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public ScoresDTO(
@@ -26,11 +28,13 @@ public class ScoresDTO {
             List<MaxiYatzyScore> maxiYatzyScores,
             List<BalutScore> balutScores,
             List<LiarsDiceScore> liarsDiceScores,
-            List<FarkleScore> farkleScores) {
+            List<FarkleScore> farkleScores,
+            List<PigScore> pigScores) {
         this.yahtzeeScores = yahtzeeScores;
         this.maxiYatzyScores = maxiYatzyScores;
         this.balutScores = balutScores;
         this.liarsDiceScores = liarsDiceScores;
         this.farkleScores = farkleScores;
+        this.pigScores = pigScores;
     }
 }

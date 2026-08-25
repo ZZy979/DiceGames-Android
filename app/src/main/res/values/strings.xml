@@ -9,6 +9,7 @@
     <string name="liarsDice">Liar\'s Dice</string>
     <string name="rollADice">Roll-a-dice</string>
     <string name="farkle">Farkle</string>
+    <string name="pig">Pig</string>
 
     <!-- Menu items -->
     <string name="newGame">New Game</string>
@@ -126,6 +127,9 @@
     <string name="logYouWin">You win!</string>
     <string name="logComputerWins">Computer wins</string>
     <string name="logSeparator">----------------------------------------</string>
+
+    <!-- Pig -->
+    <string name="hold">Hold</string>
 
     <!-- Statistics -->
     <string name="top10">Top 10</string>

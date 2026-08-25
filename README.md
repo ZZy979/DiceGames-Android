@@ -6,6 +6,7 @@
 * [大话骰](https://en.wikipedia.org/wiki/Liar's_dice)
 * 掷骰子
 * [Farkle](https://en.wikipedia.org/wiki/Farkle)
+* [Pig](https://en.wikipedia.org/wiki/Pig_(dice_game))
 
 ## 屏幕截图
 ### 快艇骰子
@@ -25,3 +26,6 @@
 
 ### Farkle
 <img src="screenshots/Farkle.jpg" width="300" alt="Farkle" />
+
+### Pig
+<img src="screenshots/Pig.jpg" width="300" alt="Pig" />

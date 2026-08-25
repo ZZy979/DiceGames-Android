@@ -5,6 +5,7 @@ import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
+import com.zzy.dicegames.data.entity.pig.PigScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
@@ -39,6 +40,7 @@ public class ScoreUtil {
         scoreDatabase.balutScoreDao().insertAll(result.balutScores);
         scoreDatabase.farkleScoreDao().insertAll(result.farkleScores);
         scoreDatabase.liarsDiceScoreDao().insertAll(result.liarsDiceScores);
+        scoreDatabase.pigScoreDao().insertAll(result.pigScores);
     }
 
     public static void exportScores(File file) throws IOException {
@@ -53,7 +55,8 @@ public class ScoreUtil {
                  scoreDatabase.maxiYatzyScoreDao().findAll(),
                  scoreDatabase.balutScoreDao().findAll(),
                  scoreDatabase.liarsDiceScoreDao().findAll(),
-                 scoreDatabase.farkleScoreDao().findAll()
+                 scoreDatabase.farkleScoreDao().findAll(),
+                 scoreDatabase.pigScoreDao().findAll()
         );
         var serializer = new ScoreSerializer(outputStream, scoresDTO);
         serializer.serialize();
@@ -81,6 +84,10 @@ public class ScoreUtil {
     }
 
     public static boolean isEqual(FarkleScore a, FarkleScore b) {
+        return isEqual((BaseScore) a, b) && a.computerScore == b.computerScore;
+    }
+
+    public static boolean isEqual(PigScore a, PigScore b) {
         return isEqual((BaseScore) a, b) && a.computerScore == b.computerScore;
     }
 }

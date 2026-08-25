@@ -9,6 +9,7 @@
     <string name="liarsDice">大话骰</string>
     <string name="rollADice">掷骰子</string>
     <string name="farkle">Farkle</string>
+    <string name="pig">Pig</string>
 
     <!-- 菜单项 -->
     <string name="newGame">新游戏</string>
@@ -126,6 +127,9 @@
     <string name="logYouWin">你赢了！</string>
     <string name="logComputerWins">计算机赢了</string>
     <string name="logSeparator">----------------------------------------</string>
+
+    <!-- Pig -->
+    <string name="hold">保存</string>
 
     <!-- 统计数据 -->
     <string name="top10">前10名</string>

@@ -35,6 +35,7 @@ public class ScoreSerializer {
         serializeBalutScores();
         serializeLiarsDiceScores();
         serializeFarkleScores();
+        serializePigScores();
 
         serializer.endTag(null, "scores");
         serializer.endDocument();
@@ -99,5 +100,16 @@ public class ScoreSerializer {
                     .attribute(null, "computer_score", Integer.toString(score.computerScore))
                     .endTag(null, "FarkleScore");
         serializer.endTag(null, "FarkleScores");
+    }
+
+    private void serializePigScores() throws IOException {
+        serializer.startTag(null, "PigScores");
+        for (var score : scoresDTO.pigScores)
+            serializer.startTag(null, "PigScore")
+                    .attribute(null, "date", score.date)
+                    .attribute(null, "score", Integer.toString(score.score))
+                    .attribute(null, "computer_score", Integer.toString(score.computerScore))
+                    .endTag(null, "PigScore");
+        serializer.endTag(null, "PigScores");
     }
 }

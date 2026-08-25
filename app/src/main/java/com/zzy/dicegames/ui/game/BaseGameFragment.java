@@ -14,6 +14,7 @@ import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.ui.game.balut.BalutGameFragment;
 import com.zzy.dicegames.ui.game.farkle.FarkleGameFragment;
 import com.zzy.dicegames.ui.game.liarsdice.LiarsDiceGameFragment;
+import com.zzy.dicegames.ui.game.pig.PigGameFragment;
 import com.zzy.dicegames.ui.game.rolladice.RollADiceGameFragment;
 import com.zzy.dicegames.ui.game.yahtzee.YahtzeeGameFragment;
 import com.zzy.dicegames.ui.game.yatzy.MaxiYatzyGameFragment;
@@ -50,6 +51,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
             case LIARS_DICE -> new LiarsDiceGameFragment();
             case ROLL_A_DICE -> new RollADiceGameFragment();
             case FARKLE -> new FarkleGameFragment();
+            case PIG -> new PigGameFragment();
         };
     }
 
@@ -71,12 +73,18 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         mTitleTextView = view.findViewById(R.id.tvTitle);
 
         int[] diceViewIds = {R.id.dice1, R.id.dice2, R.id.dice3, R.id.dice4, R.id.dice5, R.id.dice6};
-        mDiceViews = new DiceView[diceViewIds.length];
-        for (int i = 0; i < mDiceViews.length; i++) {
+        int numDice = mViewModel.getNumDice();
+        mDiceViews = new DiceView[numDice];
+        for (int i = 0; i < diceViewIds.length; i++) {
             final int position = i;
-            mDiceViews[i] = view.findViewById(diceViewIds[i]);
-            mDiceViews[i].setOnClickListener(v -> clickDice(position));
-            mDiceViews[i].setVisibility(i < mViewModel.getNumDice() ? View.VISIBLE : View.GONE);
+            DiceView diceView = view.findViewById(diceViewIds[i]);
+            if (i < numDice) {
+                mDiceViews[i] = diceView;
+                mDiceViews[i].setOnClickListener(v -> clickDice(position));
+                mDiceViews[i].setVisibility(View.VISIBLE);
+            } else if (diceView != null) {
+                diceView.setVisibility(View.GONE);
+            }
         }
 
         mRollButton = view.findViewById(R.id.btnRoll);

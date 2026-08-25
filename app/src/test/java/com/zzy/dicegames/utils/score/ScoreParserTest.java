@@ -3,6 +3,7 @@ package com.zzy.dicegames.utils.score;
 import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
+import com.zzy.dicegames.data.entity.pig.PigScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
@@ -33,7 +34,9 @@ public class ScoreParserTest {
                 <LiarsDiceScore date="2026-05-01" score="0" num_players="2" wins="5" losses="5" />
                 </LiarsDiceScores><FarkleScores>
                 <FarkleScore date="2026-04-01" score="10000" computer_score="9000" />
-                </FarkleScores></scores>
+                </FarkleScores><PigScores>
+                <PigScore date="2026-06-01" score="100" computer_score="85" />
+                </PigScores></scores>
                 """.replace("\n", "");
 
         var yahtzeeScores = List.of(
@@ -44,7 +47,8 @@ public class ScoreParserTest {
         var balutScores = List.of(new BalutScore("2026-03-01", 400, 10, 1));
         var farkleScores = List.of(new FarkleScore("2026-04-01", 10000, 9000));
         var liarsDiceScores = List.of(new LiarsDiceScore("2026-05-01", 2, 5, 5));
-        var expected = new ScoresDTO(yahtzeeScores, maxiYatzyScores, balutScores, liarsDiceScores, farkleScores);
+        var pigScores = List.of(new PigScore("2026-06-01", 100, 85));
+        var expected = new ScoresDTO(yahtzeeScores, maxiYatzyScores, balutScores, liarsDiceScores, farkleScores, pigScores);
 
         try (var inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8))) {
             var parser = new ScoreParser(inputStream);
@@ -92,5 +96,9 @@ public class ScoreParserTest {
         assertEquals(a.farkleScores.size(), b.farkleScores.size());
         for (int i = 0; i < a.farkleScores.size(); i++)
             assertTrue(ScoreUtil.isEqual(a.farkleScores.get(i), b.farkleScores.get(i)));
+
+        assertEquals(a.pigScores.size(), b.pigScores.size());
+        for (int i = 0; i < a.pigScores.size(); i++)
+            assertTrue(ScoreUtil.isEqual(a.pigScores.get(i), b.pigScores.get(i)));
     }
 }

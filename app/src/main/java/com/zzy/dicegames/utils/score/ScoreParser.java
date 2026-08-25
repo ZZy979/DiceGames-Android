@@ -5,6 +5,7 @@ import android.util.Xml;
 import com.zzy.dicegames.data.entity.balut.BalutScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
+import com.zzy.dicegames.data.entity.pig.PigScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
 
@@ -43,6 +44,7 @@ public class ScoreParser {
                     case "BalutScore" -> parseBalutScores();
                     case "FarkleScore" -> parseFarkleScores();
                     case "LiarsDiceScore" -> parseLiarsDiceScores();
+                    case "PigScore" -> parsePigScores();
                 }
             }
             eventType = parser.next();
@@ -88,5 +90,12 @@ public class ScoreParser {
         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
         int computerScore = Integer.parseInt(parser.getAttributeValue(null, "computer_score"));
         scoresDTO.farkleScores.add(new FarkleScore(date, score, computerScore));
+    }
+
+    private void parsePigScores() {
+        String date = parser.getAttributeValue(null, "date");
+        int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
+        int computerScore = Integer.parseInt(parser.getAttributeValue(null, "computer_score"));
+        scoresDTO.pigScores.add(new PigScore(date, score, computerScore));
     }
 }

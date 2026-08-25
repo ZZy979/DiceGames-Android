@@ -56,6 +56,7 @@ public abstract class BaseStatsFragment extends Fragment {
             case BALUT -> new BalutStatsFragment();
             case LIARS_DICE -> new LiarsDiceStatsFragment();
             case FARKLE -> new FarkleStatsFragment();
+            case PIG -> new PigStatsFragment();
             default -> null;
         };
     }
