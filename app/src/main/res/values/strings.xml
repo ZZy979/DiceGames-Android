@@ -3,8 +3,8 @@
     <string name="app_name">DiceGames</string>
 
     <!-- Game types -->
-    <string name="yahtzee">Yahtzee</string>
-    <string name="maxiYatzy">Maxi Yatzy</string>
+    <string name="yahtzeeTitle">Yahtzee</string>
+    <string name="maxiYatzyTitle">Maxi Yatzy</string>
     <string name="balut">Balut</string>
     <string name="liarsDice">Liar\'s Dice</string>
     <string name="rollADice">Roll-a-dice</string>
@@ -54,7 +54,8 @@
     <string name="castle">Castle</string>
     <string name="tower">Tower</string>
     <string name="chance">Chance</string>
-    <string name="yatzy">Yatzy</string>
+    <string name="yahtzee">Yahtzee</string>
+    <string name="maxiYatzy">Maxi Yatzy</string>
     <string name="upperTotal">Upper Total</string>
     <string name="bonus">Bonus</string>
     <string name="totalScore">Total Score</string>

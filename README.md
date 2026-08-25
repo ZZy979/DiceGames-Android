@@ -1,17 +1,17 @@
 # 安卓骰子游戏
 ## 玩法
-* [Yahtzee](https://en.wikipedia.org/wiki/Yahtzee)
-* [Maxi Yatzy](https://en.wikipedia.org/wiki/Yatzy#Maxi_Yatzy)
+* [快艇骰子](https://en.wikipedia.org/wiki/Yahtzee)
+* [超级快艇骰子](https://en.wikipedia.org/wiki/Yatzy#Maxi_Yatzy)
 * [Balut](https://www.balut.org/rules.html)
 * [大话骰](https://en.wikipedia.org/wiki/Liar's_dice)
 * 掷骰子
 * [Farkle](https://en.wikipedia.org/wiki/Farkle)
 
 ## 屏幕截图
-### Yahtzee
+### 快艇骰子
 <img src="screenshots/Yahtzee.jpg" width="300" alt="Yahtzee" />
 
-### Maxi Yatzy
+### 超级快艇骰子
 <img src="screenshots/Maxi%20Yatzy.jpg" width="300" alt="Maxi Yatzy" />
 
 ### Balut

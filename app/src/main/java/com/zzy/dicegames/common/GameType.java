@@ -5,10 +5,10 @@ import com.zzy.dicegames.R;
 /** 游戏类型 */
 public enum GameType {
     /** Yahtzee */
-    YAHTZEE(R.string.yahtzee),
+    YAHTZEE(R.string.yahtzeeTitle),
 
     /** Maxi Yatzy */
-    MAXI_YATZY(R.string.maxiYatzy),
+    MAXI_YATZY(R.string.maxiYatzyTitle),
 
     /** Balut */
     BALUT(R.string.balut),
