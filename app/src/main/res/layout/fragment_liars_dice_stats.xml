@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginHorizontal="30dp"
     android:orientation="vertical"
     tools:context=".ui.stats.LiarsDiceStatsFragment">
 
@@ -10,8 +11,6 @@
         android:id="@+id/tvStats2Players"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
         android:layout_marginTop="20dp"
         tools:text="@string/liarsDiceStatsFormat"
         android:textSize="18sp" />
@@ -20,9 +19,7 @@
         android:id="@+id/tvStats3Players"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         tools:text="@string/liarsDiceStatsFormat"
         android:textSize="18sp" />
 
@@ -30,9 +27,7 @@
         android:id="@+id/tvStats4Players"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         tools:text="@string/liarsDiceStatsFormat"
         android:textSize="18sp" />
 
@@ -40,9 +35,7 @@
         android:id="@+id/tvStatsTotal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         tools:text="@string/liarsDiceTotalStatsFormat"
         android:textSize="18sp" />
 
