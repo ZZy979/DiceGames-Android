@@ -48,6 +48,7 @@ public class BaseGameViewModelTest {
         assertArrayEquals(ArrayUtil.create(4, false), viewModel.getDiceLocked().getValue());
         assertArrayEquals(ArrayUtil.create(4, true), viewModel.getDiceEnabled().getValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
+        assertFalse(viewModel.getDiceRolled().getValue());
     }
 
     @Test
@@ -154,7 +155,21 @@ public class BaseGameViewModelTest {
         viewModel.resetDiceWindow();
         assertEquals(2, viewModel.getRemainingRolls().getValue().intValue());
         assertFalse(viewModel.getDiceLocked().getValue()[3]);
-        assertArrayEquals(ArrayUtil.create(5, true), viewModel.getDiceEnabled().getValue());
+        assertArrayEquals(ArrayUtil.create(5, false), viewModel.getDiceEnabled().getValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
+    }
+
+    @Test
+    public void testDiceRolled() {
+        assertFalse(viewModel.getDiceRolled().getValue());
+
+        viewModel.rollDice();
+        assertTrue(viewModel.getDiceRolled().getValue());
+
+        viewModel.rollDice();  // 次数用完，diceRolled仍为true
+        assertTrue(viewModel.getDiceRolled().getValue());
+
+        viewModel.resetDiceWindow();
+        assertFalse(viewModel.getDiceRolled().getValue());
     }
 }

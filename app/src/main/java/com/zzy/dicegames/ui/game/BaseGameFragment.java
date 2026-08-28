@@ -40,6 +40,9 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     /** Roll按钮 */
     protected Button mRollButton;
 
+    /** 本回合是否已掷过骰子 */
+    protected boolean mRolled;
+
     protected V mViewModel;
 
     /** 根据游戏类型创建游戏Fragment */
@@ -64,6 +67,8 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
 
         mViewModel = createViewModel();
         mViewModel.setScoreDatabase(ScoreDatabase.getInstance(getContext()));
+        mViewModel.setGameOverAction(this::onGameOver);
+
         initViews(view);
         setupObservers(getViewLifecycleOwner());
     }
@@ -101,6 +106,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         mViewModel.getDiceLocked().observe(owner, this::onDiceLockedChanged);
         mViewModel.getDiceEnabled().observe(owner, this::onDiceEnabledChanged);
         mViewModel.getRollButtonEnabled().observe(owner, this::onRollButtonEnabledChanged);
+        mViewModel.getDiceRolled().observe(owner, this::onDiceRolledChanged);
     }
 
     /** 剩余掷骰子次数更新时的回调 */
@@ -134,6 +140,11 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         mRollButton.setEnabled(enabled);
     }
 
+    /** 本回合是否已掷过骰子更新时的回调 */
+    protected void onDiceRolledChanged(boolean rolled) {
+        mRolled = rolled;
+    }
+
     /** 点击第i个骰子 */
     protected void clickDice(int i) {
         mViewModel.toggleLocked(i);
@@ -148,6 +159,9 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     public void startNewGame() {
         mViewModel.reset();
     }
+
+    /** 游戏结束时的回调函数 */
+    protected void onGameOver(Object[] args) {}
 
     /** 弹出窗口，显示得分 */
     public void showScore(BaseScore score, int rank) {

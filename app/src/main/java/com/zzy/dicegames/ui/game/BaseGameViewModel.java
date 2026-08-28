@@ -52,6 +52,9 @@ public class BaseGameViewModel extends ViewModel {
     /** Roll按钮激活状态 */
     protected final MutableLiveData<Boolean> rollButtonEnabled = new MutableLiveData<>(true);
 
+    /** 本回合是否已掷过骰子 */
+    private final MutableLiveData<Boolean> diceRolled = new MutableLiveData<>(false);
+
     /** 每个点数的出现次数 */
     protected int[] diceCounts = new int[7];
 
@@ -113,6 +116,10 @@ public class BaseGameViewModel extends ViewModel {
 
     public LiveData<Boolean> getRollButtonEnabled() {
         return rollButtonEnabled;
+    }
+
+    public LiveData<Boolean> getDiceRolled() {
+        return diceRolled;
     }
 
     public boolean hasRemainingRolls() {
@@ -177,6 +184,7 @@ public class BaseGameViewModel extends ViewModel {
     public void rollDice() {
         if (!hasRemainingRolls())
             return;
+        diceRolled.setValue(true);
         decreaseRemainingRolls();
         int[] numbers = generateRandomDiceNumbers();
         updateDiceNumbers(numbers);
@@ -186,6 +194,7 @@ public class BaseGameViewModel extends ViewModel {
     public void rollDiceWithAnimation() {
         if (!hasRemainingRolls())
             return;
+        diceRolled.setValue(true);
         decreaseRemainingRolls();
         rollDiceAnimation(0);
     }
@@ -227,17 +236,18 @@ public class BaseGameViewModel extends ViewModel {
         remaining--;
         remainingRolls.setValue(remaining);
 
-        boolean enabled = remaining > 0;
-        rollButtonEnabled.setValue(enabled);
-        diceEnabled.setValue(ArrayUtil.fill(diceEnabled.getValue(), enabled));
+        boolean hasRemaining = remaining > 0;
+        rollButtonEnabled.setValue(hasRemaining);
+        diceEnabled.setValue(ArrayUtil.fill(diceEnabled.getValue(), hasRemaining));
     }
 
     /** 重置掷骰子次数，解锁骰子 */
     public void resetDiceWindow() {
         remainingRolls.setValue(maxRolls);
         unlockAllDice();
-        enableAllDice();
+        disableAllDice();  // 回合开始骰子不可点击，掷骰子后由decreaseRemainingRolls()启用
         rollButtonEnabled.setValue(true);
+        diceRolled.setValue(false);
     }
 
     /** 重置游戏状态 */

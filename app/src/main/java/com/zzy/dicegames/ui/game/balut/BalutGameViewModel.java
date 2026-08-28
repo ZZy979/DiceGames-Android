@@ -47,6 +47,7 @@ public class BalutGameViewModel extends BaseGameViewModel {
 
     public BalutGameViewModel() {
         super(5, 3);
+        disableAllDice();
     }
 
     public LiveData<int[][]> getScores() {
@@ -160,13 +161,10 @@ public class BalutGameViewModel extends BaseGameViewModel {
         updateTotalScore();
         updatePoints();
 
-        if (numSelected == NUM_CATEGORIES) {
+        if (numSelected == NUM_CATEGORIES)
             gameOver();
-        }
-        else {
+        else
             resetDiceWindow();
-            rollDiceWithAnimation();  // TODO 改为手动掷骰子
-        }
     }
 
     private void updateTotalScore() {
@@ -257,7 +255,6 @@ public class BalutGameViewModel extends BaseGameViewModel {
 
     @Override
     public void reset() {
-        super.reset();
         scores.setValue(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
         selectCount.setValue(new int[NUM_CATEGORIES]);
         numSelected = 0;
@@ -266,5 +263,6 @@ public class BalutGameViewModel extends BaseGameViewModel {
         totalScore.setValue(0);
         totalScorePoints.setValue(0);
         totalPoints.setValue(0);
+        super.reset();
     }
 }

@@ -47,6 +47,7 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         this.bonusValue = bonusValue;
         this.scores.setValue(new int[numCategories]);
         this.selected.setValue(new boolean[numCategories]);
+        disableAllDice();
     }
 
     public int getNumCategories() {
@@ -137,13 +138,10 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         // 掷骰子后已计算过预估得分，此处无需更新scores
         updateBonusAndTotalScore();
 
-        if (numSelected == numCategories) {
+        if (numSelected == numCategories)
             gameOver();
-        }
-        else {
+        else
             resetDiceWindow();
-            rollDiceWithAnimation();  // TODO 改为手动掷骰子
-        }
     }
 
     private void updateBonusAndTotalScore() {
@@ -188,12 +186,12 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
 
     @Override
     public void reset() {
-        super.reset();
         scores.setValue(new int[numCategories]);
         selected.setValue(new boolean[numCategories]);
         numSelected = 0;
         upperTotalScore.setValue(0);
         bonusScore.setValue(0);
         totalScore.setValue(0);
+        super.reset();
     }
 }

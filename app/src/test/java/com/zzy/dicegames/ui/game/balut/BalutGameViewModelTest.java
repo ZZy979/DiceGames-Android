@@ -61,6 +61,9 @@ public class BalutGameViewModelTest {
         assertEquals(0, viewModel.getTotalScore().getValue().intValue());
         assertEquals(0, viewModel.getTotalScorePoints().getValue().intValue());
         assertEquals(0, viewModel.getTotalPoints().getValue().intValue());
+        assertFalse(viewModel.getDiceRolled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
+        assertTrue(viewModel.getRollButtonEnabled().getValue());
     }
 
     @Test
@@ -180,6 +183,34 @@ public class BalutGameViewModelTest {
         assertEquals(4, viewModel.getSelectCount().getValue()[balut]);
         assertEquals(1, viewModel.getNumSelected());
         assertEquals(212, viewModel.getTotalScore().getValue().intValue());
+    }
+
+    @Test
+    public void testManualRollFlow() {
+        // 初始：等待手动掷骰子
+        assertFalse(viewModel.getDiceRolled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
+        assertTrue(viewModel.getRollButtonEnabled().getValue());
+        assertEquals(viewModel.getMaxRolls(), viewModel.getRemainingRolls().getValue().intValue());
+
+        // 第一次掷骰子后：骰子可用
+        viewModel.rollDice();
+        assertTrue(viewModel.getDiceRolled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), true));
+
+        // 掷满次数后：骰子和Roll按钮不可用
+        while (viewModel.getRemainingRolls().getValue() > 0)
+            viewModel.rollDice();
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
+        assertFalse(viewModel.getRollButtonEnabled().getValue());
+
+        // 选择得分项后：恢复初始状态
+        viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
+        viewModel.select(SIXES.ordinal());
+        assertFalse(viewModel.getDiceRolled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
+        assertTrue(viewModel.getRollButtonEnabled().getValue());
+        assertEquals(viewModel.getMaxRolls(), viewModel.getRemainingRolls().getValue().intValue());
     }
 
     @Test

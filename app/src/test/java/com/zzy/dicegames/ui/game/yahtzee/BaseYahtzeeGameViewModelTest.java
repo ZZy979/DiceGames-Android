@@ -57,6 +57,9 @@ public class BaseYahtzeeGameViewModelTest {
       assertEquals(0, viewModel.getUpperTotalScore().getValue().intValue());
       assertEquals(0, viewModel.getBonusScore().getValue().intValue());
       assertEquals(0, viewModel.getTotalScore().getValue().intValue());
+      assertFalse(viewModel.getDiceRolled().getValue());
+      assertArrayEquals(ArrayUtil.create(5, false), viewModel.getDiceEnabled().getValue());
+      assertTrue(viewModel.getRollButtonEnabled().getValue());
    }
 
    @Test
@@ -190,5 +193,36 @@ public class BaseYahtzeeGameViewModelTest {
       assertEquals(0, viewModel.getUpperTotalScore().getValue().intValue());
       assertEquals(0, viewModel.getBonusScore().getValue().intValue());
       assertEquals(0, viewModel.getTotalScore().getValue().intValue());
+   }
+
+   @Test
+   public void testManualRollFlow() {
+      // 初始：等待手动掷骰子
+      assertFalse(viewModel.getDiceRolled().getValue());
+      assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
+      assertTrue(viewModel.getRollButtonEnabled().getValue());
+      assertEquals(viewModel.getMaxRolls(), viewModel.getRemainingRolls().getValue().intValue());
+
+      // 第一次掷骰子后：骰子可用
+      viewModel.rollDice();
+      assertTrue(viewModel.getDiceRolled().getValue());
+      assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), true));
+      assertEquals(viewModel.getMaxRolls() - 1, viewModel.getRemainingRolls().getValue().intValue());
+
+      // 掷满次数后：骰子和Roll按钮不可用，diceRolled仍为true
+      while (viewModel.getRemainingRolls().getValue() > 0)
+         viewModel.rollDice();
+      assertTrue(viewModel.getDiceRolled().getValue());
+      assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
+      assertFalse(viewModel.getRollButtonEnabled().getValue());
+
+      // 选择得分项后：恢复初始状态，已选择的保留
+      viewModel.updateDiceNumbers(2, 2, 2, 2, 2);
+      viewModel.select(1);
+      assertFalse(viewModel.getDiceRolled().getValue());
+      assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
+      assertTrue(viewModel.getRollButtonEnabled().getValue());
+      assertEquals(viewModel.getMaxRolls(), viewModel.getRemainingRolls().getValue().intValue());
+      assertTrue(viewModel.getSelected().getValue()[1]);
    }
 }
