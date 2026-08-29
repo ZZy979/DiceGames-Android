@@ -12,6 +12,7 @@ import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.ui.game.balut.BalutGameFragment;
+import com.zzy.dicegames.ui.game.crag.CragGameFragment;
 import com.zzy.dicegames.ui.game.farkle.FarkleGameFragment;
 import com.zzy.dicegames.ui.game.liarsdice.LiarsDiceGameFragment;
 import com.zzy.dicegames.ui.game.pig.PigGameFragment;
@@ -55,6 +56,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
             case ROLL_A_DICE -> new RollADiceGameFragment();
             case FARKLE -> new FarkleGameFragment();
             case PIG -> new PigGameFragment();
+            case CRAG -> new CragGameFragment();
         };
     }
 

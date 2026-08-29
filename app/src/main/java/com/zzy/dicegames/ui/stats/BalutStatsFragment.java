@@ -69,8 +69,7 @@ public class BalutStatsFragment extends BaseStatsFragment {
         mHighestPointsTextView.setText(Integer.toString(s.maxPoints));
         mLowestPointsTextView.setText(Integer.toString(s.minPoints));
         mAveragePointsTextView.setText(String.format("%.2f", s.avgPoints));
-        mGotBalutTextView.setText(stats.count == 0 ? "-" : String.format(
-                "%.2f%% (%d/%d)", (double) s.numBalut / (s.count * 4) * 100, s.numBalut, s.count * 4));
+        mGotBalutTextView.setText(formatPercent(s.numBalut, s.count * 4));
     }
 
     @Override

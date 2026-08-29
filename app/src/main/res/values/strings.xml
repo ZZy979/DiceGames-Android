@@ -9,7 +9,8 @@
     <string name="liarsDice">Liar\'s Dice</string>
     <string name="rollADice">Roll-a-dice</string>
     <string name="farkle">Farkle</string>
-    <string name="pig">Pig</string>
+    <string name="pig">Pig🐷</string>
+    <string name="crag">Crag</string>
 
     <!-- Menu items -->
     <string name="newGame">New Game</string>
@@ -66,6 +67,13 @@
     <string name="choice">Choice</string>
     <string name="points">Points</string>
     <string name="totalPoints">Total Points</string>
+
+    <!-- Crag -->
+    <string name="lowStraight">Low Straight</string>
+    <string name="highStraight">High Straight</string>
+    <string name="oddStraight">Odd Straight</string>
+    <string name="evenStraight">Even Straight</string>
+    <string name="thirteen">Thirteen</string>
 
     <!-- Show score -->
     <string name="gameOver">Game Over</string>
@@ -149,6 +157,7 @@
     <string name="gotYahtzee">Got Yahtzee</string>
     <string name="gotYatzy">Got Yatzy</string>
     <string name="gotBalut">Got Balut</string>
+    <string name="gotCrag">Got Crag</string>
     <string name="gamesWon">Games won</string>
     <string name="winRate">Win rate</string>
     <string name="liarsDiceStatsFormat">%d-player game: %d Wins/%d Losses, win rate %.2f%%</string>

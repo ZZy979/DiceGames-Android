@@ -53,9 +53,7 @@ public class YahtzeeStatsFragment extends BaseStatsFragment {
     protected void onStatisticsChanged(BaseStatistics stats) {
         super.onStatisticsChanged(stats);
         var s = (YahtzeeStatistics) stats;
-        mGotBonusTextView.setText(stats.count == 0 ? "-" : String.format(
-                "%.2f%% (%d/%d)", (double) s.numBonus / s.count * 100, s.numBonus, s.count));
-        mGotYahtzeeTextView.setText(stats.count == 0 ? "-" : String.format(
-                "%.2f%% (%d/%d)", (double) s.numYahtzee / s.count * 100, s.numYahtzee, s.count));
+        mGotBonusTextView.setText(formatPercent(s.numBonus, s.count));
+        mGotYahtzeeTextView.setText(formatPercent(s.numYahtzee, s.count));
     }
 }

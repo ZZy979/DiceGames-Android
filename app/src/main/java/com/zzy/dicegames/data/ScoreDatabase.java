@@ -3,12 +3,14 @@ package com.zzy.dicegames.data;
 import android.content.Context;
 
 import com.zzy.dicegames.data.dao.BalutScoreDao;
+import com.zzy.dicegames.data.dao.CragScoreDao;
 import com.zzy.dicegames.data.dao.FarkleScoreDao;
 import com.zzy.dicegames.data.dao.LiarsDiceScoreDao;
 import com.zzy.dicegames.data.dao.MaxiYatzyScoreDao;
 import com.zzy.dicegames.data.dao.PigScoreDao;
 import com.zzy.dicegames.data.dao.YahtzeeScoreDao;
 import com.zzy.dicegames.data.entity.balut.BalutScore;
+import com.zzy.dicegames.data.entity.crag.CragScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.data.entity.pig.PigScore;
@@ -29,12 +31,14 @@ import androidx.room.RoomDatabase;
 @Database(
         entities = {
                 YahtzeeScore.class, MaxiYatzyScore.class, BalutScore.class,
-                LiarsDiceScore.class, FarkleScore.class, PigScore.class
+                LiarsDiceScore.class, FarkleScore.class, PigScore.class,
+                CragScore.class
         },
-        version = 3,
+        version = 4,
         autoMigrations = {
                 @AutoMigration(from = 1, to = 2),
-                @AutoMigration(from = 2, to = 3)
+                @AutoMigration(from = 2, to = 3),
+                @AutoMigration(from = 3, to = 4)
         }
 )
 public abstract class ScoreDatabase extends RoomDatabase {
@@ -63,4 +67,6 @@ public abstract class ScoreDatabase extends RoomDatabase {
     public abstract FarkleScoreDao farkleScoreDao();
 
     public abstract PigScoreDao pigScoreDao();
+
+    public abstract CragScoreDao cragScoreDao();
 }

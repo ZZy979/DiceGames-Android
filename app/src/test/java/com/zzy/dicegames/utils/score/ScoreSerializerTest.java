@@ -1,6 +1,7 @@
 package com.zzy.dicegames.utils.score;
 
 import com.zzy.dicegames.data.entity.balut.BalutScore;
+import com.zzy.dicegames.data.entity.crag.CragScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.data.entity.pig.PigScore;
@@ -31,7 +32,8 @@ public class ScoreSerializerTest {
         var liarsDiceScores = List.of(new LiarsDiceScore("2026-05-01", 2, 5, 5));
         var farkleScores = List.of(new FarkleScore("2026-04-01", 10000, 9000));
         var pigScores = List.of(new PigScore("2026-06-01", 100, 85));
-        var scoresDTO = new ScoresDTO(yahtzeeScores, maxiYatzyScores, balutScores, liarsDiceScores, farkleScores, pigScores);
+        var cragScores = List.of(new CragScore("2026-07-01", 180, true));
+        var scoresDTO = new ScoresDTO(yahtzeeScores, maxiYatzyScores, balutScores, liarsDiceScores, farkleScores, pigScores, cragScores);
 
         String expected = """
                 <?xml version='1.0' encoding='utf-8' standalone='yes' ?><scores><YahtzeeScores>
@@ -47,7 +49,9 @@ public class ScoreSerializerTest {
                 <FarkleScore date="2026-04-01" score="10000" computer_score="9000" />
                 </FarkleScores><PigScores>
                 <PigScore date="2026-06-01" score="100" computer_score="85" />
-                </PigScores></scores>
+                </PigScores><CragScores>
+                <CragScore date="2026-07-01" score="180" has_crag="true" />
+                </CragScores></scores>
                 """.replace("\n", "");
 
         try (var outputStream = new ByteArrayOutputStream()) {
@@ -62,7 +66,8 @@ public class ScoreSerializerTest {
         var scoresDTO = new ScoresDTO();
         String expected = """
                 <?xml version='1.0' encoding='utf-8' standalone='yes' ?><scores>
-                <YahtzeeScores /><MaxiYatzyScores /><BalutScores /><LiarsDiceScores /><FarkleScores /><PigScores /></scores>
+                <YahtzeeScores /><MaxiYatzyScores /><BalutScores /><LiarsDiceScores /><FarkleScores />
+                <PigScores /><CragScores /></scores>
                 """.replace("\n", "");
 
         try (var outputStream = new ByteArrayOutputStream()) {

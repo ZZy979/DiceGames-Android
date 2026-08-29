@@ -7,6 +7,7 @@
 * 掷骰子
 * [Farkle](https://en.wikipedia.org/wiki/Farkle)
 * [Pig](https://en.wikipedia.org/wiki/Pig_(dice_game))
+* [Crag](https://en.wikipedia.org/wiki/Crag_(dice_game))
 
 ## 屏幕截图
 ### 快艇骰子

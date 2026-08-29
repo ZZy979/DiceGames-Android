@@ -57,6 +57,7 @@ public abstract class BaseStatsFragment extends Fragment {
             case LIARS_DICE -> new LiarsDiceStatsFragment();
             case FARKLE -> new FarkleStatsFragment();
             case PIG -> new PigStatsFragment();
+            case CRAG -> new CragStatsFragment();
             default -> null;
         };
     }
@@ -111,6 +112,11 @@ public abstract class BaseStatsFragment extends Fragment {
         mHighestScoreTextView.setText(Integer.toString(stats.maxScore));
         mLowestScoreTextView.setText(Integer.toString(stats.minScore));
         mAverageScoreTextView.setText(String.format("%.2f", stats.avgScore));
+    }
+
+    protected static String formatPercent(int numerator, int denominator) {
+        return denominator == 0 ? "-" : String.format(
+                "%.2f%% (%d/%d)", (double) numerator / denominator * 100, numerator, denominator);
     }
 
     protected ListAdapter createHighScoresListAdapter(List<? extends BaseScore> highScores) {

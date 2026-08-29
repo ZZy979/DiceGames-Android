@@ -23,7 +23,10 @@ public enum GameType {
     FARKLE(R.string.farkle),
 
     /** Pig */
-    PIG(R.string.pig);
+    PIG(R.string.pig),
+
+    /** Crag */
+    CRAG(R.string.crag);
 
     /** 游戏类型名称的字符串资源id */
     private final int nameResId;

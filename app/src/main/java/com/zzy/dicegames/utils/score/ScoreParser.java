@@ -3,6 +3,7 @@ package com.zzy.dicegames.utils.score;
 import android.util.Xml;
 
 import com.zzy.dicegames.data.entity.balut.BalutScore;
+import com.zzy.dicegames.data.entity.crag.CragScore;
 import com.zzy.dicegames.data.entity.farkle.FarkleScore;
 import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.data.entity.pig.PigScore;
@@ -45,6 +46,7 @@ public class ScoreParser {
                     case "FarkleScore" -> parseFarkleScores();
                     case "LiarsDiceScore" -> parseLiarsDiceScores();
                     case "PigScore" -> parsePigScores();
+                    case "CragScore" -> parseCragScores();
                 }
             }
             eventType = parser.next();
@@ -97,5 +99,12 @@ public class ScoreParser {
         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
         int computerScore = Integer.parseInt(parser.getAttributeValue(null, "computer_score"));
         scoresDTO.pigScores.add(new PigScore(date, score, computerScore));
+    }
+
+    private void parseCragScores() {
+        String date = parser.getAttributeValue(null, "date");
+        int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
+        boolean hasCrag = Boolean.parseBoolean(parser.getAttributeValue(null, "has_crag"));
+        scoresDTO.cragScores.add(new CragScore(date, score, hasCrag));
     }
 }

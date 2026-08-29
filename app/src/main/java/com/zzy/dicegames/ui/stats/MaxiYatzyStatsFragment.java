@@ -53,9 +53,7 @@ public class MaxiYatzyStatsFragment extends BaseStatsFragment {
     protected void onStatisticsChanged(BaseStatistics stats) {
         super.onStatisticsChanged(stats);
         var s = (MaxiYatzyStatistics) stats;
-        mGotBonusTextView.setText(stats.count == 0 ? "-" : String.format(
-                "%.2f%% (%d/%d)", (double) s.numBonus / s.count * 100, s.numBonus, s.count));
-        mGotYatzyTextView.setText(stats.count == 0 ? "-" : String.format(
-                "%.2f%% (%d/%d)", (double) s.numYatzy / s.count * 100, s.numYatzy, s.count));
+        mGotBonusTextView.setText(formatPercent(s.numBonus, s.count));
+        mGotYatzyTextView.setText(formatPercent(s.numYatzy, s.count));
     }
 }
