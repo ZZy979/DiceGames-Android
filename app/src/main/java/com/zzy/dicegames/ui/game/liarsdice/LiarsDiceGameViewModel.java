@@ -176,11 +176,6 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         return player != null && player == PLAYER_HUMAN;
     }
 
-    public boolean isComputerTurn() {
-        Integer player = currentPlayer.getValue();
-        return player != null && player != PLAYER_HUMAN;
-    }
-
     /** 返回玩家名称的字符串资源id（电脑玩家使用固定名称） */
     public static int playerNameResId(int p) {
         if (p == PLAYER_HUMAN)
@@ -422,7 +417,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
                 currentPlayer.getValue(), bid.quantity(), bid.face());
         int next = getNextPlayer(currentPlayer.getValue());
         currentPlayer.setValue(next);
-        addLog(R.string.logPlayerTurn, next);
+        addLog(isHumanTurn() ? R.string.logYourTurn : R.string.logPlayerTurn, next);
         startTurn();
     }
 
@@ -466,7 +461,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
 
     /** 计算机玩家回合 */
     protected void computerTurn() {
-        if (revealing || !isComputerTurn())
+        if (revealing || isHumanTurn())
             return;
         Bid bid = currentBid.getValue();
         if (bid == null) {
@@ -515,28 +510,22 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         currentPlayer.setValue(nextRoundStarter);
         currentBid.setValue(null);
         addLog(R.string.logRoundBegins, roundNumber);
-        addLog(R.string.logPlayerTurn, currentPlayer.getValue());
+        addLog(isHumanTurn() ? R.string.logYourTurn : R.string.logPlayerTurn, currentPlayer.getValue());
         startTurn();
     }
 
     /** 开始当前玩家的回合 */
     private void startTurn() {
-        Integer player = currentPlayer.getValue();
-        if (player == null)
-            return;
-        if (player == PLAYER_HUMAN) {
+        if (isHumanTurn())
             setDefaultSelectedBid();
-        }
-        else {
+        else
             handler.postDelayed(this::computerTurn, DELAY);
-        }
         updateTurnButtons();
     }
 
     /** 更新回合相关按钮状态 */
     private void updateTurnButtons() {
-        Integer player = currentPlayer.getValue();
-        boolean humanTurn = player != null && player == PLAYER_HUMAN && !revealing;
+        boolean humanTurn = isHumanTurn() && !revealing;
         Bid prev = currentBid.getValue();
         boolean valid = isBidRaiseValid(prev, getSelectedBid());
         bidValid.setValue(valid);

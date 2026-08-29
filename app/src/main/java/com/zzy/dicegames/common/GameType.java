@@ -7,8 +7,11 @@ public enum GameType {
     /** 快艇骰子 */
     YAHTZEE(R.string.yahtzeeTitle),
 
-    /** 超级快艇骰子 */
-    MAXI_YATZY(R.string.maxiYatzyTitle),
+    /** Yatzy */
+    YATZY(R.string.yatzy),
+
+    /** Maxi Yatzy */
+    MAXI_YATZY(R.string.maxiYatzy),
 
     /** Balut */
     BALUT(R.string.balut),

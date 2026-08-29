@@ -4,7 +4,8 @@
 
     <!-- Game types -->
     <string name="yahtzeeTitle">Yahtzee</string>
-    <string name="maxiYatzyTitle">Maxi Yatzy</string>
+    <string name="yatzy">Yatzy</string>
+    <string name="maxiYatzy">Maxi Yatzy</string>
     <string name="balut">Balut</string>
     <string name="liarsDice">Liar\'s Dice</string>
     <string name="rollADice">Roll-a-dice</string>
@@ -57,7 +58,6 @@
     <string name="tower">Tower</string>
     <string name="chance">Chance</string>
     <string name="yahtzee">Yahtzee</string>
-    <string name="maxiYatzy">Maxi Yatzy</string>
     <string name="upperTotal">Upper Total</string>
     <string name="bonus">Bonus</string>
     <string name="totalScore">Total Score</string>
@@ -156,6 +156,7 @@
     <string name="gotBonus">Got bonus</string>
     <string name="gotYahtzee">Got Yahtzee</string>
     <string name="gotYatzy">Got Yatzy</string>
+    <string name="gotMaxiYatzy">Got Maxi Yatzy</string>
     <string name="gotBalut">Got Balut</string>
     <string name="gotCrag">Got Crag</string>
     <string name="gamesWon">Games won</string>

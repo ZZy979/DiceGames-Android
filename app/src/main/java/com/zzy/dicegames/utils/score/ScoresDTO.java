@@ -7,6 +7,7 @@ import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.data.entity.pig.PigScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
+import com.zzy.dicegames.data.entity.yatzy.YatzyScore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 /** 导入/导出得分数据的中间结果 */
 public class ScoresDTO {
     public List<YahtzeeScore> yahtzeeScores;
+    public List<YatzyScore> yatzyScores;
     public List<MaxiYatzyScore> maxiYatzyScores;
     public List<BalutScore> balutScores;
     public List<LiarsDiceScore> liarsDiceScores;
@@ -23,11 +25,12 @@ public class ScoresDTO {
 
     public ScoresDTO() {
         this(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-                new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public ScoresDTO(
             List<YahtzeeScore> yahtzeeScores,
+            List<YatzyScore> yatzyScores,
             List<MaxiYatzyScore> maxiYatzyScores,
             List<BalutScore> balutScores,
             List<LiarsDiceScore> liarsDiceScores,
@@ -35,6 +38,7 @@ public class ScoresDTO {
             List<PigScore> pigScores,
             List<CragScore> cragScores) {
         this.yahtzeeScores = yahtzeeScores;
+        this.yatzyScores = yatzyScores;
         this.maxiYatzyScores = maxiYatzyScores;
         this.balutScores = balutScores;
         this.liarsDiceScores = liarsDiceScores;

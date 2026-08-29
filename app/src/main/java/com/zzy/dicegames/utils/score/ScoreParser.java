@@ -9,6 +9,7 @@ import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.data.entity.pig.PigScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
+import com.zzy.dicegames.data.entity.yatzy.YatzyScore;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -41,6 +42,7 @@ public class ScoreParser {
             if (eventType == XmlPullParser.START_TAG) {
                 switch (parser.getName()) {
                     case "YahtzeeScore" -> parseYahtzeeScores();
+                    case "YatzyScore" -> parseYatzyScores();
                     case "MaxiYatzyScore" -> parseMaxiYatzyScores();
                     case "BalutScore" -> parseBalutScores();
                     case "FarkleScore" -> parseFarkleScores();
@@ -61,6 +63,14 @@ public class ScoreParser {
         boolean hasBonus = Boolean.parseBoolean(parser.getAttributeValue(null, "has_bonus"));
         boolean hasYahtzee = Boolean.parseBoolean(parser.getAttributeValue(null, "has_yahtzee"));
         scoresDTO.yahtzeeScores.add(new YahtzeeScore(date, score, hasBonus, hasYahtzee));
+    }
+
+    private void parseYatzyScores() {
+        String date = parser.getAttributeValue(null, "date");
+        int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
+        boolean hasBonus = Boolean.parseBoolean(parser.getAttributeValue(null, "has_bonus"));
+        boolean hasYatzy = Boolean.parseBoolean(parser.getAttributeValue(null, "has_yatzy"));
+        scoresDTO.yatzyScores.add(new YatzyScore(date, score, hasBonus, hasYatzy));
     }
 
     private void parseMaxiYatzyScores() {

@@ -9,6 +9,7 @@ import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
 import com.zzy.dicegames.data.entity.pig.PigScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
 import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
+import com.zzy.dicegames.data.entity.yatzy.YatzyScore;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -37,6 +38,7 @@ public class ScoreUtil {
         var parser = new ScoreParser(inputStream);
         ScoresDTO result = parser.parse();
         scoreDatabase.yahtzeeScoreDao().insertAll(result.yahtzeeScores);
+        scoreDatabase.yatzyScoreDao().insertAll(result.yatzyScores);
         scoreDatabase.maxiYatzyScoreDao().insertAll(result.maxiYatzyScores);
         scoreDatabase.balutScoreDao().insertAll(result.balutScores);
         scoreDatabase.farkleScoreDao().insertAll(result.farkleScores);
@@ -54,6 +56,7 @@ public class ScoreUtil {
     public static void exportScores(OutputStream outputStream) throws IOException {
         var scoresDTO = new ScoresDTO(
                  scoreDatabase.yahtzeeScoreDao().findAll(),
+                 scoreDatabase.yatzyScoreDao().findAll(),
                  scoreDatabase.maxiYatzyScoreDao().findAll(),
                  scoreDatabase.balutScoreDao().findAll(),
                  scoreDatabase.liarsDiceScoreDao().findAll(),
@@ -71,6 +74,10 @@ public class ScoreUtil {
 
     public static boolean isEqual(YahtzeeScore a, YahtzeeScore b) {
         return isEqual((BaseScore) a, b) && a.hasBonus == b.hasBonus && a.hasYahtzee == b.hasYahtzee;
+    }
+
+    public static boolean isEqual(YatzyScore a, YatzyScore b) {
+        return isEqual((BaseScore) a, b) && a.hasBonus == b.hasBonus && a.hasYatzy == b.hasYatzy;
     }
 
     public static boolean isEqual(MaxiYatzyScore a, MaxiYatzyScore b) {

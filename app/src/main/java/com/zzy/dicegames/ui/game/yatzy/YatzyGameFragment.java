@@ -13,35 +13,32 @@ import com.zzy.dicegames.ui.game.yahtzee.BaseYahtzeeGameViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 /**
- * Maxi Yatzy游戏Fragment
- *
- * @author 赵正阳
+ * Yatzy游戏Fragment、
  */
-public class MaxiYatzyGameFragment extends BaseYahtzeeGameFragment {
+public class YatzyGameFragment extends BaseYahtzeeGameFragment {
     @Override
     public GameType getGameType() {
-        return GameType.MAXI_YATZY;
+        return GameType.YATZY;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_maxi_yatzy_game, container, false);
+        return inflater.inflate(R.layout.fragment_yatzy_game, container, false);
     }
 
     @Override
     protected BaseYahtzeeGameViewModel createViewModel() {
-        return new ViewModelProvider(this).get(MaxiYatzyGameViewModel.class);
+        return new ViewModelProvider(this).get(YatzyGameViewModel.class);
     }
 
     @Override
     protected int[] getScoreTextViewIds() {
         return new int[] {
                 R.id.tvOnes, R.id.tvTwos, R.id.tvThrees, R.id.tvFours, R.id.tvFives, R.id.tvSixes,
-                R.id.tvOnePair, R.id.tvTwoPairs, R.id.tvThreePairs,
-                R.id.tvThreeOfAKind, R.id.tvFourOfAKind, R.id.tvFiveOfAKind,
-                R.id.tvSmallStraight, R.id.tvLargeStraight, R.id.tvFullStraight,
-                R.id.tvFullHouse, R.id.tvCastle, R.id.tvTower,
-                R.id.tvChance, R.id.tvYatzy
+                R.id.tvOnePair, R.id.tvTwoPairs,
+                R.id.tvThreeOfAKind, R.id.tvFourOfAKind,
+                R.id.tvSmallStraight, R.id.tvLargeStraight,
+                R.id.tvFullHouse, R.id.tvChance, R.id.tvYatzy
         };
     }
 

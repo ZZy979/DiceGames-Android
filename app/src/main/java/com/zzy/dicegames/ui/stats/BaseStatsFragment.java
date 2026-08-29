@@ -52,6 +52,7 @@ public abstract class BaseStatsFragment extends Fragment {
     public static BaseStatsFragment createByGameType(GameType gameType) {
         return switch (gameType) {
             case YAHTZEE -> new YahtzeeStatsFragment();
+            case YATZY -> new YatzyStatsFragment();
             case MAXI_YATZY -> new MaxiYatzyStatsFragment();
             case BALUT -> new BalutStatsFragment();
             case LIARS_DICE -> new LiarsDiceStatsFragment();

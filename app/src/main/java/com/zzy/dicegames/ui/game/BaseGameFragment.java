@@ -19,6 +19,7 @@ import com.zzy.dicegames.ui.game.pig.PigGameFragment;
 import com.zzy.dicegames.ui.game.rolladice.RollADiceGameFragment;
 import com.zzy.dicegames.ui.game.yahtzee.YahtzeeGameFragment;
 import com.zzy.dicegames.ui.game.yatzy.MaxiYatzyGameFragment;
+import com.zzy.dicegames.ui.game.yatzy.YatzyGameFragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
@@ -50,6 +51,7 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     public static BaseGameFragment<?> createByGameType(GameType gameType) {
         return switch (gameType) {
             case YAHTZEE -> new YahtzeeGameFragment();
+            case YATZY -> new YatzyGameFragment();
             case MAXI_YATZY -> new MaxiYatzyGameFragment();
             case BALUT -> new BalutGameFragment();
             case LIARS_DICE -> new LiarsDiceGameFragment();

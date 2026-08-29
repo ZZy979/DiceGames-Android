@@ -31,6 +31,7 @@ public class ScoreSerializer {
         serializer.startTag(null, "scores");
 
         serializeYahtzeeScores();
+        serializeYatzyScores();
         serializeMaxiYatzyScores();
         serializeBalutScores();
         serializeLiarsDiceScores();
@@ -53,6 +54,18 @@ public class ScoreSerializer {
                     .endTag(null, "YahtzeeScore");
         }
         serializer.endTag(null, "YahtzeeScores");
+    }
+
+    private void serializeYatzyScores() throws IOException {
+        serializer.startTag(null, "YatzyScores");
+        for (var score : scoresDTO.yatzyScores)
+            serializer.startTag(null, "YatzyScore")
+                    .attribute(null, "date", score.date)
+                    .attribute(null, "score", Integer.toString(score.score))
+                    .attribute(null, "has_bonus", Boolean.toString(score.hasBonus))
+                    .attribute(null, "has_yatzy", Boolean.toString(score.hasYatzy))
+                    .endTag(null, "YatzyScore");
+        serializer.endTag(null, "YatzyScores");
     }
 
     private void serializeMaxiYatzyScores() throws IOException {

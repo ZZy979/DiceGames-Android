@@ -1,13 +1,5 @@
 package com.zzy.dicegames.utils.score;
 
-import com.zzy.dicegames.data.entity.balut.BalutScore;
-import com.zzy.dicegames.data.entity.crag.CragScore;
-import com.zzy.dicegames.data.entity.farkle.FarkleScore;
-import com.zzy.dicegames.data.entity.liarsdice.LiarsDiceScore;
-import com.zzy.dicegames.data.entity.pig.PigScore;
-import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
-import com.zzy.dicegames.data.entity.yatzy.MaxiYatzyScore;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -15,49 +7,18 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
+import static com.zzy.dicegames.utils.score.TestData.*;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
 public class ScoreParserTest {
     @Test
     public void testParseSuccess() throws Exception {
-        String input = """
-                <?xml version='1.0' encoding='utf-8' standalone='yes' ?><scores><YahtzeeScores>
-                <YahtzeeScore date="2026-01-01" score="370" has_bonus="true" has_yahtzee="true" />
-                <YahtzeeScore date="2026-01-02" score="270" has_bonus="false" has_yahtzee="false" />
-                </YahtzeeScores><MaxiYatzyScores>
-                <MaxiYatzyScore date="2026-02-01" score="470" has_bonus="true" has_yahtzee="false" />
-                </MaxiYatzyScores><BalutScores>
-                <BalutScore date="2026-03-01" score="400" points="10" num_balut="1" />
-                </BalutScores><LiarsDiceScores>
-                <LiarsDiceScore date="2026-05-01" score="0" num_players="2" wins="5" losses="5" />
-                </LiarsDiceScores><FarkleScores>
-                <FarkleScore date="2026-04-01" score="10000" computer_score="9000" />
-                </FarkleScores><PigScores>
-                <PigScore date="2026-06-01" score="100" computer_score="85" />
-                </PigScores><CragScores>
-                <CragScore date="2026-07-01" score="180" has_crag="true" />
-                </CragScores></scores>
-                """.replace("\n", "");
-
-        var yahtzeeScores = List.of(
-                new YahtzeeScore("2026-01-01", 370, true, true),
-                new YahtzeeScore("2026-01-02", 270, false, false)
-        );
-        var maxiYatzyScores = List.of(new MaxiYatzyScore("2026-02-01", 470, true, false));
-        var balutScores = List.of(new BalutScore("2026-03-01", 400, 10, 1));
-        var farkleScores = List.of(new FarkleScore("2026-04-01", 10000, 9000));
-        var liarsDiceScores = List.of(new LiarsDiceScore("2026-05-01", 2, 5, 5));
-        var pigScores = List.of(new PigScore("2026-06-01", 100, 85));
-        var cragScores = List.of(new CragScore("2026-07-01", 180, true));
-        var expected = new ScoresDTO(yahtzeeScores, maxiYatzyScores, balutScores, liarsDiceScores, farkleScores, pigScores, cragScores);
-
-        try (var inputStream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8))) {
+        try (var inputStream = new ByteArrayInputStream(xmlString.getBytes(StandardCharsets.UTF_8))) {
             var parser = new ScoreParser(inputStream);
             ScoresDTO actual = parser.parse();
-            compareScoresDTO(expected, actual);
+            compareScoresDTO(scoresDTO, actual);
         }
     }
 
@@ -72,11 +33,16 @@ public class ScoreParserTest {
 
     @Test
     public void testParseEmptyData() throws Exception {
-        var expected = new ScoresDTO();
+        try (var inputStream = new ByteArrayInputStream(emptyXmlString.getBytes(StandardCharsets.UTF_8))) {
+            var parser = new ScoreParser(inputStream);
+            ScoresDTO actual = parser.parse();
+            compareScoresDTO(emptyScoresDTO, actual);
+        }
+
         try (var inputStream = new ByteArrayInputStream(new byte[0])) {
             var parser = new ScoreParser(inputStream);
             ScoresDTO actual = parser.parse();
-            compareScoresDTO(expected, actual);
+            compareScoresDTO(emptyScoresDTO, actual);
         }
     }
 
@@ -84,6 +50,10 @@ public class ScoreParserTest {
         assertEquals(a.yahtzeeScores.size(), b.yahtzeeScores.size());
         for (int i = 0; i < a.yahtzeeScores.size(); i++)
             assertTrue(ScoreUtil.isEqual(a.yahtzeeScores.get(i), b.yahtzeeScores.get(i)));
+
+        assertEquals(a.yatzyScores.size(), b.yatzyScores.size());
+        for (int i = 0; i < a.yatzyScores.size(); i++)
+            assertTrue(ScoreUtil.isEqual(a.yatzyScores.get(i), b.yatzyScores.get(i)));
 
         assertEquals(a.maxiYatzyScores.size(), b.maxiYatzyScores.size());
         for (int i = 0; i < a.maxiYatzyScores.size(); i++)

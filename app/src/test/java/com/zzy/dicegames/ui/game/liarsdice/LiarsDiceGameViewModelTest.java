@@ -61,7 +61,7 @@ public class LiarsDiceGameViewModelTest {
         assertEquals(3, gameLog.size());
         assertEquals(R.string.logGameBegins, gameLog.get(0).first.intValue());
         assertEquals(R.string.logRoundBegins, gameLog.get(1).first.intValue());
-        assertEquals(R.string.logPlayerTurn, gameLog.get(2).first.intValue());
+        assertEquals(R.string.logYourTurn, gameLog.get(2).first.intValue());
     }
 
     @Test

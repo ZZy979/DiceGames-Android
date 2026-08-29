@@ -1,7 +1,8 @@
 # 安卓骰子游戏
 ## 玩法
-* [快艇骰子](https://en.wikipedia.org/wiki/Yahtzee)
-* [超级快艇骰子](https://en.wikipedia.org/wiki/Yatzy#Maxi_Yatzy)
+* [快艇骰子(Yahtzee)](https://en.wikipedia.org/wiki/Yahtzee)
+* [Yatzy](https://en.wikipedia.org/wiki/Yatzy)
+* [Maxi Yatzy](https://en.wikipedia.org/wiki/Yatzy#Maxi_Yatzy)
 * [Balut](https://www.balut.org/rules.html)
 * [大话骰](https://en.wikipedia.org/wiki/Liar's_dice)
 * 掷骰子
@@ -13,7 +14,10 @@
 ### 快艇骰子
 <img src="screenshots/Yahtzee.jpg" width="300" alt="Yahtzee" />
 
-### 超级快艇骰子
+### Yatzy
+<img src="screenshots/Yatzy.jpg" width="300" alt="Yatzy" />
+
+### Maxi Yatzy
 <img src="screenshots/Maxi%20Yatzy.jpg" width="300" alt="Maxi Yatzy" />
 
 ### Balut
@@ -30,3 +34,6 @@
 
 ### Pig
 <img src="screenshots/Pig.jpg" width="300" alt="Pig" />
+
+### Crag
+<img src="screenshots/Crag.jpg" width="300" alt="Pig" />
