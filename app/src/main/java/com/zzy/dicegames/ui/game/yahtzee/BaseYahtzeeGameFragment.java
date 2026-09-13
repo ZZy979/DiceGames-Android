@@ -53,6 +53,7 @@ public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtz
     @Override
     protected void setupObservers(LifecycleOwner owner) {
         super.setupObservers(owner);
+        mViewModel.getClickable().observe(owner, this::onClickableChanged);
         mViewModel.getScores().observe(owner, this::onScoresChanged);
         mViewModel.getSelected().observe(owner, this::onSelectedChanged);
         mViewModel.getUpperTotalScore().observe(owner, this::onUpperTotalScoreChanged);
@@ -60,10 +61,15 @@ public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtz
         mViewModel.getTotalScore().observe(owner, this::onTotalScoreChanged);
     }
 
-    @Override
-    protected void onDiceRolledChanged(boolean rolled) {
-        super.onDiceRolledChanged(rolled);
-        updateScorecard();
+    /** 得分项可点击状态更新时的回调 */
+    protected void onClickableChanged(boolean clickable) {
+        int[] scores = mViewModel.getScores().getValue();
+        boolean[] selected = mViewModel.getSelected().getValue();
+        if (scores == null || selected == null)
+            return;
+
+        onScoresChanged(scores);
+        onSelectedChanged(selected);
     }
 
     /** 得分项的得分更新时的回调 */
@@ -72,34 +78,20 @@ public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtz
         if (selected == null)
             return;
 
-        for (int i = 0; i < scores.length; i++) {
-            if (mRolled || selected[i])
-                mScoreTextViews[i].setText(Integer.toString(scores[i]));
-            else
-                mScoreTextViews[i].setText("");
-        }
+        for (int i = 0; i < scores.length; i++)
+            mScoreTextViews[i].setText(selected[i] || mViewModel.isClickable() ? Integer.toString(scores[i]) : "");
     }
 
     /** 得分项选择状态更新时的回调 */
     protected void onSelectedChanged(boolean[] selected) {
         for (int i = 0; i < selected.length; i++) {
-            boolean candidate = mRolled && !selected[i];
+            boolean candidate = !selected[i] && mViewModel.isClickable();
             mScoreTextViews[i].setEnabled(candidate);
             mScoreTextViews[i].setTextColor(getResources().getColor(
                     candidate ? R.color.scorecard_text_candidate : R.color.scorecard_text, null));
             mScoreTextViews[i].setBackgroundColor(getResources().getColor(
                     candidate ? R.color.scorecard_background_candidate : R.color.scorecard_background, null));
         }
-    }
-
-    protected void updateScorecard() {
-        int[] scores = mViewModel.getScores().getValue();
-        boolean[] selected = mViewModel.getSelected().getValue();
-        if (scores == null || selected == null)
-            return;
-
-        onScoresChanged(scores);
-        onSelectedChanged(selected);
     }
 
     /** 上区总分更新时的回调 */

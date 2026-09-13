@@ -87,8 +87,7 @@ public class FarkleGameViewModelTest {
 
     @Test
     public void testToggleLocked() {
-        viewModel.beforeRollDice();
-        viewModel.updateDiceNumbers(2, 3, 3, 3, 5, 6);
+        viewModel.rollDice(2, 3, 3, 3, 5, 6);
         assertArrayEquals(new boolean[NUM_DICE], viewModel.getDiceLocked().getValue());
         assertEquals(0, viewModel.getEstimatedTurnScore().getValue().intValue());
 
@@ -155,20 +154,17 @@ public class FarkleGameViewModelTest {
     @Test
     public void testUpdateDiceNumbers_Farkle() {
         doNothing().when(spyViewModel).farkle();
-        spyViewModel.beforeRollDice();
-        spyViewModel.updateDiceNumbers(4, 2, 4, 3, 2, 6);
+        spyViewModel.rollDice(4, 2, 4, 3, 2, 6);
         verify(spyViewModel).farkle();
 
         spyViewModel = spy(new FarkleGameViewModel());
         doNothing().when(spyViewModel).farkle();
-        spyViewModel.beforeRollDice();
-        spyViewModel.updateDiceNumbers(3, 2, 5, 1, 3, 6);
+        spyViewModel.rollDice(3, 2, 5, 1, 3, 6);
         verify(spyViewModel, never()).farkle();
 
         spyViewModel.toggleLocked(2);
         spyViewModel.toggleLocked(3);
-        spyViewModel.beforeRollDice();
-        spyViewModel.updateDiceNumbers(6, 6, 5, 1, 4, 3);
+        spyViewModel.rollDice(6, 6, 5, 1, 4, 3);
         verify(spyViewModel).farkle();
     }
 
@@ -176,50 +172,43 @@ public class FarkleGameViewModelTest {
     public void testUpdateDiceNumbers_Win() {
         doNothing().when(spyViewModel).win(anyInt());
         spyViewModel.addCurrentPlayerScore(9800);
-        spyViewModel.beforeRollDice();
-        spyViewModel.updateDiceNumbers(5, 4, 4, 1, 2, 6);
+        spyViewModel.rollDice(5, 4, 4, 1, 2, 6);
         spyViewModel.toggleLocked(0);
         spyViewModel.toggleLocked(3);
         assertEquals(150, spyViewModel.getEstimatedTurnScore().getValue().intValue());
         verify(spyViewModel, never()).win(anyInt());
 
-        spyViewModel.beforeRollDice();
-        spyViewModel.updateDiceNumbers(5, 1, 3, 1, 6, 6);
+        spyViewModel.rollDice(5, 1, 3, 1, 6, 6);
         verify(spyViewModel).win(100);
     }
 
     @Test
     public void testUpdateDiceNumbers_HotDice() {
         doNothing().when(spyViewModel).hotDice(anyInt());
-        spyViewModel.beforeRollDice();
-        spyViewModel.updateDiceNumbers(1, 1, 2, 2, 2, 5);
+        spyViewModel.rollDice(1, 1, 2, 2, 2, 5);
         verify(spyViewModel).hotDice(450);
 
         spyViewModel = spy(new FarkleGameViewModel());
         doNothing().when(spyViewModel).hotDice(anyInt());
-        spyViewModel.beforeRollDice();
-        spyViewModel.updateDiceNumbers(3, 3, 3, 5, 6, 6);
+        spyViewModel.rollDice(3, 3, 3, 5, 6, 6);
         verify(spyViewModel, never()).hotDice(anyInt());
 
         for (int i = 0; i < 4; i++)
             spyViewModel.toggleLocked(i);
-        spyViewModel.beforeRollDice();
-        spyViewModel.updateDiceNumbers(3, 3, 3, 5, 1, 1);
+        spyViewModel.rollDice(3, 3, 3, 5, 1, 1);
         verify(spyViewModel).hotDice(200);
     }
 
     @Test
     public void testUpdateDiceNumbers_Human() {
-        viewModel.beforeRollDice();
-        viewModel.updateDiceNumbers(1, 1, 2, 3, 5, 6);
+        viewModel.rollDice(1, 1, 2, 3, 5, 6);
         assertTrue(viewModel.getBankButtonEnabled().getValue());
     }
 
     @Test
     public void testUpdateDiceNumbers_Computer() {
         viewModel.nextPlayer();
-        viewModel.beforeRollDice();
-        viewModel.updateDiceNumbers(2, 3, 3, 3, 4, 6);
+        viewModel.rollDice(2, 3, 3, 3, 4, 6);
         assertFalse(viewModel.getBankButtonEnabled().getValue());
         verify(mockHandler, times(2)).postDelayed(any(), anyLong());
     }
@@ -302,7 +291,6 @@ public class FarkleGameViewModelTest {
 
     @Test
     public void testFarkle() {
-        viewModel.beforeRollDice();
         viewModel.farkle();
         var gameLog = viewModel.getGameLog().getValue();
         assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logFarkle);
@@ -315,7 +303,6 @@ public class FarkleGameViewModelTest {
     public void testWin() {
         doNothing().when(spyViewModel).gameOver();
         spyViewModel.addCurrentPlayerScore(9900);
-        spyViewModel.beforeRollDice();
         spyViewModel.win(600);
         var gameLog = spyViewModel.getGameLog().getValue();
         assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logYouWin);
@@ -326,7 +313,6 @@ public class FarkleGameViewModelTest {
 
     @Test
     public void testHotDice() {
-        viewModel.beforeRollDice();
         viewModel.hotDice(1500);
         var gameLog = viewModel.getGameLog().getValue();
         assertGameLogEquals(gameLog.get(gameLog.size() - 1), R.string.logHotDice, 1500);
@@ -340,7 +326,6 @@ public class FarkleGameViewModelTest {
     @Test
     public void testHotDice_Computer() {
         viewModel.nextPlayer();
-        viewModel.beforeRollDice();
         viewModel.hotDice(750);
         assertFalse(viewModel.getRollButtonEnabled().getValue());
         verify(mockHandler, times(2)).postDelayed(any(), anyLong());
@@ -349,8 +334,7 @@ public class FarkleGameViewModelTest {
     @Test
     public void testBank() {
         doNothing().when(spyViewModel).nextPlayer();
-        spyViewModel.beforeRollDice();
-        spyViewModel.updateDiceNumbers(1, 3, 4, 6, 6, 6);
+        spyViewModel.rollDice(1, 3, 4, 6, 6, 6);
         spyViewModel.bank();
         assertEquals(700, spyViewModel.getCurrentPlayerScore());
         var gameLog = viewModel.getGameLog().getValue();
@@ -412,17 +396,12 @@ public class FarkleGameViewModelTest {
 
     @Test
     public void testResetDiceWindow() {
-        viewModel.beforeRollDice();
-        viewModel.updateDiceNumbers(1, 3, 3, 3, 4, 5);
-        viewModel.toggleLocked(0);
-
-        assertTrue(viewModel.getDiceLocked().getValue()[0]);
-        assertTrue(viewModel.getDiceEnabled().getValue()[0]);
-
         viewModel.resetDiceWindow();
-        assertFalse(viewModel.getDiceLocked().getValue()[0]);
-        assertFalse(viewModel.getDiceEnabled().getValue()[0]);
+        assertEquals(viewModel.getMaxRolls(), viewModel.getRemainingRolls().getValue().intValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
+        assertFalse(viewModel.getBankButtonEnabled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceLocked().getValue(), false));
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
     }
 
     @Test

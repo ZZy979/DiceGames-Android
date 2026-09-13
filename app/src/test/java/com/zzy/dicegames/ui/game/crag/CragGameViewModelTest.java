@@ -131,7 +131,7 @@ public class CragGameViewModelTest {
     public void testCreateScoreEntity() {
         doNothing().when(spyViewModel).gameOver();
         for (int i = 0; i < viewModel.getNumCategories(); i++) {
-            spyViewModel.updateDiceNumbers(4, 4, 5);
+            spyViewModel.rollDice(4, 4, 5);
             spyViewModel.select(i);
         }
         var score = spyViewModel.createScoreEntity();

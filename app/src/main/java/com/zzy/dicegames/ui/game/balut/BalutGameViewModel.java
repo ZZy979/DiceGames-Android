@@ -21,6 +21,9 @@ public class BalutGameViewModel extends BaseGameViewModel {
     /** 每个得分项可选择的最大次数 */
     public static final int MAX_SELECTIONS = 4;
 
+    /** 得分项是否可点击 */
+    private final MutableLiveData<Boolean> clickable = new MutableLiveData<>(false);
+
     /** 每个得分项的得分（未选择的为预估得分） */
     private final MutableLiveData<int[][]> scores = new MutableLiveData<>(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
 
@@ -48,6 +51,14 @@ public class BalutGameViewModel extends BaseGameViewModel {
     public BalutGameViewModel() {
         super(5, 3);
         disableAllDice();
+    }
+
+    public LiveData<Boolean> getClickable() {
+        return clickable;
+    }
+
+    public boolean isClickable() {
+        return Boolean.TRUE.equals(clickable.getValue());
     }
 
     public LiveData<int[][]> getScores() {
@@ -144,6 +155,12 @@ public class BalutGameViewModel extends BaseGameViewModel {
     private boolean isBalut() {
         int[] numbers = diceNumbers.getValue();
         return numbers != null && ArrayUtil.all(numbers, numbers[0]);
+    }
+
+    @Override
+    protected void updateDiceWindowEnabled() {
+        super.updateDiceWindowEnabled();
+        clickable.setValue(!diceRolling && hasRolled());
     }
 
     /** 选择指定的得分项，更新得分 */
@@ -255,6 +272,7 @@ public class BalutGameViewModel extends BaseGameViewModel {
 
     @Override
     public void reset() {
+        clickable.setValue(false);
         scores.setValue(new int[NUM_CATEGORIES][MAX_SELECTIONS]);
         selectCount.setValue(new int[NUM_CATEGORIES]);
         numSelected = 0;

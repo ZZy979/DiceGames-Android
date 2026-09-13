@@ -95,18 +95,6 @@ public class PigGameViewModel extends BaseGameViewModel {
     }
 
     @Override
-    public void rollDice() {
-        rollButtonEnabled.setValue(false);
-        super.rollDice();
-    }
-
-    @Override
-    public void rollDiceWithAnimation() {
-        rollButtonEnabled.setValue(false);
-        super.rollDiceWithAnimation();
-    }
-
-    @Override
     public void updateDiceNumbers(int... numbers) {
         super.updateDiceNumbers(numbers);
 
@@ -120,20 +108,15 @@ public class PigGameViewModel extends BaseGameViewModel {
             turnScore.setValue(currentTurnScore + value);
             if (getCurrentPlayerScore() + currentTurnScore + value >= WINNING_SCORE)
                 win();
-            else if (isComputerTurn()) {
-                holdButtonEnabled.setValue(false);
+            else if (isComputerTurn())
                 handler.postDelayed(this::computerTurn, DELAY);
-            }
-            else {
-                holdButtonEnabled.setValue(true);
-                rollButtonEnabled.setValue(true);
-            }
         }
     }
 
     /** 掷出1点，失去本轮得分 */
     protected void pig() {
         turnScore.setValue(0);
+        rollButtonEnabled.setValue(false);
         holdButtonEnabled.setValue(false);
         handler.postDelayed(this::nextPlayer, DELAY);
     }
@@ -159,7 +142,7 @@ public class PigGameViewModel extends BaseGameViewModel {
     /**
      * 电脑玩家是否应继续掷骰子<br>
      * “Keep Pace and End Race”策略：若任一方得分 >= 71
-     * 或本轮得分未 <= 21 + round((对手得分 - 自己得分) / 8) 则继续掷骰子
+     * 或本轮得分 <= 21 + round((对手得分 - 自己得分) / 8) 则继续掷骰子
      */
     protected boolean computerShouldRoll(int opponentScore, int selfScore, int turnTotal) {
         if (selfScore + turnTotal >= WINNING_SCORE)
@@ -182,8 +165,7 @@ public class PigGameViewModel extends BaseGameViewModel {
 
         currentPlayer.setValue((player + 1) % NUM_PLAYERS);
         turnScore.setValue(0);
-        holdButtonEnabled.setValue(false);
-        rollButtonEnabled.setValue(isHumanTurn());
+        resetDiceWindow();
 
         if (isComputerTurn())
             handler.postDelayed(this::rollDiceWithAnimation, DELAY);
@@ -213,9 +195,10 @@ public class PigGameViewModel extends BaseGameViewModel {
     }
 
     @Override
-    public void resetDiceWindow() {
-        super.resetDiceWindow();
-        rollButtonEnabled.setValue(isHumanTurn());
+    protected void updateDiceWindowEnabled() {
+        boolean isHuman = isHumanTurn();
+        rollButtonEnabled.setValue(isHuman && !diceRolling);
+        holdButtonEnabled.setValue(isHuman && !diceRolling && hasRolled());
     }
 
     @Override
@@ -224,7 +207,6 @@ public class PigGameViewModel extends BaseGameViewModel {
         super.reset();
         playerScores.setValue(new int[NUM_PLAYERS]);
         turnScore.setValue(0);
-        holdButtonEnabled.setValue(false);
         newGameButtonVisible.setValue(false);
     }
 }

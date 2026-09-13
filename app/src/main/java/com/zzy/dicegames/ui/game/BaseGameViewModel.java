@@ -31,10 +31,10 @@ public class BaseGameViewModel extends ViewModel {
     protected static final long ROLL_DICE_ANIMATION_INTERVAL = 30;
 
     /** 骰子个数 */
-    protected int numDice;
+    protected final int numDice;
 
     /** 最大掷骰子次数 */
-    protected int maxRolls;
+    protected final int maxRolls;
 
     /** 剩余掷骰子次数 */
     protected final MutableLiveData<Integer> remainingRolls = new MutableLiveData<>();
@@ -52,8 +52,8 @@ public class BaseGameViewModel extends ViewModel {
     /** Roll按钮激活状态 */
     protected final MutableLiveData<Boolean> rollButtonEnabled = new MutableLiveData<>(true);
 
-    /** 本回合是否已掷过骰子 */
-    private final MutableLiveData<Boolean> diceRolled = new MutableLiveData<>(false);
+    /** 是否正在掷骰子动画 */
+    protected boolean diceRolling = false;
 
     /** 每个点数的出现次数 */
     protected int[] diceCounts = new int[7];
@@ -118,8 +118,14 @@ public class BaseGameViewModel extends ViewModel {
         return rollButtonEnabled;
     }
 
-    public LiveData<Boolean> getDiceRolled() {
-        return diceRolled;
+    public boolean isDiceRolling() {
+        return diceRolling;
+    }
+
+    /** 本回合是否已掷过骰子 */
+    public boolean hasRolled() {
+        Integer remaining = remainingRolls.getValue();
+        return remaining != null && remaining < maxRolls;
     }
 
     public boolean hasRemainingRolls() {
@@ -127,20 +133,24 @@ public class BaseGameViewModel extends ViewModel {
         return remaining != null && remaining > 0;
     }
 
+    public boolean isUnlimitedRolls() {
+        return maxRolls == UNLIMITED_ROLLS;
+    }
+
     protected void unlockAllDice() {
         diceLocked.setValue(ArrayUtil.fill(diceLocked.getValue(), false));
     }
 
+    protected void setAllDiceEnabled(boolean enabled) {
+        diceEnabled.setValue(ArrayUtil.fill(diceEnabled.getValue(), enabled));
+    }
+
     protected void enableAllDice() {
-        diceEnabled.setValue(ArrayUtil.fill(diceEnabled.getValue(), true));
+        setAllDiceEnabled(true);
     }
 
     protected void disableAllDice() {
-        diceEnabled.setValue(ArrayUtil.fill(diceEnabled.getValue(), false));
-    }
-
-    protected void setRollButtonEnabled(boolean enabled) {
-        rollButtonEnabled.setValue(enabled);
+        setAllDiceEnabled(false);
     }
 
     public void setHandler(Handler handler) {
@@ -182,19 +192,22 @@ public class BaseGameViewModel extends ViewModel {
     /** 掷未锁定的骰子，更新骰子点数、计算得分的辅助数据和剩余次数 */
     // 无动画效果，可用于单元测试
     public void rollDice() {
+        rollDice(generateRandomDiceNumbers());
+    }
+
+    /** 掷骰子并指定骰子点数，用于单元测试 */
+    public void rollDice(int... numbers) {
         if (!hasRemainingRolls())
             return;
-        diceRolled.setValue(true);
         decreaseRemainingRolls();
-        int[] numbers = generateRandomDiceNumbers();
         updateDiceNumbers(numbers);
     }
 
     /** 掷骰子（带动画效果） */
     public void rollDiceWithAnimation() {
-        if (!hasRemainingRolls())
+        if (diceRolling || !hasRemainingRolls())
             return;
-        diceRolled.setValue(true);
+        setDiceRolling(true);
         decreaseRemainingRolls();
         rollDiceAnimation(0);
     }
@@ -207,6 +220,8 @@ public class BaseGameViewModel extends ViewModel {
             handler.postDelayed(() -> rollDiceAnimation(frame + 1), ROLL_DICE_ANIMATION_INTERVAL);
         }
         else {
+            // 动画结束
+            setDiceRolling(false);
             updateDiceNumbers(numbers);
         }
     }
@@ -227,27 +242,52 @@ public class BaseGameViewModel extends ViewModel {
         }
     }
 
-    /** 剩余掷骰子次数减1（除非无限次数） */
+    /**
+     * 根据剩余次数和动画状态更新掷骰子窗口的状态
+     * 由“是否正在掷骰子”和“剩余掷骰子次数”决定的子类状态应该在此方法中更新
+     *
+     * 组件可点击状态变化逻辑：
+     * | 动作 | remainingRolls | diceRolling | 骰子可点击 | Roll按钮可点击 | 得分项可点击 |
+     * | --- | --- | --- | --- | --- | --- |
+     * | ①回合开始 | maxRolls | false | × | √ | × |
+     * | ②点击Roll按钮，掷骰子动画过程 | > 0, < maxRolls | true | × | × | × |
+     * | ③动画结束 | > 0, < maxRolls | false | √ | √ | √ |
+     * | ④最后一次点击Roll按钮，掷骰子动画过程 | 0 | true | × | × | × |
+     * | ⑤动画结束，掷骰子机会用完 | 0 | false | × | × | √ |
+     * | ⑥选择得分项，恢复到①状态 | maxRolls | false | × | √ | × |
+     *
+     * 总结：
+     * 骰子可点击：!diceRolling && remainingRolls > 0 && remainingRolls < maxRolls
+     * Roll按钮可点击：!diceRolling && remainingRolls > 0
+     * 得分项可点击：!diceRolling && remainingRolls < maxRolls
+     */
+    protected void updateDiceWindowEnabled() {
+        rollButtonEnabled.setValue(!diceRolling && hasRemainingRolls());
+        setAllDiceEnabled(!diceRolling && hasRemainingRolls() && hasRolled());
+    }
+
+    /** 设置掷骰子动画状态，并更新骰子与Roll按钮的可点击状态 */
+    protected void setDiceRolling(boolean rolling) {
+        diceRolling = rolling;
+        updateDiceWindowEnabled();
+    }
+
+    /** 剩余掷骰子次数减1 */
     protected void decreaseRemainingRolls() {
         Integer remaining = remainingRolls.getValue();
-        if (remaining == null || remaining <= 0 || remaining == UNLIMITED_ROLLS)
+        if (remaining == null || remaining <= 0)
             return;
 
         remaining--;
         remainingRolls.setValue(remaining);
-
-        boolean hasRemaining = remaining > 0;
-        rollButtonEnabled.setValue(hasRemaining);
-        diceEnabled.setValue(ArrayUtil.fill(diceEnabled.getValue(), hasRemaining));
+        updateDiceWindowEnabled();
     }
 
     /** 重置掷骰子次数，解锁骰子 */
     public void resetDiceWindow() {
         remainingRolls.setValue(maxRolls);
         unlockAllDice();
-        disableAllDice();  // 回合开始骰子不可点击，掷骰子后由decreaseRemainingRolls()启用
-        rollButtonEnabled.setValue(true);
-        diceRolled.setValue(false);
+        updateDiceWindowEnabled();
     }
 
     /** 重置游戏状态 */

@@ -53,6 +53,7 @@ public class BalutGameViewModelTest {
     public void testInitialization() {
         assertEquals(5, viewModel.getNumDice());
         assertEquals(3, viewModel.getMaxRolls());
+        assertFalse(viewModel.getClickable().getValue());
         assertArrayEquals(new int[NUM_CATEGORIES][MAX_SELECTIONS], viewModel.getScores().getValue());
         assertArrayEquals(new int[NUM_CATEGORIES], viewModel.getSelectCount().getValue());
         assertEquals(0, viewModel.getNumSelected());
@@ -61,7 +62,8 @@ public class BalutGameViewModelTest {
         assertEquals(0, viewModel.getTotalScore().getValue().intValue());
         assertEquals(0, viewModel.getTotalScorePoints().getValue().intValue());
         assertEquals(0, viewModel.getTotalPoints().getValue().intValue());
-        assertFalse(viewModel.getDiceRolled().getValue());
+        assertFalse(viewModel.hasRolled());
+        assertFalse(viewModel.isDiceRolling());
         assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
     }
@@ -154,7 +156,7 @@ public class BalutGameViewModelTest {
     @Test
     public void testSelect() {
         int six = SIXES.ordinal();
-        viewModel.updateDiceNumbers(1, 4, 5, 6, 6);
+        viewModel.rollDice(1, 4, 5, 6, 6);
         viewModel.select(six);
         assertArrayEquals(new int[] {12, 0, 0, 0}, viewModel.getScores().getValue()[six]);
         assertEquals(1, viewModel.getSelectCount().getValue()[six]);
@@ -166,7 +168,7 @@ public class BalutGameViewModelTest {
 
         int balut = BALUT.ordinal();
         for (int i = 1; i <= 4; i++) {
-            viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
+            viewModel.rollDice(6, 6, 6, 6, 6);
             viewModel.select(balut);
         }
         assertArrayEquals(new int[] {50, 50, 50, 50}, viewModel.getScores().getValue()[balut]);
@@ -178,7 +180,7 @@ public class BalutGameViewModelTest {
         assertEquals(8, viewModel.getTotalPoints().getValue().intValue());
 
         // 已达到最大次数
-        viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
+        viewModel.rollDice(6, 6, 6, 6, 6);
         viewModel.select(balut);
         assertEquals(4, viewModel.getSelectCount().getValue()[balut]);
         assertEquals(1, viewModel.getNumSelected());
@@ -188,29 +190,35 @@ public class BalutGameViewModelTest {
     @Test
     public void testManualRollFlow() {
         // 初始：等待手动掷骰子
-        assertFalse(viewModel.getDiceRolled().getValue());
+        assertEquals(3, viewModel.getRemainingRolls().getValue().intValue());
+        assertFalse(viewModel.hasRolled());
+        assertFalse(viewModel.isClickable());
         assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
-        assertEquals(viewModel.getMaxRolls(), viewModel.getRemainingRolls().getValue().intValue());
 
         // 第一次掷骰子后：骰子可用
         viewModel.rollDice();
-        assertTrue(viewModel.getDiceRolled().getValue());
+        assertEquals(2, viewModel.getRemainingRolls().getValue().intValue());
+        assertTrue(viewModel.hasRolled());
+        assertTrue(viewModel.isClickable());
         assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), true));
+        assertTrue(viewModel.getRollButtonEnabled().getValue());
 
         // 掷满次数后：骰子和Roll按钮不可用
         while (viewModel.getRemainingRolls().getValue() > 0)
             viewModel.rollDice();
+        assertTrue(viewModel.hasRolled());
+        assertTrue(viewModel.isClickable());
         assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertFalse(viewModel.getRollButtonEnabled().getValue());
 
         // 选择得分项后：恢复初始状态
-        viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
         viewModel.select(SIXES.ordinal());
-        assertFalse(viewModel.getDiceRolled().getValue());
+        assertEquals(3, viewModel.getRemainingRolls().getValue().intValue());
+        assertFalse(viewModel.hasRolled());
+        assertFalse(viewModel.isClickable());
         assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
-        assertEquals(viewModel.getMaxRolls(), viewModel.getRemainingRolls().getValue().intValue());
     }
 
     @Test
@@ -230,7 +238,7 @@ public class BalutGameViewModelTest {
         viewModel.getTotalPoints().observeForever(totalPointsObserver);
 
         int balut = BALUT.ordinal();
-        viewModel.updateDiceNumbers(5, 5, 5, 5, 5);
+        viewModel.rollDice(5, 5, 5, 5, 5);
         viewModel.select(balut);
 
         verify(scoresObserver, atLeastOnce()).onChanged(argThat(a -> a[balut][0] == 45));
@@ -280,12 +288,12 @@ public class BalutGameViewModelTest {
     public void testCalculatePointsOnlyForObtainedScore() {
         int fullHouse = FULL_HOUSE.ordinal(), choice = CHOICE.ordinal();
         for (int i = 1; i <= 3; i++) {
-            viewModel.updateDiceNumbers(6, 6, 6, 5, 5);
+            viewModel.rollDice(6, 6, 6, 5, 5);
             viewModel.select(fullHouse);
-            viewModel.updateDiceNumbers(5, 5, 5, 5, 5);
+            viewModel.rollDice(5, 5, 5, 5, 5);
             viewModel.select(choice);
         }
-        viewModel.updateDiceNumbers(6, 6, 5, 5, 5);
+        viewModel.rollDice(6, 6, 5, 5, 5);
         assertArrayEquals(new int[] {28, 28, 28, 27}, viewModel.getScores().getValue()[fullHouse]);  // 最后一个是预估得分
         assertEquals(84, viewModel.getCategoryScores().getValue()[fullHouse]);
         assertEquals(0, viewModel.getCategoryPoints().getValue()[fullHouse]);
@@ -341,7 +349,7 @@ public class BalutGameViewModelTest {
         doNothing().when(spyViewModel).gameOver();
         for (int i = 0; i < NUM_CATEGORIES; i++) {
             for (int j = 0; j < MAX_SELECTIONS; j++) {
-                spyViewModel.updateDiceNumbers(6, 6, 6, 6, 6);
+                spyViewModel.rollDice(6, 6, 6, 6, 6);
                 spyViewModel.select(i);
             }
         }
@@ -355,7 +363,7 @@ public class BalutGameViewModelTest {
     public void testReset() {
         int balut = BALUT.ordinal();
         for (int i = 1; i <= 4; i++) {
-            viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
+            viewModel.rollDice(6, 6, 6, 6, 6);
             viewModel.select(balut);
         }
         assertArrayEquals(new int[] {50, 50, 50, 50}, viewModel.getScores().getValue()[balut]);

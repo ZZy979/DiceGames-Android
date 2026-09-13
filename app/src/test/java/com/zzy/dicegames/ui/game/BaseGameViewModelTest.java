@@ -48,7 +48,8 @@ public class BaseGameViewModelTest {
         assertArrayEquals(ArrayUtil.create(4, false), viewModel.getDiceLocked().getValue());
         assertArrayEquals(ArrayUtil.create(4, true), viewModel.getDiceEnabled().getValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
-        assertFalse(viewModel.getDiceRolled().getValue());
+        assertFalse(viewModel.isDiceRolling());
+        assertFalse(viewModel.hasRolled());
     }
 
     @Test
@@ -112,19 +113,24 @@ public class BaseGameViewModelTest {
         assertEquals(UNLIMITED_ROLLS, viewModel.getRemainingRolls().getValue().intValue());
 
         viewModel.rollDice();
-        assertEquals(UNLIMITED_ROLLS, viewModel.getRemainingRolls().getValue().intValue());
+        assertEquals(UNLIMITED_ROLLS - 1, viewModel.getRemainingRolls().getValue().intValue());
     }
 
     @Test
     public void testRollDiceAnimation() {
-        // 第一帧
+        // 动画开始：动画期间不允许任何操作
         viewModel.rollDiceWithAnimation();
         verify(mockHandler).postDelayed(any(), eq(ROLL_DICE_ANIMATION_INTERVAL));
+        assertTrue(viewModel.isDiceRolling());
+        assertFalse(viewModel.getRollButtonEnabled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
 
-        // 最后一帧
+        // 最后一帧：动画结束，重新根据剩余次数计算可点击状态
         viewModel.rollDiceAnimation(ROLL_DICE_ANIMATION_FRAMES);
+        assertFalse(viewModel.isDiceRolling());
         assertEquals(1, viewModel.getRemainingRolls().getValue().intValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), true));
     }
 
     @Test
@@ -144,32 +150,36 @@ public class BaseGameViewModelTest {
         viewModel.rollDice();
         assertEquals(1, viewModel.getRemainingRolls().getValue().intValue());
         assertTrue(viewModel.getDiceLocked().getValue()[3]);
-        assertArrayEquals(ArrayUtil.create(5, true), viewModel.getDiceEnabled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), true));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
 
         viewModel.rollDice();
         assertEquals(0, viewModel.getRemainingRolls().getValue().intValue());
-        assertArrayEquals(ArrayUtil.create(5, false), viewModel.getDiceEnabled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertFalse(viewModel.getRollButtonEnabled().getValue());
 
         viewModel.resetDiceWindow();
         assertEquals(2, viewModel.getRemainingRolls().getValue().intValue());
-        assertFalse(viewModel.getDiceLocked().getValue()[3]);
-        assertArrayEquals(ArrayUtil.create(5, false), viewModel.getDiceEnabled().getValue());
+        assertTrue(ArrayUtil.all(viewModel.getDiceLocked().getValue(), false));
+        assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
     }
 
     @Test
-    public void testDiceRolled() {
-        assertFalse(viewModel.getDiceRolled().getValue());
+    public void testRolledState() {
+        assertEquals(2, viewModel.getRemainingRolls().getValue().intValue());
+        assertFalse(viewModel.hasRolled());
 
         viewModel.rollDice();
-        assertTrue(viewModel.getDiceRolled().getValue());
+        assertEquals(1, viewModel.getRemainingRolls().getValue().intValue());
+        assertTrue(viewModel.hasRolled());
 
-        viewModel.rollDice();  // 次数用完，diceRolled仍为true
-        assertTrue(viewModel.getDiceRolled().getValue());
+        viewModel.rollDice();  // 次数用完，仍为已掷状态
+        assertEquals(0, viewModel.getRemainingRolls().getValue().intValue());
+        assertTrue(viewModel.hasRolled());
 
         viewModel.resetDiceWindow();
-        assertFalse(viewModel.getDiceRolled().getValue());
+        assertEquals(2, viewModel.getRemainingRolls().getValue().intValue());
+        assertFalse(viewModel.hasRolled());
     }
 }

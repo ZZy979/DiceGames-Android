@@ -137,10 +137,4 @@ public class FarkleGameFragment extends BaseGameFragment<FarkleGameViewModel> {
             mLogView.smoothScrollToPosition(gameLog.size() - 1);
     }
 
-    @Override
-    protected void clickDice(int i) {
-        if (mViewModel.isHumanTurn())
-            mViewModel.toggleLocked(i);
-    }
-
 }

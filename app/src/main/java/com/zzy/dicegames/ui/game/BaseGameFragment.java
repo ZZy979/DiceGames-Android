@@ -24,8 +24,6 @@ import com.zzy.dicegames.ui.game.yatzy.YatzyGameFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
-import static com.zzy.dicegames.ui.game.BaseGameViewModel.*;
-
 /**
  * 游戏Fragment基类
  *
@@ -41,9 +39,6 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
 
     /** Roll按钮 */
     protected Button mRollButton;
-
-    /** 本回合是否已掷过骰子 */
-    protected boolean mRolled;
 
     protected V mViewModel;
 
@@ -110,12 +105,11 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
         mViewModel.getDiceLocked().observe(owner, this::onDiceLockedChanged);
         mViewModel.getDiceEnabled().observe(owner, this::onDiceEnabledChanged);
         mViewModel.getRollButtonEnabled().observe(owner, this::onRollButtonEnabledChanged);
-        mViewModel.getDiceRolled().observe(owner, this::onDiceRolledChanged);
     }
 
     /** 剩余掷骰子次数更新时的回调 */
     protected void onRemainingRollsChanged(int remaining) {
-        if (remaining == UNLIMITED_ROLLS)
+        if (mViewModel.isUnlimitedRolls())
             mRollButton.setText(getString(R.string.roll));
         else
             mRollButton.setText(getString(R.string.rollRemaining, remaining));
@@ -142,11 +136,6 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     /** Roll按钮激活状态更新时的回调 */
     protected void onRollButtonEnabledChanged(boolean enabled) {
         mRollButton.setEnabled(enabled);
-    }
-
-    /** 本回合是否已掷过骰子更新时的回调 */
-    protected void onDiceRolledChanged(boolean rolled) {
-        mRolled = rolled;
     }
 
     /** 点击第i个骰子 */

@@ -12,13 +12,16 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
     public static final int NUM_UPPER_CATEGORIES = 6;
 
     /** 得分项个数 */
-    protected int numCategories;
+    protected final int numCategories;
 
     /** 上区总分达到多少时获得奖励分 */
-    protected int bonusThreshold;
+    protected final int bonusThreshold;
 
     /** 奖励分值 */
-    protected int bonusValue;
+    protected final int bonusValue;
+
+    /** 得分项是否可点击 */
+    protected final MutableLiveData<Boolean> clickable = new MutableLiveData<>(false);
 
     /** 每个得分项的得分（未选择的为预估得分） */
     protected final MutableLiveData<int[]> scores = new MutableLiveData<>();
@@ -60,6 +63,14 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
 
     public int getBonusValue() {
         return bonusValue;
+    }
+
+    public LiveData<Boolean> getClickable() {
+        return clickable;
+    }
+
+    public boolean isClickable() {
+        return Boolean.TRUE.equals(clickable.getValue());
     }
 
     public LiveData<int[]> getScores() {
@@ -125,6 +136,12 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         return isAllSame() && isSelected[numbers[0] - 1] && isSelected[numCategories - 1];
     }
 
+    @Override
+    protected void updateDiceWindowEnabled() {
+        super.updateDiceWindowEnabled();
+        clickable.setValue(!diceRolling && hasRolled());
+    }
+
     /** 选择指定的得分项，更新得分 */
     public void select(int category) {
         boolean[] currentSelected = selected.getValue();
@@ -186,6 +203,7 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
 
     @Override
     public void reset() {
+        clickable.setValue(false);
         scores.setValue(new int[numCategories]);
         selected.setValue(new boolean[numCategories]);
         numSelected = 0;

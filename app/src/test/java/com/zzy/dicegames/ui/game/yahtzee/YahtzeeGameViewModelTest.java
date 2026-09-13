@@ -52,7 +52,7 @@ public class YahtzeeGameViewModelTest {
     }
 
     @Test
-    public void testSetDiceNumbers() {
+    public void testUpdateDiceNumbers() {
         viewModel.updateDiceNumbers(4, 1, 3, 2, 4);
         int[] expected = {1, 2, 3, 8, 0, 0, 0, 0, 0, 30, 0, 14, 0};
         assertArrayEquals(expected, viewModel.getScores().getValue());
@@ -176,7 +176,7 @@ public class YahtzeeGameViewModelTest {
     public void testCreateScoreEntity() {
         doNothing().when(spyViewModel).gameOver();
         for (int i = 0; i < viewModel.getNumCategories(); i++) {
-            spyViewModel.updateDiceNumbers(5, 5, 5, 5, 5);
+            spyViewModel.rollDice(5, 5, 5, 5, 5);
             spyViewModel.select(i);
         }
         var score = spyViewModel.createScoreEntity();

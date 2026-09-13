@@ -52,7 +52,7 @@ public class MaxiYatzyGameViewModelTest {
     }
 
     @Test
-    public void testSetDiceNumbers() {
+    public void testUpdateDiceNumbers() {
         viewModel.updateDiceNumbers(3, 4, 5, 5, 3, 5);
         int[] expected = {0, 0, 6, 4, 15, 0, 10, 16, 0, 15, 0, 0, 0, 0, 0, 21, 0, 0, 25, 0};
         assertArrayEquals(expected, viewModel.getScores().getValue());
@@ -188,7 +188,7 @@ public class MaxiYatzyGameViewModelTest {
     public void testCreateScoreEntity() {
         doNothing().when(spyViewModel).gameOver();
         for (int i = 0; i < viewModel.getNumCategories(); i++) {
-            spyViewModel.updateDiceNumbers(6, 6, 6, 6, 6, 6);
+            spyViewModel.rollDice(6, 6, 6, 6, 6, 6);
             spyViewModel.select(i);
         }
         var score = spyViewModel.createScoreEntity();

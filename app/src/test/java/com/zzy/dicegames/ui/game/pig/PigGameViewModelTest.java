@@ -73,26 +73,26 @@ public class PigGameViewModelTest {
     @Test
     public void testUpdateDiceNumbers_Pig() {
         doNothing().when(spyViewModel).pig();
-        spyViewModel.updateDiceNumbers(1);
+        spyViewModel.rollDice(1);
         verify(spyViewModel).pig();
     }
 
     @Test
     public void testUpdateDiceNumbers_Human() {
-        viewModel.updateDiceNumbers(4);
+        viewModel.rollDice(4);
         assertEquals(4, viewModel.getTurnScore().getValue().intValue());
         assertTrue(viewModel.getHoldButtonEnabled().getValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         assertEquals(0, viewModel.getCurrentPlayerScore());
 
-        viewModel.updateDiceNumbers(3);
+        viewModel.rollDice(3);
         assertEquals(7, viewModel.getTurnScore().getValue().intValue());
     }
 
     @Test
     public void testUpdateDiceNumbers_Computer() {
         viewModel.nextPlayer();
-        viewModel.updateDiceNumbers(3);
+        viewModel.rollDice(3);
         assertEquals(3, viewModel.getTurnScore().getValue().intValue());
         assertFalse(viewModel.getHoldButtonEnabled().getValue());
         assertFalse(viewModel.getRollButtonEnabled().getValue());
@@ -103,10 +103,10 @@ public class PigGameViewModelTest {
     public void testUpdateDiceNumbers_Win() {
         doNothing().when(spyViewModel).win();
         spyViewModel.addCurrentPlayerScore(95);
-        spyViewModel.updateDiceNumbers(4);
+        spyViewModel.rollDice(4);
         verify(spyViewModel, never()).win();
 
-        spyViewModel.updateDiceNumbers(5);
+        spyViewModel.rollDice(5);
         verify(spyViewModel).win();
         assertEquals(104, spyViewModel.getPlayerScores().getValue()[PLAYER_HUMAN]
                 + spyViewModel.getTurnScore().getValue());
@@ -115,7 +115,7 @@ public class PigGameViewModelTest {
 
     @Test
     public void testPig() {
-        viewModel.updateDiceNumbers(4);
+        viewModel.rollDice(4);
         viewModel.pig();
         assertEquals(0, viewModel.getTurnScore().getValue().intValue());
         assertFalse(viewModel.getHoldButtonEnabled().getValue());
@@ -125,7 +125,7 @@ public class PigGameViewModelTest {
     @Test
     public void testWin() {
         doNothing().when(spyViewModel).gameOver();
-        spyViewModel.updateDiceNumbers(4);
+        spyViewModel.rollDice(4);
         spyViewModel.win();
         assertEquals(4, spyViewModel.getCurrentPlayerScore());
         verify(spyViewModel).gameOver();
@@ -156,7 +156,7 @@ public class PigGameViewModelTest {
     public void testComputerTurn_RollAgain() {
         // 电脑回合，双方得分均为0，本轮得分5 < 追赶目标21 → 继续掷骰子
         viewModel.nextPlayer();
-        viewModel.updateDiceNumbers(5);
+        viewModel.rollDice(5);
         viewModel.computerTurn();
 
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
@@ -171,11 +171,8 @@ public class PigGameViewModelTest {
     public void testComputerTurn_Hold() {
         // 电脑回合，双方得分均为0，本轮得分25 >= 追赶目标21 → 保存
         viewModel.nextPlayer();
-        viewModel.updateDiceNumbers(5);
-        viewModel.updateDiceNumbers(5);
-        viewModel.updateDiceNumbers(5);
-        viewModel.updateDiceNumbers(5);
-        viewModel.updateDiceNumbers(5);
+        for (int i = 1; i <= 5; i++)
+            viewModel.rollDice(5);
         viewModel.computerTurn();
 
         ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
@@ -189,7 +186,7 @@ public class PigGameViewModelTest {
     @Test
     public void testHold() {
         doNothing().when(spyViewModel).nextPlayer();
-        spyViewModel.updateDiceNumbers(4);
+        spyViewModel.rollDice(4);
         spyViewModel.hold();
         assertEquals(4, spyViewModel.getCurrentPlayerScore());
         verify(spyViewModel).nextPlayer();

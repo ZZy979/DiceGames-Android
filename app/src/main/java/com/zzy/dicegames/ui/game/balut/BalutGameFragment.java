@@ -103,6 +103,7 @@ public class BalutGameFragment extends BaseGameFragment<BalutGameViewModel> {
     @Override
     protected void setupObservers(LifecycleOwner owner) {
         super.setupObservers(owner);
+        mViewModel.getClickable().observe(owner, this::onClickableChanged);
         mViewModel.getScores().observe(owner, this::onScoresChanged);
         mViewModel.getSelectCount().observe(owner, this::onSelectCountChanged);
         mViewModel.getCategoryScores().observe(owner, this::onCategoryScoresChanged);
@@ -112,10 +113,15 @@ public class BalutGameFragment extends BaseGameFragment<BalutGameViewModel> {
         mViewModel.getTotalPoints().observe(owner, this::onTotalPointsChanged);
     }
 
-    @Override
-    protected void onDiceRolledChanged(boolean rolled) {
-        super.onDiceRolledChanged(rolled);
-        updateScorecard();
+    /** 得分项可点击状态更新时的回调 */
+    protected void onClickableChanged(boolean clickable) {
+        int[][] scores = mViewModel.getScores().getValue();
+        int[] selectCount = mViewModel.getSelectCount().getValue();
+        if (scores == null || selectCount == null)
+            return;
+
+        onScoresChanged(scores);
+        onSelectCountChanged(selectCount);
     }
 
     /** 得分项的得分更新时的回调 */
@@ -125,12 +131,10 @@ public class BalutGameFragment extends BaseGameFragment<BalutGameViewModel> {
             return;
 
         for (int i = 0; i < scores.length; i++) {
-            for (int j = 0; j < scores[i].length; j++) {
-                if (j < selectCount[i] || mRolled && j == selectCount[i])
-                    mScoreTextViews[i][j].setText(Integer.toString(scores[i][j]));
-                else
-                    mScoreTextViews[i][j].setText("");
-            }
+            for (int j = 0; j < scores[i].length; j++)
+                mScoreTextViews[i][j].setText(
+                        j < selectCount[i] || j == selectCount[i] && mViewModel.isClickable() ?
+                                Integer.toString(scores[i][j]) : "");
         }
     }
 
@@ -138,7 +142,7 @@ public class BalutGameFragment extends BaseGameFragment<BalutGameViewModel> {
     private void onSelectCountChanged(int[] selectCount) {
         for (int i = 0; i < selectCount.length; i++) {
             for (int j = 0; j < mScoreTextViews[i].length; j++) {
-                boolean candidate = mRolled && j == selectCount[i];
+                boolean candidate = j == selectCount[i] && mViewModel.isClickable();
                 mScoreTextViews[i][j].setEnabled(candidate);
                 mScoreTextViews[i][j].setTextColor(getResources().getColor(
                         candidate ? R.color.scorecard_text_candidate : R.color.scorecard_text, null));
@@ -146,16 +150,6 @@ public class BalutGameFragment extends BaseGameFragment<BalutGameViewModel> {
                         candidate ? R.color.scorecard_background_candidate : R.color.scorecard_background, null));
             }
         }
-    }
-
-    protected void updateScorecard() {
-        int[][] scores = mViewModel.getScores().getValue();
-        int[] selectCount = mViewModel.getSelectCount().getValue();
-        if (scores == null || selectCount == null)
-            return;
-
-        onScoresChanged(scores);
-        onSelectCountChanged(selectCount);
     }
 
     /** 每个得分项的总分更新时的回调 */

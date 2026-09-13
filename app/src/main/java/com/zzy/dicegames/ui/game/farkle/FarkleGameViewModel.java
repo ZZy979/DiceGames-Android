@@ -32,12 +32,13 @@ public class FarkleGameViewModel extends BaseGameViewModel {
     /** 计算机玩家操作的延迟(ms) */
     private static final int DELAY = 1000;
 
-    // 骰子激活状态：enabled=false表示本轮已保留（对应locked一定为true）
+    /** 本轮已保留的骰子（对应locked一定为true） */
+    private boolean[] diceKept = new boolean[NUM_DICE];
 
-    /** 本次所掷的骰子(enabled=true)点数，其他骰子用0表示 */
+    /** 本次所掷的骰子(kept=false)点数，其他骰子用0表示 */
     private final int[] rolledDiceNumbers = new int[NUM_DICE];
 
-    /** 本次所掷且锁定的骰子(enabled=true, locked=true)点数，其他骰子用0表示 */
+    /** 本次所掷且锁定的骰子(kept=false, locked=true)点数，其他骰子用0表示 */
     private final int[] lockedRolledDiceNumbers = new int[NUM_DICE];
 
     /** 当前玩家 */
@@ -132,6 +133,10 @@ public class FarkleGameViewModel extends BaseGameViewModel {
         return ArrayUtil.all(diceEnabled.getValue(), false);
     }
 
+    public void unkeepAllDice() {
+        ArrayUtil.fill(diceKept, false);
+    }
+
     /**
      * 添加一条日志
      *
@@ -163,18 +168,6 @@ public class FarkleGameViewModel extends BaseGameViewModel {
         addLog(resId, ArrayUtil.join(ArrayUtil.filter(numbers, x -> x != 0), ","));
     }
 
-    /** 禁用本轮已保留的骰子 */
-    private void disableLockedDice() {
-        boolean[] locked = diceLocked.getValue();
-        boolean[] enabled = diceEnabled.getValue();
-        if (locked == null || enabled == null)
-            return;
-
-        for (int i = 0; i < enabled.length; i++)
-            enabled[i] = !locked[i];
-        diceEnabled.setValue(enabled);
-    }
-
     @Override
     public void toggleLocked(int i) {
         super.toggleLocked(i);
@@ -197,23 +190,27 @@ public class FarkleGameViewModel extends BaseGameViewModel {
             lockedRolledDiceNumbers[i] = locked[i] ? rolledDiceNumbers[i] : 0;
     }
 
+    /** 保留已锁定的骰子 */
+    private void keepLockedDice() {
+        boolean[] locked = diceLocked.getValue();
+        if (locked == null)
+            return;
+
+        System.arraycopy(locked, 0, diceKept, 0, locked.length);
+    }
+
     protected void beforeRollDice() {
-        rollButtonEnabled.setValue(false);
-        if (isAllDiceDisabled()) {
-            // 本轮第一次掷骰子或发生了Hot Dice
-            enableAllDice();
-        }
-        else {
+        if (hasRolled()) {
             addDiceNumbersLog(R.string.logDiceKept, lockedRolledDiceNumbers);
             numKeptScoringDice += calculateScore(lockedRolledDiceNumbers).second;
-            disableLockedDice();
+            keepLockedDice();
         }
     }
 
     @Override
-    public void rollDice() {
+    public void rollDice(int... numbers) {
         beforeRollDice();
-        super.rollDice();
+        super.rollDice(numbers);
     }
 
     @Override
@@ -224,12 +221,11 @@ public class FarkleGameViewModel extends BaseGameViewModel {
 
     private void updateRolledNumbers() {
         int[] numbers = diceNumbers.getValue();
-        boolean[] enabled = diceEnabled.getValue();
-        if (numbers == null || enabled == null)
+        if (numbers == null)
             return;
 
         for (int i = 0; i < rolledDiceNumbers.length; i++)
-            rolledDiceNumbers[i] = enabled[i] ? numbers[i] : 0;
+            rolledDiceNumbers[i] = diceKept[i] ? 0 : numbers[i];
     }
 
     @Override
@@ -248,11 +244,8 @@ public class FarkleGameViewModel extends BaseGameViewModel {
                 win(result.first);
             else if (numKeptScoringDice + result.second == NUM_DICE)
                 hotDice(result.first);
-            else {
-                bankButtonEnabled.setValue(isHumanTurn());
-                if (isComputerTurn())
-                    handler.postDelayed(this::computerTurn, DELAY);
-            }
+            else if (isComputerTurn())
+                handler.postDelayed(this::computerTurn, DELAY);
         }
     }
 
@@ -334,6 +327,7 @@ public class FarkleGameViewModel extends BaseGameViewModel {
     protected void farkle() {
         addLog(R.string.logFarkle);
         disableAllDice();
+        rollButtonEnabled.setValue(false);
         bankButtonEnabled.setValue(false);
         handler.postDelayed(this::nextPlayer, DELAY);
     }
@@ -350,8 +344,6 @@ public class FarkleGameViewModel extends BaseGameViewModel {
         addLog(R.string.logHotDice, lastRollScore);
         accumulatedTurnScore += lastRollScore;
         estimatedTurnScore.setValue(accumulatedTurnScore);
-        numKeptScoringDice = 0;
-        bankButtonEnabled.setValue(false);
         resetDiceWindow();
 
         if (isComputerTurn())
@@ -400,10 +392,8 @@ public class FarkleGameViewModel extends BaseGameViewModel {
             return;
 
         currentPlayer.setValue((player + 1) % NUM_PLAYERS);
-        numKeptScoringDice = 0;
         accumulatedTurnScore = 0;
         estimatedTurnScore.setValue(0);
-        bankButtonEnabled.setValue(false);
         resetDiceWindow();
 
         addLog(R.string.logSeparator);
@@ -439,10 +429,26 @@ public class FarkleGameViewModel extends BaseGameViewModel {
     }
 
     @Override
+    protected void updateDiceWindowEnabled() {
+        boolean[] enabled = diceEnabled.getValue();
+        if (enabled == null)
+            return;
+
+        boolean isHuman = isHumanTurn();
+        boolean rolled = hasRolled();
+        rollButtonEnabled.setValue(isHuman && !rolled);  // 开始掷骰子后Roll按钮一定不可点击，之后由toggleLocked()更新
+        bankButtonEnabled.setValue(isHuman && !diceRolling && rolled);
+        for (int i = 0; i < enabled.length; i++)
+            enabled[i] = isHuman && !diceRolling && rolled && !diceKept[i];
+        diceEnabled.setValue(enabled);
+    }
+
+    @Override
     public void resetDiceWindow() {
-        unlockAllDice();
-        disableAllDice();
-        rollButtonEnabled.setValue(isHumanTurn());
+        super.resetDiceWindow();
+        unkeepAllDice();
+        numKeptScoringDice = 0;
+        updateDiceWindowEnabled();
     }
 
     @Override
@@ -450,10 +456,8 @@ public class FarkleGameViewModel extends BaseGameViewModel {
         currentPlayer.setValue(PLAYER_HUMAN);
         super.reset();
         playerScores.setValue(new int[NUM_PLAYERS]);
-        numKeptScoringDice = 0;
         accumulatedTurnScore = 0;
         estimatedTurnScore.setValue(0);
-        bankButtonEnabled.setValue(false);
         newGameButtonVisible.setValue(false);
         gameLog.setValue(new ArrayList<>());
         addGameBeginsLog();
