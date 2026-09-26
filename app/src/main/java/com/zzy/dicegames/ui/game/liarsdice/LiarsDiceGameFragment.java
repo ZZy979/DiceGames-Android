@@ -16,10 +16,12 @@ import com.zzy.dicegames.common.GameType;
 import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.core.util.Pair;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,8 +65,8 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
     /** 开骰按钮 */
     private Button mChallengeButton;
 
-    /** 人数按钮 */
-    private Button mPlayersButton;
+    /** 已绑定观察者的玩家胜负记录 */
+    private final List<LiveData<int[]>> mBoundRecords = new ArrayList<>();
 
     /** 日志列表 */
     private RecyclerView mLogView;
@@ -90,7 +92,7 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
 
         int[] playerRecordTextViewIds = {
                 R.id.tvPlayerDice0, R.id.tvPlayerDice1, R.id.tvPlayerDice2, R.id.tvPlayerDice3};
-        mPlayerRecordTextViews = new TextView[MAX_PLAYERS];
+        mPlayerRecordTextViews = new TextView[MAX_NUM_PLAYERS];
         for (int i = 0; i < mPlayerRecordTextViews.length; i++)
             mPlayerRecordTextViews[i] = view.findViewById(playerRecordTextViewIds[i]);
 
@@ -109,9 +111,6 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
         mSelectedBidPreview = view.findViewById(R.id.tvSelectedBidPreview);
         mBidButton = view.findViewById(R.id.btnBid);
         mChallengeButton = view.findViewById(R.id.btnChallenge);
-
-        mPlayersButton = view.findViewById(R.id.btnPlayers);
-        mPlayersButton.setOnClickListener(v -> selectNumPlayers());
 
         mDecQuantityButton.setOnClickListener(v -> changeSelectedQuantity(-1));
         mIncQuantityButton.setOnClickListener(v -> changeSelectedQuantity(1));
@@ -138,7 +137,7 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
         super.setupObservers(owner);
         mViewModel.getCurrentPlayer().observe(owner, this::onCurrentPlayerChanged);
         mViewModel.getCurrentRound().observe(owner, this::onCurrentRoundChanged);
-        mViewModel.getWinLossRecords().observe(owner, this::onWinLossRecordsChanged);
+        mViewModel.getNumPlayers().observe(owner, n -> bindPlayerRecords(owner));
         mViewModel.getCurrentBid().observe(owner, this::onCurrentBidChanged);
         mViewModel.getSelectedQuantity().observe(owner, this::onSelectedQuantityChanged);
         mViewModel.getSelectedFace().observe(owner, this::onSelectedFaceChanged);
@@ -181,22 +180,33 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
         mRoundTextView.setText(getString(R.string.roundIndicator, round, TOTAL_ROUNDS));
     }
 
-    /** 玩家胜负记录更新时的回调 */
-    private void onWinLossRecordsChanged(int[][] records) {
-        for (int i = 0; i < mPlayerRecordTextViews.length; i++) {
-            TextView textView = mPlayerRecordTextViews[i];
-            if (i < records.length) {
-                textView.setVisibility(View.VISIBLE);
-                textView.setText(getString(
-                        R.string.winLossRecord, getPlayerName(i), records[i][0], records[i][1]));
-                Integer currentPlayer = mViewModel.getCurrentPlayer().getValue();
-                textView.setTextColor(currentPlayer != null && currentPlayer == i ? Color.RED : Color.BLACK);
+    /** 绑定每位玩家的胜负记录观察者 */
+    private void bindPlayerRecords(LifecycleOwner owner) {
+        for (LiveData<int[]> record : mBoundRecords)
+            record.removeObservers(owner);
+        mBoundRecords.clear();
+
+        int numPlayers = mViewModel.getNumPlayersValue();
+        for (int p = 0; p < MAX_NUM_PLAYERS; p++) {
+            int finalP = p;
+            if (p < numPlayers) {
+                LiveData<int[]> record = mViewModel.getRecord(p);
+                record.observe(owner, r -> onRecordChanged(finalP, r));
+                mBoundRecords.add(record);
             }
             else {
-                textView.setVisibility(View.GONE);
+                mPlayerRecordTextViews[p].setVisibility(View.GONE);
             }
         }
-        mPlayersButton.setText(getString(R.string.playersFormat, records.length));
+    }
+
+    /** 玩家胜负记录更新时的回调 */
+    private void onRecordChanged(int player, int[] record) {
+        TextView textView = mPlayerRecordTextViews[player];
+        textView.setVisibility(View.VISIBLE);
+        textView.setText(getString(R.string.winLossRecord, getPlayerName(player), record[0], record[1]));
+        Integer currentPlayer = mViewModel.getCurrentPlayer().getValue();
+        textView.setTextColor(currentPlayer != null && currentPlayer == player ? Color.RED : Color.BLACK);
     }
 
     /** 当前叫数更新时的回调 */
@@ -269,12 +279,15 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
     private void onRankingChanged(List<Integer> ranking) {
         if (ranking == null)
             return;
-        int[][] records = mViewModel.getWinLossRecords().getValue();
+        int[][] records = new int[ranking.size()][];
+        for (int p = 0; p < ranking.size(); p++)
+            records[p] = mViewModel.data(p).record.getValue();
         StringBuilder message = new StringBuilder();
         for (int i = 0; i < ranking.size(); i++) {
             int p = ranking.get(i);
+            int[] record = records[p] == null ? new int[2] : records[p];
             message.append(getString(
-                    R.string.rankingFormat, i + 1, getPlayerName(p), records[p][0], records[p][1]));
+                    R.string.rankingFormat, i + 1, getPlayerName(p), record[0], record[1]));
             if (i < ranking.size() - 1)
                 message.append('\n');
         }
@@ -300,17 +313,6 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
         Integer face = mViewModel.getSelectedFace().getValue();
         if (face != null)
             mViewModel.setSelectedFace(face + delta);
-    }
-
-    /** 选择玩家数量 */
-    private void selectNumPlayers() {
-        String[] options = new String[MAX_PLAYERS - MIN_PLAYERS + 1];
-        for (int i = 0; i < options.length; i++)
-            options[i] = getString(R.string.numPlayersFormat, i + MIN_PLAYERS);
-        new AlertDialog.Builder(getContext())
-                .setTitle(R.string.selectNumPlayers)
-                .setItems(options, (dialog, which) -> mViewModel.newGame(which + MIN_PLAYERS))
-                .show();
     }
 
     /** 显示开骰结果对话框 */
@@ -364,6 +366,6 @@ public class LiarsDiceGameFragment extends BaseGameFragment<LiarsDiceGameViewMod
 
     /** 返回玩家名称 */
     private String getPlayerName(int p) {
-        return getString(playerNameResId(p));
+        return getString(LiarsDiceGameViewModel.playerNameResId(p));
     }
 }

@@ -7,6 +7,9 @@
         android:id="@+id/menuGameType"
         android:title="@string/gameType" />
     <item
+        android:id="@+id/menuPlayers"
+        android:title="@string/players" />
+    <item
         android:id="@+id/menuHelp"
         android:title="@string/help" />
     <item

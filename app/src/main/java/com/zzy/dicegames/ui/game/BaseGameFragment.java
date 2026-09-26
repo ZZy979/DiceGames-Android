@@ -24,6 +24,8 @@ import com.zzy.dicegames.ui.game.yatzy.YatzyGameFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
+import java.util.List;
+
 /**
  * 游戏Fragment基类
  *
@@ -151,6 +153,27 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
     /** 开始一次新游戏 */
     public void startNewGame() {
         mViewModel.reset();
+    }
+
+    /** 是否支持选择玩家数量 */
+    public boolean supportsPlayerCountSelection() {
+        return mViewModel != null && mViewModel.supportsPlayerCountSelection();
+    }
+
+    /** 弹出对话框选择玩家数量，选择后开始新游戏 */
+    public void showPlayerCountDialog() {
+        if (mViewModel == null)
+            return;
+
+        List<Integer> playerCounts = mViewModel.getSupportedPlayerCounts();
+        String[] options = new String[playerCounts.size()];
+        for (int i = 0; i < options.length; i++)
+            options[i] = getString(R.string.numPlayersFormat, playerCounts.get(i));
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.selectNumPlayers)
+                .setItems(options, (dialog, which) -> mViewModel.setNumPlayers(playerCounts.get(which)))
+                .show();
     }
 
     /** 游戏结束时的回调函数 */

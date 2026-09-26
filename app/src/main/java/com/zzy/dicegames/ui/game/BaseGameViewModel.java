@@ -2,11 +2,14 @@ package com.zzy.dicegames.ui.game;
 
 import android.os.Handler;
 
+import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.utils.ArrayUtil;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
 
@@ -23,6 +26,18 @@ public class BaseGameViewModel extends ViewModel {
 
     /** 无限次数 */
     public static final int UNLIMITED_ROLLS = Integer.MAX_VALUE;
+
+    /** 人类玩家编号 */
+    public static final int PLAYER_HUMAN = 0;
+
+    /** 玩家数量最小值 */
+    public static final int MIN_PLAYERS = 1;
+
+    /** 玩家数量最大值 */
+    public static final int MAX_PLAYERS = 4;
+
+    /** 计算机玩家操作的默认延迟(ms) */
+    public static final int COMPUTER_DELAY = 800;
 
     /** 掷骰子动画帧数 */
     protected static final int ROLL_DICE_ANIMATION_FRAMES = 10;
@@ -71,6 +86,29 @@ public class BaseGameViewModel extends ViewModel {
 
     /** 游戏得分数据库 */
     protected ScoreDatabase scoreDatabase;
+
+    /** 玩家数量 */
+    protected final MutableLiveData<Integer> numPlayers = new MutableLiveData<>(MIN_PLAYERS);
+
+    /** 当前玩家 */
+    protected final MutableLiveData<Integer> currentPlayer = new MutableLiveData<>(PLAYER_HUMAN);
+
+    /** 每个玩家的游戏状态数据 */
+    protected BaseGameData[] gameData = new BaseGameData[] {new BaseGameData()};
+
+    /**
+     * 玩家数据基类，保存与单个玩家相关的状态<br>
+     * 子类可扩展以保存游戏特有的玩家数据（如Yahtzee的每个得分项得分和奖励分）
+     */
+    public static class BaseGameData {
+        /** 该玩家的总得分 */
+        public final MutableLiveData<Integer> score = new MutableLiveData<>(0);
+
+        /** 重置该玩家的数据 */
+        public void reset() {
+            score.setValue(0);
+        }
+    }
 
     /**
      * @param numDice 骰子个数，1~6之间
@@ -165,6 +203,124 @@ public class BaseGameViewModel extends ViewModel {
         this.scoreDatabase = scoreDatabase;
     }
 
+    /** 创建单个玩家的数据对象 */
+    protected BaseGameData createGameData() {
+        return new BaseGameData();
+    }
+
+    /** 初始化玩家数据（会重建数据对象，观察者需重新注册） */
+    protected void initGameData(int n) {
+        if (n < MIN_PLAYERS || n > MAX_PLAYERS)
+            throw new IllegalArgumentException("玩家数量必须在" + MIN_PLAYERS + "~" + MAX_PLAYERS + "之间");
+
+        gameData = new BaseGameData[n];
+        for (int i = 0; i < n; i++)
+            gameData[i] = createGameData();
+        numPlayers.setValue(n);
+        currentPlayer.setValue(PLAYER_HUMAN);
+    }
+
+    /** 重置所有玩家的数据 */
+    protected void resetGameData() {
+        for (var data : gameData)
+            data.reset();
+    }
+
+    public LiveData<Integer> getNumPlayers() {
+        return numPlayers;
+    }
+
+    public int getNumPlayersValue() {
+        return Optional.ofNullable(numPlayers.getValue()).orElse(MIN_PLAYERS);
+    }
+
+    public LiveData<Integer> getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public int getCurrentPlayerValue() {
+        return Optional.ofNullable(currentPlayer.getValue()).orElse(PLAYER_HUMAN);
+    }
+
+    /** 返回指定玩家的数据 */
+    public BaseGameData getGameData(int player) {
+        return gameData[player];
+    }
+
+    /** 返回当前玩家的数据 */
+    public BaseGameData getCurrentPlayerGameData() {
+        return gameData[getCurrentPlayerValue()];
+    }
+
+    /** 返回指定玩家的总得分 */
+    public LiveData<Integer> getPlayerScore(int player) {
+        return gameData[player].score;
+    }
+
+    /** 当前玩家的总得分 */
+    public int getCurrentPlayerScore() {
+        return Optional.ofNullable(getCurrentPlayerGameData().score.getValue()).orElse(0);
+    }
+
+    /** 增加当前玩家的总得分 */
+    protected void addCurrentPlayerScore(int score) {
+        BaseGameData data = getCurrentPlayerGameData();
+        data.score.setValue((data.score.getValue() == null ? 0 : data.score.getValue()) + score);
+    }
+
+    public boolean isHumanTurn() {
+        return getCurrentPlayerValue() == PLAYER_HUMAN;
+    }
+
+    public boolean isComputerTurn() {
+        return !isHumanTurn();
+    }
+
+    public boolean isMultiplayer() {
+        return getNumPlayersValue() > 1;
+    }
+
+    /** 该游戏支持的玩家数量 */
+    public List<Integer> getSupportedPlayerCounts() {
+        return List.of(MIN_PLAYERS);  // TODO 改为构造器参数传递minNumPlayers和maxNumPlayers
+    }
+
+    /** 是否支持选择玩家数量 */
+    public boolean supportsPlayerCountSelection() {
+        return getSupportedPlayerCounts().size() > 1;
+    }
+
+    /** 切换玩家数量并开始新游戏 */
+    public void setNumPlayers(int n) {
+        if (!getSupportedPlayerCounts().contains(n))
+            throw new IllegalArgumentException("不支持的玩家数量：" + n);
+        if (n != getNumPlayersValue())
+            initGameData(n);
+        reset();
+    }
+
+    /** 切换到下一位玩家 */
+    protected void nextPlayer() {
+        currentPlayer.setValue((getCurrentPlayerValue() + 1) % getNumPlayersValue());
+    }
+
+    /** 延迟执行计算机玩家的操作 */
+    protected void postComputerAction(Runnable action) {
+        handler.postDelayed(action, COMPUTER_DELAY);
+    }
+
+    /** 返回玩家名称的字符串资源id（计算机玩家使用固定名称） */
+    public static int playerNameResId(int player) {
+        if (player == PLAYER_HUMAN)
+            return R.string.playerYou;
+        return switch (player) {
+            case 1 -> R.string.playerComputer1;
+            case 2 -> R.string.playerComputer2;
+            case 3 -> R.string.playerComputer3;
+            default -> R.string.playerComputerN;
+        };
+    }
+
     /** 翻转第i个骰子的锁定状态 */
     public void toggleLocked(int i) {
         boolean[] locked = diceLocked.getValue();
@@ -173,6 +329,16 @@ public class BaseGameViewModel extends ViewModel {
 
         locked[i] = !locked[i];
         diceLocked.setValue(locked);
+    }
+
+    /** 设置骰子的锁定状态（长度不足时忽略多余的项） */
+    public void setDiceLocked(boolean[] locked) {
+        boolean[] current = diceLocked.getValue();
+        if (current == null || locked == null)
+            return;
+        for (int i = 0; i < current.length && i < locked.length; i++)
+            current[i] = locked[i];
+        diceLocked.setValue(current);
     }
 
     /** 随机生成未锁定骰子的点数 */
@@ -292,6 +458,7 @@ public class BaseGameViewModel extends ViewModel {
 
     /** 重置游戏状态 */
     public void reset() {
+        resetGameData();
         resetDiceWindow();
     }
 }

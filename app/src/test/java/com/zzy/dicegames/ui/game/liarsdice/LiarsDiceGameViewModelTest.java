@@ -16,6 +16,7 @@ import java.time.LocalDate;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_HUMAN;
 import static com.zzy.dicegames.ui.game.liarsdice.LiarsDiceGameViewModel.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -46,13 +47,13 @@ public class LiarsDiceGameViewModelTest {
     @Test
     public void testInitialization() {
         assertEquals(NUM_DICE_PER_PLAYER, viewModel.getNumDice());
-        assertEquals(DEFAULT_PLAYERS, viewModel.getNumPlayers());
-        assertEquals(DEFAULT_PLAYERS * NUM_DICE_PER_PLAYER, viewModel.getTotalDice());
+        assertEquals(DEFAULT_NUM_PLAYERS, viewModel.getNumPlayersValue());
+        assertEquals(DEFAULT_NUM_PLAYERS * NUM_DICE_PER_PLAYER, viewModel.getTotalDice());
         assertEquals(1, viewModel.getCurrentRound().getValue().intValue());
         assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
         assertTrue(viewModel.isHumanTurn());
-        assertArrayEquals(new int[] {0, 0}, viewModel.getWinLossRecords().getValue()[0]);
-        assertArrayEquals(new int[] {0, 0}, viewModel.getWinLossRecords().getValue()[1]);
+        assertArrayEquals(new int[] {0, 0}, viewModel.getRecord(0).getValue());
+        assertArrayEquals(new int[] {0, 0}, viewModel.getRecord(1).getValue());
         assertNull(viewModel.getCurrentBid().getValue());
         assertNull(viewModel.getRanking().getValue());
         assertNull(viewModel.getRevealResult().getValue());
@@ -66,14 +67,14 @@ public class LiarsDiceGameViewModelTest {
 
     @Test
     public void testNewGame() {
-        viewModel.newGame(MIN_PLAYERS);
-        assertEquals(MIN_PLAYERS, viewModel.getNumPlayers());
-        assertEquals(2, viewModel.getWinLossRecords().getValue().length);
-        viewModel.newGame(MAX_PLAYERS);
-        assertEquals(MAX_PLAYERS, viewModel.getNumPlayers());
-        assertEquals(4, viewModel.getWinLossRecords().getValue().length);
-        assertThrows(IllegalArgumentException.class, () -> viewModel.newGame(MIN_PLAYERS - 1));
-        assertThrows(IllegalArgumentException.class, () -> viewModel.newGame(MAX_PLAYERS + 1));
+        viewModel.setNumPlayers(MIN_NUM_PLAYERS);
+        assertEquals(MIN_NUM_PLAYERS, viewModel.getNumPlayersValue());
+        assertNotNull(viewModel.getRecord(MIN_NUM_PLAYERS - 1).getValue());
+        viewModel.setNumPlayers(MAX_NUM_PLAYERS);
+        assertEquals(MAX_NUM_PLAYERS, viewModel.getNumPlayersValue());
+        assertNotNull(viewModel.getRecord(MAX_NUM_PLAYERS - 1).getValue());
+        assertThrows(IllegalArgumentException.class, () -> viewModel.setNumPlayers(MIN_NUM_PLAYERS - 1));
+        assertThrows(IllegalArgumentException.class, () -> viewModel.setNumPlayers(MAX_NUM_PLAYERS + 1));
     }
 
     @Test
@@ -98,7 +99,7 @@ public class LiarsDiceGameViewModelTest {
         assertEquals(2, viewModel.getMinQuantity(2, true));
         assertEquals(3, viewModel.getMinQuantity(2, false));
         // 3人：喊1点3、斋4、飞5
-        viewModel.newGame(3);
+        viewModel.setNumPlayers(3);
         assertEquals(3, viewModel.getMinQuantity(1, true));
         assertEquals(4, viewModel.getMinQuantity(2, true));
         assertEquals(5, viewModel.getMinQuantity(2, false));
@@ -107,7 +108,7 @@ public class LiarsDiceGameViewModelTest {
         assertFalse(viewModel.isBidValid(bid(3, 5, true)));
         assertTrue(viewModel.isBidValid(bid(4, 5, true)));
         // 4人：喊1点4、斋5、飞6
-        viewModel.newGame(4);
+        viewModel.setNumPlayers(4);
         assertEquals(4, viewModel.getMinQuantity(1, true));
         assertEquals(5, viewModel.getMinQuantity(2, true));
         assertEquals(6, viewModel.getMinQuantity(2, false));
@@ -218,8 +219,8 @@ public class LiarsDiceGameViewModelTest {
         assertTrue(result.bidTrue);
         assertEquals(1, result.loser);      // 叫数属实，质疑者输
         // 只对开骰双方计分：质疑者输，上家赢
-        assertArrayEquals(new int[] {1, 0}, viewModel.getWinLossRecords().getValue()[0]);
-        assertArrayEquals(new int[] {0, 1}, viewModel.getWinLossRecords().getValue()[1]);
+        assertArrayEquals(new int[] {1, 0}, viewModel.getRecord(0).getValue());
+        assertArrayEquals(new int[] {0, 1}, viewModel.getRecord(1).getValue());
         assertFalse(viewModel.getBidButtonEnabled().getValue());
         // 日志中增加“玩家1开了玩家0”
         var gameLog = viewModel.getGameLog().getValue();
@@ -242,8 +243,8 @@ public class LiarsDiceGameViewModelTest {
         assertEquals(5, result.actualCount);
         assertFalse(result.bidTrue);
         assertEquals(0, result.loser);      // 上家吹牛，上家输
-        assertArrayEquals(new int[] {0, 1}, viewModel.getWinLossRecords().getValue()[0]);
-        assertArrayEquals(new int[] {1, 0}, viewModel.getWinLossRecords().getValue()[1]);
+        assertArrayEquals(new int[] {0, 1}, viewModel.getRecord(0).getValue());
+        assertArrayEquals(new int[] {1, 0}, viewModel.getRecord(1).getValue());
     }
 
     @Test
@@ -265,7 +266,7 @@ public class LiarsDiceGameViewModelTest {
 
     @Test
     public void testWinLossOnlyForInvolvedPlayers() {
-        viewModel.newGame(3);
+        viewModel.setNumPlayers(3);
         viewModel.setDiceForTest(new int[][] {
                 {5, 5, 1, 5, 5},  // 玩家0：5个有效5
                 {5, 5, 5, 2, 3},  // 玩家1：3个5
@@ -280,9 +281,9 @@ public class LiarsDiceGameViewModelTest {
         assertTrue(result.bidTrue);          // 实际8个5 >= 6，叫数属实
         assertEquals(2, result.loser);       // 质疑者输
         // 仅开骰双方计分：玩家1胜+1、玩家2负+1，玩家0不变
-        assertArrayEquals(new int[] {0, 0}, viewModel.getWinLossRecords().getValue()[0]);
-        assertArrayEquals(new int[] {1, 0}, viewModel.getWinLossRecords().getValue()[1]);
-        assertArrayEquals(new int[] {0, 1}, viewModel.getWinLossRecords().getValue()[2]);
+        assertArrayEquals(new int[] {0, 0}, viewModel.getRecord(0).getValue());
+        assertArrayEquals(new int[] {1, 0}, viewModel.getRecord(1).getValue());
+        assertArrayEquals(new int[] {0, 1}, viewModel.getRecord(2).getValue());
     }
 
     @Test
@@ -327,9 +328,11 @@ public class LiarsDiceGameViewModelTest {
         assertNotNull(ranking);
         assertEquals(2, ranking.size());
         // 每个玩家的胜局数+负局数 = 总局数
-        int[][] records = viewModel.getWinLossRecords().getValue();
-        for (int p = 0; p < viewModel.getNumPlayers(); p++)
-            assertEquals(TOTAL_ROUNDS, records[p][0] + records[p][1]);
+        for (int p = 0; p < viewModel.getNumPlayersValue(); p++) {
+            int[] record = viewModel.getRecord(p).getValue();
+            assertNotNull(record);
+            assertEquals(TOTAL_ROUNDS, record[0] + record[1]);
+        }
     }
 
     @Test

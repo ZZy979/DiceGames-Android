@@ -67,6 +67,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem playersItem = menu.findItem(R.id.menuPlayers);
+        if (playersItem != null)
+            playersItem.setVisible(mGameFragment != null && mGameFragment.supportsPlayerCountSelection());
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menuNewGame) {
@@ -74,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
         }
         else if (itemId == R.id.menuGameType) {
             selectGameType();
+        }
+        else if (itemId == R.id.menuPlayers) {
+            mGameFragment.showPlayerCountDialog();
         }
         else if (itemId == R.id.menuHelp) {
             Intent intent = new Intent(this, HelpActivity.class);
@@ -128,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.gameFragment, mGameFragment)
                 .commit();
+        invalidateOptionsMenu();
     }
 
     /** 返回导入/导出得分数据的文件 */

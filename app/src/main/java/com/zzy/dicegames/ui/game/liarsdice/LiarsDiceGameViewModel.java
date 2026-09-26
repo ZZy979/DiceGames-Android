@@ -27,28 +27,19 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
     public static final int NUM_DICE_PER_PLAYER = 5;
 
     /** 最小玩家数 */
-    public static final int MIN_PLAYERS = 2;
+    public static final int MIN_NUM_PLAYERS = 2;
 
     /** 最大玩家数 */
-    public static final int MAX_PLAYERS = 4;
+    public static final int MAX_NUM_PLAYERS = 4;
 
     /** 默认玩家数 */
-    public static final int DEFAULT_PLAYERS = 2;
+    public static final int DEFAULT_NUM_PLAYERS = 2;
 
     /** 总局数 */
     public static final int TOTAL_ROUNDS = 10;
 
-    /** 人类玩家编号 */
-    public static final int PLAYER_HUMAN = 0;
-
     /** 计算机玩家操作的延迟(ms) */
     private static final int DELAY = 1000;
-
-    /** 玩家数量 */
-    private int numPlayers;
-
-    /** 当前玩家 */
-    private final MutableLiveData<Integer> currentPlayer = new MutableLiveData<>();
 
     /** 当前局数 */
     private final MutableLiveData<Integer> currentRound = new MutableLiveData<>(0);
@@ -56,8 +47,8 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
     /** 每个玩家的骰子点数，dicePerPlayer[p][i] */
     private int[][] dicePerPlayer;
 
-    /** 每个玩家的胜负记录，records[p][0]=胜局数，records[p][1]=负局数 */
-    private final MutableLiveData<int[][]> winLossRecords = new MutableLiveData<>();
+    /** 每个玩家的胜负记录，records[p][0]=胜局数，records[p][1]=负局数（与玩家数据中的record为同一数组） */
+    private int[][] records;
 
     /** 最终排名（按名次排列的玩家编号），null表示游戏未结束 */
     private final MutableLiveData<List<Integer>> ranking = new MutableLiveData<>(null);
@@ -92,9 +83,6 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
     /** 游戏日志 */
     private final MutableLiveData<List<Pair<Integer, Object[]>>> gameLog = new MutableLiveData<>(new ArrayList<>());
 
-    /** 胜负记录（内部数组） */
-    private int[][] records;
-
     /** 本轮先叫的玩家 */
     private int nextRoundStarter = PLAYER_HUMAN;
 
@@ -104,23 +92,54 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
     /** 是否正在显示开骰结果 */
     private boolean revealing = false;
 
+    /** 大话骰的玩家数据 */
+    public static class LiarsDiceGameData extends BaseGameData {
+        /** 胜负记录：[0]=胜局数，[1]=负局数 */
+        public final MutableLiveData<int[]> record = new MutableLiveData<>(new int[] {0, 0});
+
+        @Override
+        public void reset() {
+            super.reset();
+            record.setValue(new int[] {0, 0});
+        }
+    }
+
     public LiarsDiceGameViewModel() {
         super(NUM_DICE_PER_PLAYER, UNLIMITED_ROLLS);
         disableAllDice();
-        this.numPlayers = DEFAULT_PLAYERS;
-        initGame(numPlayers);
+        initGameData(DEFAULT_NUM_PLAYERS);
+        initGame();
     }
 
-    public LiveData<Integer> getCurrentPlayer() {
-        return currentPlayer;
+    @Override
+    protected BaseGameData createGameData() {
+        return new LiarsDiceGameData();
+    }
+
+    @Override
+    protected void initGameData(int n) {
+        super.initGameData(n);
+        records = new int[n][];
+        for (int p = 0; p < n; p++)
+            records[p] = data(p).record.getValue();
+    }
+
+    @Override
+    public List<Integer> getSupportedPlayerCounts() {
+        return List.of(MIN_NUM_PLAYERS, 3, MAX_NUM_PLAYERS);
+    }
+
+    /** 返回指定玩家的数据 */
+    public LiarsDiceGameData data(int player) {
+        return (LiarsDiceGameData) gameData[player];
     }
 
     public LiveData<Integer> getCurrentRound() {
         return currentRound;
     }
 
-    public LiveData<int[][]> getWinLossRecords() {
-        return winLossRecords;
+    public LiveData<int[]> getRecord(int player) {
+        return data(player).record;
     }
 
     public LiveData<List<Integer>> getRanking() {
@@ -167,30 +186,9 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         return gameLog;
     }
 
-    public int getNumPlayers() {
-        return numPlayers;
-    }
-
-    public boolean isHumanTurn() {
-        Integer player = currentPlayer.getValue();
-        return player != null && player == PLAYER_HUMAN;
-    }
-
-    /** 返回玩家名称的字符串资源id（电脑玩家使用固定名称） */
-    public static int playerNameResId(int p) {
-        if (p == PLAYER_HUMAN)
-            return R.string.playerYou;
-        return switch (p) {
-            case 1 -> R.string.playerComputer1;
-            case 2 -> R.string.playerComputer2;
-            case 3 -> R.string.playerComputer3;
-            default -> R.string.playerComputerN;
-        };
-    }
-
     /** 场上所有玩家骰子总数 */
     public int getTotalDice() {
-        return numPlayers * NUM_DICE_PER_PLAYER;
+        return getNumPlayersValue() * NUM_DICE_PER_PLAYER;
     }
 
     /**
@@ -199,8 +197,8 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
      */
     public int getMinQuantity(int face, boolean zhai) {
         if (face == 1)
-            return numPlayers;  // 喊1点：2人2、3人3、4人4
-        return switch (numPlayers) {
+            return getNumPlayersValue();  // 喊1点：2人2、3人3、4人4
+        return switch (getNumPlayersValue()) {
             case 2 -> zhai ? 2 : 3;  // 斋2、飞3
             case 3 -> zhai ? 4 : 5;  // 斋4、飞5
             case 4 -> zhai ? 5 : 6;  // 斋5、飞6
@@ -296,24 +294,16 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
     /** 以相同人数重新开始新游戏 */
     @Override
     public void reset() {
-        initGame(numPlayers);
-    }
-
-    /** 以指定玩家数开始新游戏 */
-    public void newGame(int numPlayers) {
-        if (numPlayers < MIN_PLAYERS || numPlayers > MAX_PLAYERS)
-            throw new IllegalArgumentException("玩家数量必须在2~4之间");
-        this.numPlayers = numPlayers;
-        initGame(numPlayers);
+        initGame();
     }
 
     /** 创建得分实体 */
     public LiarsDiceScore createScoreEntity() {
-        int[][] records = winLossRecords.getValue();
-        if (records == null)
+        int[] record = records[PLAYER_HUMAN];
+        if (record == null)
             return null;
         return new LiarsDiceScore(
-                LocalDate.now().toString(), numPlayers, records[PLAYER_HUMAN][0], records[PLAYER_HUMAN][1]);
+                LocalDate.now().toString(), getNumPlayersValue(), record[0], record[1]);
     }
 
     /** 将得分保存到数据库 */
@@ -378,7 +368,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
     /** 计算所有玩家骰子中满足叫数的实际个数（按万能规则） */
     public int countBid(int face, boolean zhai) {
         int count = 0;
-        for (int p = 0; p < numPlayers; p++) {
+        for (int p = 0; p < getNumPlayersValue(); p++) {
             for (int i = 0; i < NUM_DICE_PER_PLAYER; i++) {
                 int d = dicePerPlayer[p][i];
                 if (d == 0)
@@ -439,7 +429,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         // 只对开骰双方统计胜负：输家记一负，赢家记一胜，其余玩家不变
         records[loser][1]++;
         records[winner][0]++;
-        winLossRecords.setValue(copyRecords());
+        notifyRecords();
 
         // 下一局由输家先叫
         nextRoundStarter = loser;
@@ -456,7 +446,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         challengeButtonEnabled.setValue(false);
 
         revealResult.setValue(new RevealResult(
-                numPlayers, copyDice(), bid, actual, challenger, loser, bidTrue));
+                getNumPlayersValue(), copyDice(), bid, actual, challenger, loser, bidTrue));
     }
 
     /** 计算机玩家回合 */
@@ -482,15 +472,17 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
     // ---------- 开局和回合流程 ----------
 
     /** 初始化新游戏 */
-    private void initGame(int numPlayers) {
-        this.numPlayers = numPlayers;
-        dicePerPlayer = new int[numPlayers][NUM_DICE_PER_PLAYER];
-        records = new int[numPlayers][2];
+    private void initGame() {
+        dicePerPlayer = new int[getNumPlayersValue()][NUM_DICE_PER_PLAYER];
+        for (int[] record : records) {
+            record[0] = 0;
+            record[1] = 0;
+        }
         currentPlayer.setValue(PLAYER_HUMAN);
         nextRoundStarter = PLAYER_HUMAN;
         roundNumber = 0;
         currentRound.setValue(0);
-        winLossRecords.setValue(copyRecords());
+        notifyRecords();
         ranking.setValue(null);
         currentBid.setValue(null);
         revealResult.setValue(null);
@@ -498,6 +490,12 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         gameLog.setValue(new ArrayList<>());
         addLog(R.string.logGameBegins);
         startRound();
+    }
+
+    /** 通知UI更新所有玩家的胜负记录 */
+    private void notifyRecords() {
+        for (int p = 0; p < records.length; p++)
+            data(p).record.setValue(records[p]);
     }
 
     /** 开始新一局：所有玩家掷骰子，重置叫数 */
@@ -576,7 +574,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
 
     /** 所有玩家掷骰子 */
     private void rollAllPlayers() {
-        for (int p = 0; p < numPlayers; p++)
+        for (int p = 0; p < getNumPlayersValue(); p++)
             for (int i = 0; i < NUM_DICE_PER_PLAYER; i++)
                 dicePerPlayer[p][i] = random.nextInt(6) + 1;
         updateHumanDiceWindow();
@@ -598,18 +596,18 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
 
     /** 返回下一个玩家 */
     private int getNextPlayer(int player) {
-        return (player + 1) % numPlayers;
+        return (player + 1) % getNumPlayersValue();
     }
 
     /** 返回上一个玩家（上家） */
     private int getPreviousPlayer(int player) {
-        return (player - 1 + numPlayers) % numPlayers;
+        return (player - 1 + getNumPlayersValue()) % getNumPlayersValue();
     }
 
     /** 计算最终排名：获胜局数最多、输的局数最少者优先 */
     private List<Integer> computeRanking() {
         List<Integer> order = new ArrayList<>();
-        for (int p = 0; p < numPlayers; p++)
+        for (int p = 0; p < getNumPlayersValue(); p++)
             order.add(p);
         order.sort((a, b) -> {
             if (records[b][0] != records[a][0])
@@ -621,17 +619,9 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
 
     /** 返回骰子点数的深拷贝 */
     private int[][] copyDice() {
-        int[][] copy = new int[numPlayers][];
-        for (int p = 0; p < numPlayers; p++)
+        int[][] copy = new int[getNumPlayersValue()][];
+        for (int p = 0; p < getNumPlayersValue(); p++)
             copy[p] = dicePerPlayer[p].clone();
-        return copy;
-    }
-
-    /** 返回胜负记录的深拷贝 */
-    private int[][] copyRecords() {
-        int[][] copy = new int[numPlayers][2];
-        for (int p = 0; p < numPlayers; p++)
-            System.arraycopy(records[p], 0, copy[p], 0, 2);
         return copy;
     }
 
@@ -766,7 +756,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
 
     /** 设置所有玩家的骰子点数（用于测试） */
     void setDiceForTest(int[][] dice) {
-        for (int p = 0; p < numPlayers; p++)
+        for (int p = 0; p < getNumPlayersValue(); p++)
             System.arraycopy(dice[p], 0, dicePerPlayer[p], 0, NUM_DICE_PER_PLAYER);
         updateHumanDiceWindow();
     }
