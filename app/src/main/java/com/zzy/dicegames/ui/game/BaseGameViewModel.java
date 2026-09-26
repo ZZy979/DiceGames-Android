@@ -7,6 +7,7 @@ import com.zzy.dicegames.data.ScoreDatabase;
 import com.zzy.dicegames.ui.dice.DiceView;
 import com.zzy.dicegames.utils.ArrayUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,12 @@ public class BaseGameViewModel extends ViewModel {
     /** 最大掷骰子次数 */
     protected final int maxRolls;
 
+    /** 最小玩家数量 */
+    protected final int minPlayers;
+
+    /** 最大玩家数量 */
+    protected final int maxPlayers;
+
     /** 剩余掷骰子次数 */
     protected final MutableLiveData<Integer> remainingRolls = new MutableLiveData<>();
 
@@ -88,13 +95,13 @@ public class BaseGameViewModel extends ViewModel {
     protected ScoreDatabase scoreDatabase;
 
     /** 玩家数量 */
-    protected final MutableLiveData<Integer> numPlayers = new MutableLiveData<>(MIN_PLAYERS);
+    protected final MutableLiveData<Integer> numPlayers = new MutableLiveData<>();
 
     /** 当前玩家 */
     protected final MutableLiveData<Integer> currentPlayer = new MutableLiveData<>(PLAYER_HUMAN);
 
     /** 每个玩家的游戏状态数据 */
-    protected BaseGameData[] gameData = new BaseGameData[] {new BaseGameData()};
+    protected BaseGameData[] gameData;
 
     /**
      * 玩家数据基类，保存与单个玩家相关的状态<br>
@@ -113,19 +120,32 @@ public class BaseGameViewModel extends ViewModel {
     /**
      * @param numDice 骰子个数，1~6之间
      * @param maxRolls 最大掷骰子次数，{@link #UNLIMITED_ROLLS}表示无限次数
+     * @param minPlayers 最小玩家数量，不小于{@link #MIN_PLAYERS}
+     * @param maxPlayers 最大玩家数量，不大于{@link #MAX_PLAYERS}且不小于minPlayers
      */
-    protected BaseGameViewModel(int numDice, int maxRolls) {
+    protected BaseGameViewModel(int numDice, int maxRolls, int minPlayers, int maxPlayers) {
         if (numDice < MIN_NUM_DICE || numDice > MAX_NUM_DICE)
             throw new IllegalArgumentException("骰子个数必须在1~6之间");
         if (maxRolls <= 0)
             throw new IllegalArgumentException("最大掷骰子次数必须大于0");
+        if (minPlayers < MIN_PLAYERS || maxPlayers > MAX_PLAYERS || minPlayers > maxPlayers)
+            throw new IllegalArgumentException(
+                    "玩家数量必须在" + MIN_PLAYERS + "~" + MAX_PLAYERS + "之间，且最小值不大于最大值");
 
         this.numDice = numDice;
         this.maxRolls = maxRolls;
+        this.minPlayers = minPlayers;
+        this.maxPlayers = maxPlayers;
         this.remainingRolls.setValue(maxRolls);
         this.diceNumbers.setValue(ArrayUtil.create(numDice, DiceView.MAX_NUMBER));
         this.diceLocked.setValue(ArrayUtil.create(numDice, false));
         this.diceEnabled.setValue(ArrayUtil.create(numDice, true));
+
+        // 此处不能调用可被覆盖的createGameData()，子类需在构造器中调用initGameData()以创建游戏特有的玩家数据
+        this.gameData = new BaseGameData[minPlayers];
+        for (int i = 0; i < minPlayers; i++)
+            this.gameData[i] = new BaseGameData();
+        this.numPlayers.setValue(minPlayers);
     }
 
     public int getNumDice() {
@@ -210,8 +230,8 @@ public class BaseGameViewModel extends ViewModel {
 
     /** 初始化玩家数据（会重建数据对象，观察者需重新注册） */
     protected void initGameData(int n) {
-        if (n < MIN_PLAYERS || n > MAX_PLAYERS)
-            throw new IllegalArgumentException("玩家数量必须在" + MIN_PLAYERS + "~" + MAX_PLAYERS + "之间");
+        if (!isSupportedPlayerCount(n))
+            throw new IllegalArgumentException("玩家数量必须在" + minPlayers + "~" + maxPlayers + "之间");
 
         gameData = new BaseGameData[n];
         for (int i = 0; i < n; i++)
@@ -280,19 +300,27 @@ public class BaseGameViewModel extends ViewModel {
         return getNumPlayersValue() > 1;
     }
 
-    /** 该游戏支持的玩家数量 */
+    /** 指定的玩家数量是否是本游戏支持的玩家数量 */
+    public boolean isSupportedPlayerCount(int n) {
+        return n >= minPlayers && n <= maxPlayers;
+    }
+
+    /** 该游戏支持的玩家数量（用于UI展示可选项） */
     public List<Integer> getSupportedPlayerCounts() {
-        return List.of(MIN_PLAYERS);  // TODO 改为构造器参数传递minNumPlayers和maxNumPlayers
+        List<Integer> counts = new ArrayList<>(maxPlayers - minPlayers + 1);
+        for (int n = minPlayers; n <= maxPlayers; n++)
+            counts.add(n);
+        return counts;
     }
 
     /** 是否支持选择玩家数量 */
     public boolean supportsPlayerCountSelection() {
-        return getSupportedPlayerCounts().size() > 1;
+        return minPlayers != maxPlayers;
     }
 
     /** 切换玩家数量并开始新游戏 */
     public void setNumPlayers(int n) {
-        if (!getSupportedPlayerCounts().contains(n))
+        if (!isSupportedPlayerCount(n))
             throw new IllegalArgumentException("不支持的玩家数量：" + n);
         if (n != getNumPlayersValue())
             initGameData(n);

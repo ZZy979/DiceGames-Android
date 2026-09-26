@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.ui.game.BaseGameFragment;
+import com.zzy.dicegames.ui.game.yahtzee.BaseYahtzeeGameViewModel.YahtzeeGameData;
 
 import androidx.lifecycle.LifecycleOwner;
 
@@ -15,34 +16,41 @@ import androidx.lifecycle.LifecycleOwner;
  * @author 赵正阳
  */
 public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtzeeGameViewModel> {
-    /** 得分标签 */
-    protected TextView[] mScoreTextViews;
+    /** 得分标签，mScoreTextViews[玩家][得分项] */
+    protected TextView[][] mScoreTextViews;
 
-    /** 上区总分标签 */
-    protected TextView mUpperTotalScoreTextView;
+    /** 上区总分标签，每个玩家一个 */
+    protected TextView[] mUpperTotalScoreTextViews;
 
-    /** 奖励分标签 */
-    protected TextView mBonusScoreTextView;
+    /** 奖励分标签，每个玩家一个 */
+    protected TextView[] mBonusScoreTextViews;
 
-    /** 游戏总分标签 */
-    protected TextView mTotalScoreTextView;
+    /** 游戏总分标签，每个玩家一个 */
+    protected TextView[] mTotalScoreTextViews;
 
     @Override
     protected void initViews(View view) {
         super.initViews(view);
 
-        // 获取得分标签
+        int numPlayers = mViewModel.getNumPlayersValue();
         int[] scoreTextViewIds = getScoreTextViewIds();
-        mScoreTextViews = new TextView[scoreTextViewIds.length];
-        for (int i = 0; i < mScoreTextViews.length; i++) {
+
+        mScoreTextViews = new TextView[numPlayers][];
+        mUpperTotalScoreTextViews = new TextView[numPlayers];
+        mBonusScoreTextViews = new TextView[numPlayers];
+        mTotalScoreTextViews = new TextView[numPlayers];
+
+        // 第一个玩家的记分板标签在布局文件中，其余玩家的标签由子类（多人模式）添加
+        mScoreTextViews[0] = new TextView[scoreTextViewIds.length];
+        for (int i = 0; i < scoreTextViewIds.length; i++) {
             int category = i;
-            mScoreTextViews[i] = view.findViewById(scoreTextViewIds[i]);
-            mScoreTextViews[i].setOnClickListener(v -> select(category));
+            mScoreTextViews[0][i] = view.findViewById(scoreTextViewIds[i]);
+            mScoreTextViews[0][i].setOnClickListener(v -> select(category));
         }
 
-        mUpperTotalScoreTextView = view.findViewById(R.id.tvUpperTotal);
-        mBonusScoreTextView = view.findViewById(R.id.tvBonus);
-        mTotalScoreTextView = view.findViewById(R.id.tvTotalScore);
+        mUpperTotalScoreTextViews[0] = view.findViewById(R.id.tvUpperTotal);
+        mBonusScoreTextViews[0] = view.findViewById(R.id.tvBonus);
+        mTotalScoreTextViews[0] = view.findViewById(R.id.tvTotalScore);
     }
 
     /** 得分项标签id */
@@ -54,59 +62,75 @@ public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtz
     protected void setupObservers(LifecycleOwner owner) {
         super.setupObservers(owner);
         mViewModel.getClickable().observe(owner, this::onClickableChanged);
-        mViewModel.getScores().observe(owner, this::onScoresChanged);
-        mViewModel.getSelected().observe(owner, this::onSelectedChanged);
-        mViewModel.getUpperTotalScore().observe(owner, this::onUpperTotalScoreChanged);
-        mViewModel.getBonusScore().observe(owner, this::onBonusScoreChanged);
-        mViewModel.getTotalScore().observe(owner, this::onTotalScoreChanged);
+        for (int p = 0; p < mViewModel.getNumPlayersValue(); p++) {
+            final int player = p;
+            YahtzeeGameData data = mViewModel.data(p);
+            data.scores.observe(owner, scores -> onScoresChanged(player, scores));
+            data.selected.observe(owner, selected -> onSelectedChanged(player, selected));
+            data.upperTotalScore.observe(owner, score -> onUpperTotalScoreChanged(player, score));
+            data.bonusScore.observe(owner, score -> onBonusScoreChanged(player, score));
+            data.score.observe(owner, score -> onTotalScoreChanged(player, score));
+        }
     }
 
     /** 得分项可点击状态更新时的回调 */
     protected void onClickableChanged(boolean clickable) {
-        int[] scores = mViewModel.getScores().getValue();
-        boolean[] selected = mViewModel.getSelected().getValue();
-        if (scores == null || selected == null)
-            return;
-
-        onScoresChanged(scores);
-        onSelectedChanged(selected);
-    }
-
-    /** 得分项的得分更新时的回调 */
-    protected void onScoresChanged(int[] scores) {
-        boolean[] selected = mViewModel.getSelected().getValue();
-        if (selected == null)
-            return;
-
-        for (int i = 0; i < scores.length; i++)
-            mScoreTextViews[i].setText(selected[i] || mViewModel.isClickable() ? Integer.toString(scores[i]) : "");
-    }
-
-    /** 得分项选择状态更新时的回调 */
-    protected void onSelectedChanged(boolean[] selected) {
-        for (int i = 0; i < selected.length; i++) {
-            boolean candidate = !selected[i] && mViewModel.isClickable();
-            mScoreTextViews[i].setEnabled(candidate);
-            mScoreTextViews[i].setTextColor(getResources().getColor(
-                    candidate ? R.color.scorecard_text_candidate : R.color.scorecard_text, null));
-            mScoreTextViews[i].setBackgroundColor(getResources().getColor(
-                    candidate ? R.color.scorecard_background_candidate : R.color.scorecard_background, null));
+        for (int p = 0; p < mScoreTextViews.length; p++) {
+            if (mScoreTextViews[p] == null)
+                continue;
+            YahtzeeGameData data = mViewModel.data(p);
+            onScoresChanged(p, data.scores.getValue());
+            onSelectedChanged(p, data.selected.getValue());
         }
     }
 
-    /** 上区总分更新时的回调 */
-    protected void onUpperTotalScoreChanged(int upperTotalScore) {
-        mUpperTotalScoreTextView.setText(Integer.toString(upperTotalScore));
+    /** 指定玩家的得分项得分更新时的回调 */
+    protected void onScoresChanged(int player, int[] scores) {
+        if (scores == null || player >= mScoreTextViews.length || mScoreTextViews[player] == null)
+            return;
+
+        boolean[] selected = mViewModel.data(player).selected.getValue();
+        if (selected == null)
+            return;
+
+        boolean clickable = player == mViewModel.getCurrentPlayerValue() && mViewModel.isClickable();
+        for (int i = 0; i < scores.length; i++)
+            mScoreTextViews[player][i].setText(
+                    selected[i] || clickable ? Integer.toString(scores[i]) : "");
     }
 
-    /** 奖励分更新时的回调 */
-    protected void onBonusScoreChanged(int bonusScore) {
-        mBonusScoreTextView.setText(Integer.toString(bonusScore));
+    /** 指定玩家的得分项选择状态更新时的回调 */
+    protected void onSelectedChanged(int player, boolean[] selected) {
+        if (selected == null || player >= mScoreTextViews.length || mScoreTextViews[player] == null)
+            return;
+
+        boolean candidate = player == mViewModel.getCurrentPlayerValue() && mViewModel.isClickable();
+        for (int i = 0; i < selected.length; i++) {
+            boolean enabled = candidate && !selected[i];
+            mScoreTextViews[player][i].setEnabled(enabled);
+            mScoreTextViews[player][i].setTextColor(getResources().getColor(
+                    enabled ? R.color.scorecard_text_candidate : R.color.scorecard_text, null));
+            mScoreTextViews[player][i].setBackgroundColor(getResources().getColor(
+                    enabled ? R.color.scorecard_background_candidate : R.color.scorecard_background, null));
+        }
     }
 
-    /** 游戏总分更新时的回调 */
-    protected void onTotalScoreChanged(int totalScore) {
-        mTotalScoreTextView.setText(Integer.toString(totalScore));
+    /** 指定玩家的上区总分更新时的回调 */
+    protected void onUpperTotalScoreChanged(int player, int upperTotalScore) {
+        if (player < mUpperTotalScoreTextViews.length && mUpperTotalScoreTextViews[player] != null)
+            mUpperTotalScoreTextViews[player].setText(Integer.toString(upperTotalScore));
+    }
+
+    /** 指定玩家的奖励分更新时的回调 */
+    protected void onBonusScoreChanged(int player, int bonusScore) {
+        if (player < mBonusScoreTextViews.length && mBonusScoreTextViews[player] != null)
+            mBonusScoreTextViews[player].setText(Integer.toString(bonusScore));
+    }
+
+    /** 指定玩家的游戏总分更新时的回调 */
+    protected void onTotalScoreChanged(int player, int totalScore) {
+        if (player < mTotalScoreTextViews.length && mTotalScoreTextViews[player] != null)
+            mTotalScoreTextViews[player].setText(Integer.toString(totalScore));
     }
 
     /** 选择指定的得分项 */

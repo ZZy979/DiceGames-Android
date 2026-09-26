@@ -66,7 +66,7 @@ public class FarkleGameViewModel extends BaseGameViewModel {
     private final MutableLiveData<List<Pair<Integer, Object[]>>> gameLog = new MutableLiveData<>(new ArrayList<>());
 
     public FarkleGameViewModel() {
-        super(NUM_DICE, UNLIMITED_ROLLS);
+        super(NUM_DICE, UNLIMITED_ROLLS, NUM_PLAYERS, NUM_PLAYERS);
         disableAllDice();
         addGameBeginsLog();
     }

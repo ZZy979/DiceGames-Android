@@ -20,37 +20,65 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
     /** 奖励分值 */
     protected final int bonusValue;
 
-    /** 得分项是否可点击 */
+    /** 当前玩家的得分项是否可点击 */
     protected final MutableLiveData<Boolean> clickable = new MutableLiveData<>(false);
 
-    /** 每个得分项的得分（未选择的为预估得分） */
-    protected final MutableLiveData<int[]> scores = new MutableLiveData<>();
+    /**
+     * 记分板类游戏的玩家数据<br>
+     * 每个玩家有自己的得分项得分、已选择状态、上区总分和奖励分，游戏总分为基类的score
+     */
+    public static class YahtzeeGameData extends BaseGameData {
+        /** 每个得分项的得分（未选择的为预估得分） */
+        public final MutableLiveData<int[]> scores;
 
-    /** 每个得分项是否已选择 */
-    protected final MutableLiveData<boolean[]> selected = new MutableLiveData<>();
+        /** 每个得分项是否已选择 */
+        public final MutableLiveData<boolean[]> selected;
 
-    /** 已选择得分项个数 */
-    // 除了选择得分项，初始化、销毁重建时也会触发observer（此时已选择个数并未改变），因此不适合用于判断游戏结束
-    protected int numSelected = 0;
+        /** 已选择得分项个数 */
+        public int numSelected = 0;
 
-    /** 获得的上区总分 */
-    protected final MutableLiveData<Integer> upperTotalScore = new MutableLiveData<>(0);
+        /** 获得的上区总分 */
+        public final MutableLiveData<Integer> upperTotalScore = new MutableLiveData<>(0);
 
-    /** 获得的奖励分 */
-    protected final MutableLiveData<Integer> bonusScore = new MutableLiveData<>(0);
+        /** 获得的奖励分 */
+        public final MutableLiveData<Integer> bonusScore = new MutableLiveData<>(0);
 
-    /** 获得的游戏总分 */
-    protected final MutableLiveData<Integer> totalScore = new MutableLiveData<>(0);
+        public YahtzeeGameData(int numCategories) {
+            scores = new MutableLiveData<>(new int[numCategories]);
+            selected = new MutableLiveData<>(new boolean[numCategories]);
+        }
+
+        @Override
+        public void reset() {
+            super.reset();
+            int numCategories = scores.getValue() == null ? 0 : scores.getValue().length;
+            scores.setValue(new int[numCategories]);
+            selected.setValue(new boolean[numCategories]);
+            numSelected = 0;
+            upperTotalScore.setValue(0);
+            bonusScore.setValue(0);
+        }
+    }
 
     protected BaseYahtzeeGameViewModel(
-            int numDice, int maxRolls, int numCategories, int bonusThreshold, int bonusValue) {
-        super(numDice, maxRolls);
+            int numDice, int maxRolls, int minPlayers, int maxPlayers,
+            int numCategories, int bonusThreshold, int bonusValue) {
+        super(numDice, maxRolls, minPlayers, maxPlayers);
         this.numCategories = numCategories;
         this.bonusThreshold = bonusThreshold;
         this.bonusValue = bonusValue;
-        this.scores.setValue(new int[numCategories]);
-        this.selected.setValue(new boolean[numCategories]);
+        initGameData(minPlayers);
         disableAllDice();
+    }
+
+    @Override
+    protected BaseGameData createGameData() {
+        return new YahtzeeGameData(numCategories);
+    }
+
+    /** 返回指定玩家的数据 */
+    public YahtzeeGameData data(int player) {
+        return (YahtzeeGameData) gameData[player];
     }
 
     public int getNumCategories() {
@@ -73,40 +101,17 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         return Boolean.TRUE.equals(clickable.getValue());
     }
 
-    public LiveData<int[]> getScores() {
-        return scores;
-    }
-
-    public LiveData<boolean[]> getSelected() {
-        return selected;
-    }
-
-    public int getNumSelected() {
-        return numSelected;
-    }
-
-    public LiveData<Integer> getUpperTotalScore() {
-        return upperTotalScore;
-    }
-
-    public LiveData<Integer> getBonusScore() {
-        return bonusScore;
-    }
-
-    public LiveData<Integer> getTotalScore() {
-        return totalScore;
-    }
-
     @Override
     public void updateDiceNumbers(int... numbers) {
         super.updateDiceNumbers(numbers);
         updateScores();
     }
 
-    /** 根据骰子点数更新预估得分 */
+    /** 根据骰子点数更新当前玩家的预估得分 */
     protected void updateScores() {
-        boolean[] isSelected = selected.getValue();
-        int[] currentScores = scores.getValue();
+        YahtzeeGameData currentData = data(getCurrentPlayerValue());
+        boolean[] isSelected = currentData.selected.getValue();
+        int[] currentScores = currentData.scores.getValue();
         if (isSelected == null || currentScores == null)
             return;
 
@@ -114,7 +119,7 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
             if (!isSelected[i])
                 currentScores[i] = calculateScore(i);
         }
-        scores.setValue(currentScores);
+        currentData.scores.setValue(currentScores);
     }
 
     /** 根据当前骰子点数计算指定得分项的得分 */
@@ -126,10 +131,10 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         return numbers != null && ArrayUtil.all(numbers, numbers[0]);
     }
 
-    /** 是否满足Joker规则：满足Yahtzee，且Yahtzee和上区对应的数字已经选过 */
+    /** 当前玩家是否满足Joker规则：满足Yahtzee，且Yahtzee和上区对应的数字已经选过 */
     protected boolean isJoker() {
         int[] numbers = diceNumbers.getValue();
-        boolean[] isSelected = selected.getValue();
+        boolean[] isSelected = data(getCurrentPlayerValue()).selected.getValue();
         if (numbers == null || isSelected == null)
             return false;
 
@@ -138,32 +143,54 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
 
     @Override
     protected void updateDiceWindowEnabled() {
-        super.updateDiceWindowEnabled();
-        clickable.setValue(!diceRolling && hasRolled());
+        boolean humanTurn = isHumanTurn();
+        rollButtonEnabled.setValue(humanTurn && !diceRolling && hasRemainingRolls());
+        setAllDiceEnabled(humanTurn && !diceRolling && hasRemainingRolls() && hasRolled());
+        clickable.setValue(humanTurn && !diceRolling && hasRolled());
     }
 
-    /** 选择指定的得分项，更新得分 */
+    /** 选择指定的得分项，更新得分（供玩家点击） */
     public void select(int category) {
-        boolean[] currentSelected = selected.getValue();
+        if (!isHumanTurn())
+            return;
+        doSelect(category);
+    }
+
+    /** 选择当前玩家的指定得分项，然后轮到下一位玩家（可由玩家或计算机调用） */
+    protected void doSelect(int category) {
+        YahtzeeGameData currentData = data(getCurrentPlayerValue());
+        boolean[] currentSelected = currentData.selected.getValue();
         if (currentSelected == null || currentSelected[category])
             return;
 
         currentSelected[category] = true;
-        selected.setValue(currentSelected);
-        numSelected++;
+        currentData.selected.setValue(currentSelected);
+        currentData.numSelected++;
 
         // 掷骰子后已计算过预估得分，此处无需更新scores
-        updateBonusAndTotalScore();
+        updateBonusAndTotalScore(currentData);
 
-        if (numSelected == numCategories)
+        if (isAllPlayersFinished()) {
             gameOver();
-        else
-            resetDiceWindow();
+            return;
+        }
+        nextPlayer();
+        resetDiceWindow();
     }
 
-    private void updateBonusAndTotalScore() {
-        int[] currentScores = scores.getValue();
-        boolean[] isSelected = selected.getValue();
+    /** 是否所有玩家都已选完得分项 */
+    protected boolean isAllPlayersFinished() {
+        for (BaseGameData playerData : gameData) {
+            if (((YahtzeeGameData) playerData).numSelected < numCategories)
+                return false;
+        }
+        return true;
+    }
+
+    /** 更新指定玩家的上区总分、奖励分和游戏总分 */
+    private void updateBonusAndTotalScore(YahtzeeGameData playerData) {
+        int[] currentScores = playerData.scores.getValue();
+        boolean[] isSelected = playerData.selected.getValue();
         if (currentScores == null || isSelected == null)
             return;
 
@@ -180,9 +207,9 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
                 total += currentScores[i];
         }
 
-        upperTotalScore.setValue(upperTotal);
-        bonusScore.setValue(bonus);
-        totalScore.setValue(total);
+        playerData.upperTotalScore.setValue(upperTotal);
+        playerData.bonusScore.setValue(bonus);
+        playerData.score.setValue(total);
     }
 
     /** 游戏结束 */
@@ -204,12 +231,6 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
     @Override
     public void reset() {
         clickable.setValue(false);
-        scores.setValue(new int[numCategories]);
-        selected.setValue(new boolean[numCategories]);
-        numSelected = 0;
-        upperTotalScore.setValue(0);
-        bonusScore.setValue(0);
-        totalScore.setValue(0);
         super.reset();
     }
 }

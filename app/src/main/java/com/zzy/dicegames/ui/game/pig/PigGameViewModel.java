@@ -45,7 +45,7 @@ public class PigGameViewModel extends BaseGameViewModel {
     private final MutableLiveData<Boolean> newGameButtonVisible = new MutableLiveData<>(false);
 
     public PigGameViewModel() {
-        super(NUM_DICE, UNLIMITED_ROLLS);
+        super(NUM_DICE, UNLIMITED_ROLLS, NUM_PLAYERS, NUM_PLAYERS);
     }
 
     public LiveData<Integer> getCurrentPlayer() {

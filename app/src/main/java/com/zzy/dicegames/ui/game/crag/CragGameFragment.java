@@ -41,9 +41,9 @@ public class CragGameFragment extends BaseYahtzeeGameFragment {
     }
 
     @Override
-    protected void onUpperTotalScoreChanged(int upperTotalScore) {}
+    protected void onUpperTotalScoreChanged(int player, int upperTotalScore) {}
 
     @Override
-    protected void onBonusScoreChanged(int bonusScore) {}
+    protected void onBonusScoreChanged(int player, int bonusScore) {}
 
 }

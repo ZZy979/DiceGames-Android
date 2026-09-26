@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.util.List;
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 
@@ -34,13 +36,13 @@ public class BaseGameViewModelTest {
     @Before
     public void setUp() {
         // ViewModel初始化必须放在setUp()方法中，否则会报错 Method xxx not mocked
-        viewModel = new BaseGameViewModel(5, 2);
+        viewModel = new BaseGameViewModel(5, 2, 1, 1);
         viewModel.setHandler(mockHandler);
     }
 
     @Test
     public void testInitialization() {
-        viewModel = new BaseGameViewModel(4, 3);
+        viewModel = new BaseGameViewModel(4, 3, 1, 1);
         assertEquals(4, viewModel.getNumDice());
         assertEquals(3, viewModel.getMaxRolls());
         assertEquals(3, viewModel.getRemainingRolls().getValue().intValue());
@@ -54,10 +56,60 @@ public class BaseGameViewModelTest {
 
     @Test
     public void testIllegalArgument() {
-        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(0, 3));
-        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(7, 3));
-        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(4, 0));
-        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(5, -1));
+        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(0, 3, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(7, 3, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(4, 0, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(5, -1, 1, 1));
+        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(5, 3, 0, 1));
+        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(5, 3, 2, 1));
+        assertThrows(IllegalArgumentException.class, () -> new BaseGameViewModel(5, 3, 1, MAX_PLAYERS + 1));
+    }
+
+    @Test
+    public void testPlayerCountSettings() {
+        assertFalse(viewModel.supportsPlayerCountSelection());
+        assertEquals(List.of(1), viewModel.getSupportedPlayerCounts());
+        assertEquals(1, viewModel.getNumPlayersValue());
+
+        var multiPlayerViewModel = new BaseGameViewModel(5, 2, 1, 4);
+        assertTrue(multiPlayerViewModel.supportsPlayerCountSelection());
+        assertEquals(List.of(1, 2, 3, 4), multiPlayerViewModel.getSupportedPlayerCounts());
+        assertEquals(1, multiPlayerViewModel.getNumPlayersValue());
+        assertTrue(multiPlayerViewModel.isHumanTurn());
+
+        // 支持的玩家数量按范围判断
+        assertTrue(multiPlayerViewModel.isSupportedPlayerCount(1));
+        assertTrue(multiPlayerViewModel.isSupportedPlayerCount(4));
+        assertFalse(multiPlayerViewModel.isSupportedPlayerCount(0));
+        assertFalse(multiPlayerViewModel.isSupportedPlayerCount(5));
+
+        // 切换玩家数量会重建玩家数据并开始新游戏
+        multiPlayerViewModel.getGameData(0).score.setValue(30);
+        multiPlayerViewModel.setNumPlayers(3);
+        assertEquals(3, multiPlayerViewModel.getNumPlayersValue());
+        for (int p = 0; p < 3; p++)
+            assertEquals(0, multiPlayerViewModel.getGameData(p).score.getValue().intValue());
+
+        assertThrows(IllegalArgumentException.class, () -> multiPlayerViewModel.setNumPlayers(0));
+        assertThrows(IllegalArgumentException.class, () -> multiPlayerViewModel.setNumPlayers(5));
+    }
+
+    @Test
+    public void testPlayersData() {
+        var multiPlayerViewModel = new BaseGameViewModel(5, 2, 2, 2);
+        assertEquals(2, multiPlayerViewModel.getNumPlayersValue());
+
+        // 默认在0号玩家，增加得分只影响当前玩家
+        multiPlayerViewModel.addCurrentPlayerScore(3);
+        assertEquals(3, multiPlayerViewModel.getCurrentPlayerScore());
+        assertEquals(0, multiPlayerViewModel.getGameData(1).score.getValue().intValue());
+
+        multiPlayerViewModel.nextPlayer();
+        assertEquals(1, multiPlayerViewModel.getCurrentPlayerValue());
+        assertTrue(multiPlayerViewModel.isComputerTurn());
+        multiPlayerViewModel.addCurrentPlayerScore(5);
+        assertEquals(5, multiPlayerViewModel.getGameData(1).score.getValue().intValue());
+        assertEquals(3, multiPlayerViewModel.getGameData(0).score.getValue().intValue());
     }
 
     @Test
@@ -109,7 +161,7 @@ public class BaseGameViewModelTest {
 
     @Test
     public void testUnlimitedRolls() {
-        viewModel = new BaseGameViewModel(5, UNLIMITED_ROLLS);
+        viewModel = new BaseGameViewModel(5, UNLIMITED_ROLLS, 1, 1);
         assertEquals(UNLIMITED_ROLLS, viewModel.getRemainingRolls().getValue().intValue());
 
         viewModel.rollDice();

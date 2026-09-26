@@ -1,7 +1,7 @@
 package com.zzy.dicegames.ui.game.yatzy;
 
 import android.os.Handler;
-
+import com.zzy.dicegames.ui.game.yahtzee.BaseYahtzeeGameViewModel.YahtzeeGameData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,6 +14,7 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_HUMAN;
 import static com.zzy.dicegames.ui.game.yatzy.MaxiYatzyGameViewModel.Category.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -55,7 +56,7 @@ public class MaxiYatzyGameViewModelTest {
     public void testUpdateDiceNumbers() {
         viewModel.updateDiceNumbers(3, 4, 5, 5, 3, 5);
         int[] expected = {0, 0, 6, 4, 15, 0, 10, 16, 0, 15, 0, 0, 0, 0, 0, 21, 0, 0, 25, 0};
-        assertArrayEquals(expected, viewModel.getScores().getValue());
+        assertArrayEquals(expected, viewModel.data(PLAYER_HUMAN).scores.getValue());
     }
 
     @Test
@@ -75,17 +76,18 @@ public class MaxiYatzyGameViewModelTest {
 
     @Test
     public void testBonus() {
+        YahtzeeGameData data = viewModel.data(PLAYER_HUMAN);
         for (int i = 6; i >= 2; i--) {
             viewModel.updateDiceNumbers(i, i, i, i, i - 1, i - 1);
             viewModel.select(i - 1);
         }
-        assertEquals(80, viewModel.getUpperTotalScore().getValue().intValue());
-        assertEquals(0, viewModel.getBonusScore().getValue().intValue());
+        assertEquals(80, data.upperTotalScore.getValue().intValue());
+        assertEquals(0, data.bonusScore.getValue().intValue());
 
         viewModel.updateDiceNumbers(1, 1, 1, 1, 2, 2);
         viewModel.select(ONES.ordinal());
-        assertEquals(84, viewModel.getUpperTotalScore().getValue().intValue());
-        assertEquals(100, viewModel.getBonusScore().getValue().intValue());
+        assertEquals(84, data.upperTotalScore.getValue().intValue());
+        assertEquals(100, data.bonusScore.getValue().intValue());
     }
 
     @Test

@@ -14,7 +14,7 @@ public class YahtzeeGameViewModel extends BaseYahtzeeGameViewModel {
     }
 
     public YahtzeeGameViewModel() {
-        super(5, 3, Category.values().length, 63, 35);
+        super(5, 3, 1, 1, Category.values().length, 63, 35);
     }
 
     @Override
@@ -83,11 +83,14 @@ public class YahtzeeGameViewModel extends BaseYahtzeeGameViewModel {
 
     @Override
     public YahtzeeScore createScoreEntity() {
-        int[] finalScores = scores.getValue();
-        if (finalScores == null || totalScore.getValue() == null || bonusScore.getValue() == null)
+        YahtzeeGameData humanData = data(PLAYER_HUMAN);
+        int[] finalScores = humanData.scores.getValue();
+        Integer totalScore = humanData.score.getValue();
+        Integer bonusScore = humanData.bonusScore.getValue();
+        if (finalScores == null || totalScore == null || bonusScore == null)
             return null;
-        return new YahtzeeScore(LocalDate.now().toString(), totalScore.getValue(),
-                bonusScore.getValue() > 0, finalScores[finalScores.length - 1] > 0);
+        return new YahtzeeScore(LocalDate.now().toString(), totalScore,
+                bonusScore > 0, finalScores[finalScores.length - 1] > 0);
     }
 
     @Override

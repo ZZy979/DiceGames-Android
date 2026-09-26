@@ -4,6 +4,7 @@ import android.os.Handler;
 
 import com.zzy.dicegames.data.entity.BaseScore;
 import com.zzy.dicegames.data.entity.yahtzee.YahtzeeScore;
+import com.zzy.dicegames.ui.game.yahtzee.BaseYahtzeeGameViewModel.YahtzeeGameData;
 import com.zzy.dicegames.utils.ArrayUtil;
 import com.zzy.dicegames.utils.score.ScoreUtil;
 
@@ -19,6 +20,7 @@ import java.util.function.Consumer;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Observer;
 
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_HUMAN;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -37,7 +39,7 @@ public class BaseYahtzeeGameViewModelTest {
 
    @Before
    public void setUp() {
-      viewModel = new BaseYahtzeeGameViewModel(5, 3, 10, 20, 8) {
+      viewModel = new BaseYahtzeeGameViewModel(5, 3, 1, 1, 10, 20, 8) {
          @Override public int calculateScore(int category) { return sumOfDice; }
          @Override public BaseScore createScoreEntity() { return null; }
          @Override public int saveScoreToDatabase(BaseScore score) { return 0; }
@@ -52,12 +54,13 @@ public class BaseYahtzeeGameViewModelTest {
       assertEquals(20, viewModel.getBonusThreshold());
       assertEquals(8, viewModel.getBonusValue());
       assertFalse(viewModel.getClickable().getValue());
-      assertArrayEquals(new int[10], viewModel.getScores().getValue());
-      assertArrayEquals(new boolean[10], viewModel.getSelected().getValue());
-      assertEquals(0, viewModel.getNumSelected());
-      assertEquals(0, viewModel.getUpperTotalScore().getValue().intValue());
-      assertEquals(0, viewModel.getBonusScore().getValue().intValue());
-      assertEquals(0, viewModel.getTotalScore().getValue().intValue());
+      YahtzeeGameData data = viewModel.data(PLAYER_HUMAN);
+      assertArrayEquals(new int[10], data.scores.getValue());
+      assertArrayEquals(new boolean[10], data.selected.getValue());
+      assertEquals(0, data.numSelected);
+      assertEquals(0, data.upperTotalScore.getValue().intValue());
+      assertEquals(0, data.bonusScore.getValue().intValue());
+      assertEquals(0, data.score.getValue().intValue());
       assertFalse(viewModel.hasRolled());
       assertFalse(viewModel.isDiceRolling());
       assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
@@ -89,29 +92,30 @@ public class BaseYahtzeeGameViewModelTest {
 
    @Test
    public void testSelect() {
+      YahtzeeGameData data = viewModel.data(PLAYER_HUMAN);
       viewModel.rollDice(1, 2, 3, 4, 5);
       viewModel.select(9);
-      assertEquals(15, viewModel.getScores().getValue()[9]);
-      assertTrue(viewModel.getSelected().getValue()[9]);
-      assertEquals(1, viewModel.getNumSelected());
-      assertEquals(0, viewModel.getUpperTotalScore().getValue().intValue());
-      assertEquals(15, viewModel.getTotalScore().getValue().intValue());
+      assertEquals(15, data.scores.getValue()[9]);
+      assertTrue(data.selected.getValue()[9]);
+      assertEquals(1, data.numSelected);
+      assertEquals(0, data.upperTotalScore.getValue().intValue());
+      assertEquals(15, data.score.getValue().intValue());
 
       viewModel.rollDice(2, 2, 2, 2, 2);
       viewModel.select(1);
-      assertEquals(10, viewModel.getScores().getValue()[1]);
-      assertTrue(viewModel.getSelected().getValue()[1]);
-      assertEquals(2, viewModel.getNumSelected());
-      assertEquals(10, viewModel.getUpperTotalScore().getValue().intValue());
-      assertEquals(25, viewModel.getTotalScore().getValue().intValue());
+      assertEquals(10, data.scores.getValue()[1]);
+      assertTrue(data.selected.getValue()[1]);
+      assertEquals(2, data.numSelected);
+      assertEquals(10, data.upperTotalScore.getValue().intValue());
+      assertEquals(25, data.score.getValue().intValue());
 
       // 重复选择
       viewModel.select(1);
-      assertEquals(10, viewModel.getScores().getValue()[1]);
-      assertTrue(viewModel.getSelected().getValue()[1]);
-      assertEquals(2, viewModel.getNumSelected());
-      assertEquals(10, viewModel.getUpperTotalScore().getValue().intValue());
-      assertEquals(25, viewModel.getTotalScore().getValue().intValue());
+      assertEquals(10, data.scores.getValue()[1]);
+      assertTrue(data.selected.getValue()[1]);
+      assertEquals(2, data.numSelected);
+      assertEquals(10, data.upperTotalScore.getValue().intValue());
+      assertEquals(25, data.score.getValue().intValue());
    }
 
    @Test
@@ -150,12 +154,13 @@ public class BaseYahtzeeGameViewModelTest {
 
    @Test
    public void testSelectObserver() {
+      YahtzeeGameData data = viewModel.data(PLAYER_HUMAN);
       Observer<int[]> scoresObserver = mock(Observer.class);
       Observer<boolean[]> selectedObserver = mock(Observer.class);
       Observer<Integer> totalScoreObserver = mock(Observer.class);
-      viewModel.getScores().observeForever(scoresObserver);
-      viewModel.getSelected().observeForever(selectedObserver);
-      viewModel.getTotalScore().observeForever(totalScoreObserver);
+      data.scores.observeForever(scoresObserver);
+      data.selected.observeForever(selectedObserver);
+      data.score.observeForever(totalScoreObserver);
 
       viewModel.rollDice(2, 2, 2, 2, 2);
       viewModel.select(1);
@@ -167,23 +172,24 @@ public class BaseYahtzeeGameViewModelTest {
 
    @Test
    public void testBonus() {
+      YahtzeeGameData data = viewModel.data(PLAYER_HUMAN);
       viewModel.rollDice(3, 3, 3, 3, 3);
       viewModel.select(2);
-      assertEquals(15, viewModel.getUpperTotalScore().getValue().intValue());
-      assertEquals(0, viewModel.getBonusScore().getValue().intValue());
-      assertEquals(15, viewModel.getTotalScore().getValue().intValue());
+      assertEquals(15, data.upperTotalScore.getValue().intValue());
+      assertEquals(0, data.bonusScore.getValue().intValue());
+      assertEquals(15, data.score.getValue().intValue());
 
       viewModel.rollDice(2, 2, 2, 2, 2);
       viewModel.select(1);
-      assertEquals(25, viewModel.getUpperTotalScore().getValue().intValue());
-      assertEquals(8, viewModel.getBonusScore().getValue().intValue());
-      assertEquals(33, viewModel.getTotalScore().getValue().intValue());
+      assertEquals(25, data.upperTotalScore.getValue().intValue());
+      assertEquals(8, data.bonusScore.getValue().intValue());
+      assertEquals(33, data.score.getValue().intValue());
 
       viewModel.rollDice(6, 6, 6, 6, 6);
       viewModel.select(5);
-      assertEquals(55, viewModel.getUpperTotalScore().getValue().intValue());
-      assertEquals(8, viewModel.getBonusScore().getValue().intValue());
-      assertEquals(63, viewModel.getTotalScore().getValue().intValue());
+      assertEquals(55, data.upperTotalScore.getValue().intValue());
+      assertEquals(8, data.bonusScore.getValue().intValue());
+      assertEquals(63, data.score.getValue().intValue());
    }
 
    @Test
@@ -213,21 +219,22 @@ public class BaseYahtzeeGameViewModelTest {
 
    @Test
    public void testReset() {
+      YahtzeeGameData data = viewModel.data(PLAYER_HUMAN);
       viewModel.rollDice(6, 6, 6, 6, 6);
       viewModel.select(5);
-      assertEquals(30, viewModel.getScores().getValue()[5]);
-      assertTrue(viewModel.getSelected().getValue()[5]);
-      assertEquals(1, viewModel.getNumSelected());
-      assertEquals(30, viewModel.getUpperTotalScore().getValue().intValue());
-      assertEquals(8, viewModel.getBonusScore().getValue().intValue());
-      assertEquals(38, viewModel.getTotalScore().getValue().intValue());
+      assertEquals(30, data.scores.getValue()[5]);
+      assertTrue(data.selected.getValue()[5]);
+      assertEquals(1, data.numSelected);
+      assertEquals(30, data.upperTotalScore.getValue().intValue());
+      assertEquals(8, data.bonusScore.getValue().intValue());
+      assertEquals(38, data.score.getValue().intValue());
 
       viewModel.reset();
-      assertArrayEquals(new int[10], viewModel.getScores().getValue());
-      assertArrayEquals(new boolean[10], viewModel.getSelected().getValue());
-      assertEquals(0, viewModel.getNumSelected());
-      assertEquals(0, viewModel.getUpperTotalScore().getValue().intValue());
-      assertEquals(0, viewModel.getBonusScore().getValue().intValue());
-      assertEquals(0, viewModel.getTotalScore().getValue().intValue());
+      assertArrayEquals(new int[10], data.scores.getValue());
+      assertArrayEquals(new boolean[10], data.selected.getValue());
+      assertEquals(0, data.numSelected);
+      assertEquals(0, data.upperTotalScore.getValue().intValue());
+      assertEquals(0, data.bonusScore.getValue().intValue());
+      assertEquals(0, data.score.getValue().intValue());
    }
 }

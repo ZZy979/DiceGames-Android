@@ -1,7 +1,7 @@
 package com.zzy.dicegames.ui.game.yatzy;
 
 import android.os.Handler;
-
+import com.zzy.dicegames.ui.game.yahtzee.BaseYahtzeeGameViewModel.YahtzeeGameData;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,6 +14,7 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_HUMAN;
 import static com.zzy.dicegames.ui.game.yatzy.YatzyGameViewModel.Category.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -55,7 +56,7 @@ public class YatzyGameViewModelTest {
     public void testSetDiceNumbers() {
         viewModel.updateDiceNumbers(3, 4, 5, 5, 3);
         int[] expected = {0, 0, 6, 4, 10, 0, 10, 16, 0, 0, 0, 0, 0, 20, 0};
-        assertArrayEquals(expected, viewModel.getScores().getValue());
+        assertArrayEquals(expected, viewModel.data(PLAYER_HUMAN).scores.getValue());
     }
 
     @Test
@@ -75,17 +76,18 @@ public class YatzyGameViewModelTest {
 
     @Test
     public void testBonus() {
+        YahtzeeGameData data = viewModel.data(PLAYER_HUMAN);
         for (int i = 6; i >= 2; i--) {
             viewModel.updateDiceNumbers(i, i, i, i - 1, i - 1);
             viewModel.select(i - 1);
         }
-        assertEquals(60, viewModel.getUpperTotalScore().getValue().intValue());
-        assertEquals(0, viewModel.getBonusScore().getValue().intValue());
+        assertEquals(60, data.upperTotalScore.getValue().intValue());
+        assertEquals(0, data.bonusScore.getValue().intValue());
 
         viewModel.updateDiceNumbers(1, 1, 1, 2, 2);
         viewModel.select(ONES.ordinal());
-        assertEquals(63, viewModel.getUpperTotalScore().getValue().intValue());
-        assertEquals(50, viewModel.getBonusScore().getValue().intValue());
+        assertEquals(63, data.upperTotalScore.getValue().intValue());
+        assertEquals(50, data.bonusScore.getValue().intValue());
     }
 
     @Test

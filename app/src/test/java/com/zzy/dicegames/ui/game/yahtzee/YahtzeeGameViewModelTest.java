@@ -2,6 +2,8 @@ package com.zzy.dicegames.ui.game.yahtzee;
 
 import android.os.Handler;
 
+import com.zzy.dicegames.ui.game.yahtzee.BaseYahtzeeGameViewModel.YahtzeeGameData;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,6 +16,7 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_HUMAN;
 import static com.zzy.dicegames.ui.game.yahtzee.YahtzeeGameViewModel.Category.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -55,7 +58,7 @@ public class YahtzeeGameViewModelTest {
     public void testUpdateDiceNumbers() {
         viewModel.updateDiceNumbers(4, 1, 3, 2, 4);
         int[] expected = {1, 2, 3, 8, 0, 0, 0, 0, 0, 30, 0, 14, 0};
-        assertArrayEquals(expected, viewModel.getScores().getValue());
+        assertArrayEquals(expected, viewModel.data(PLAYER_HUMAN).scores.getValue());
     }
 
     @Test
@@ -75,17 +78,18 @@ public class YahtzeeGameViewModelTest {
 
     @Test
     public void testBonus() {
+        YahtzeeGameData data = viewModel.data(PLAYER_HUMAN);
         for (int i = 6; i >= 2; i--) {
             viewModel.updateDiceNumbers(i, i, i, i - 1, i - 1);
             viewModel.select(i - 1);
         }
-        assertEquals(60, viewModel.getUpperTotalScore().getValue().intValue());
-        assertEquals(0, viewModel.getBonusScore().getValue().intValue());
+        assertEquals(60, data.upperTotalScore.getValue().intValue());
+        assertEquals(0, data.bonusScore.getValue().intValue());
 
         viewModel.updateDiceNumbers(1, 1, 1, 2, 2);
         viewModel.select(ONES.ordinal());
-        assertEquals(63, viewModel.getUpperTotalScore().getValue().intValue());
-        assertEquals(35, viewModel.getBonusScore().getValue().intValue());
+        assertEquals(63, data.upperTotalScore.getValue().intValue());
+        assertEquals(35, data.bonusScore.getValue().intValue());
     }
 
     @Test

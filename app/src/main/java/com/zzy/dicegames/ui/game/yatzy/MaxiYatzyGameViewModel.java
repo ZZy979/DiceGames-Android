@@ -17,7 +17,7 @@ public class MaxiYatzyGameViewModel extends BaseYahtzeeGameViewModel {
     }
 
     public MaxiYatzyGameViewModel() {
-        super(6, 3, Category.values().length, 84, 100);
+        super(6, 3, 1, 1, Category.values().length, 84, 100);
     }
 
     @Override
@@ -120,11 +120,14 @@ public class MaxiYatzyGameViewModel extends BaseYahtzeeGameViewModel {
 
     @Override
     public MaxiYatzyScore createScoreEntity() {
-        int[] finalScores = scores.getValue();
-        if (finalScores == null || totalScore.getValue() == null || bonusScore.getValue() == null)
+        YahtzeeGameData humanData = data(PLAYER_HUMAN);
+        int[] finalScores = humanData.scores.getValue();
+        Integer totalScore = humanData.score.getValue();
+        Integer bonusScore = humanData.bonusScore.getValue();
+        if (finalScores == null || totalScore == null || bonusScore == null)
             return null;
-        return new MaxiYatzyScore(LocalDate.now().toString(), totalScore.getValue(),
-                bonusScore.getValue() > 0, finalScores[finalScores.length - 1] > 0);
+        return new MaxiYatzyScore(LocalDate.now().toString(), totalScore,
+                bonusScore > 0, finalScores[finalScores.length - 1] > 0);
     }
 
     @Override

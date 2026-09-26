@@ -105,7 +105,7 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
     }
 
     public LiarsDiceGameViewModel() {
-        super(NUM_DICE_PER_PLAYER, UNLIMITED_ROLLS);
+        super(NUM_DICE_PER_PLAYER, UNLIMITED_ROLLS, MIN_NUM_PLAYERS, MAX_NUM_PLAYERS);
         disableAllDice();
         initGameData(DEFAULT_NUM_PLAYERS);
         initGame();
@@ -122,11 +122,6 @@ public class LiarsDiceGameViewModel extends BaseGameViewModel {
         records = new int[n][];
         for (int p = 0; p < n; p++)
             records[p] = data(p).record.getValue();
-    }
-
-    @Override
-    public List<Integer> getSupportedPlayerCounts() {
-        return List.of(MIN_NUM_PLAYERS, 3, MAX_NUM_PLAYERS);
     }
 
     /** 返回指定玩家的数据 */

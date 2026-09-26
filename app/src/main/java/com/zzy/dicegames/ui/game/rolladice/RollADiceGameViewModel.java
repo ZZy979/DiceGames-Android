@@ -4,6 +4,6 @@ import com.zzy.dicegames.ui.game.BaseGameViewModel;
 
 public class RollADiceGameViewModel extends BaseGameViewModel {
     public RollADiceGameViewModel() {
-        super(6, UNLIMITED_ROLLS);
+        super(6, UNLIMITED_ROLLS, 1, 1);
     }
 }

@@ -49,7 +49,7 @@ public class BalutGameViewModel extends BaseGameViewModel {
     private final MutableLiveData<Integer> totalPoints = new MutableLiveData<>(0);
 
     public BalutGameViewModel() {
-        super(5, 3);
+        super(5, 3, 1, 1);
         disableAllDice();
     }
 

@@ -15,7 +15,7 @@ public class CragGameViewModel extends BaseYahtzeeGameViewModel {
     }
 
     public CragGameViewModel() {
-        super(3, 2, Category.values().length, Integer.MAX_VALUE, 0);
+        super(3, 2, 1, 1, Category.values().length, Integer.MAX_VALUE, 0);
     }
 
     @Override
@@ -70,10 +70,12 @@ public class CragGameViewModel extends BaseYahtzeeGameViewModel {
 
     @Override
     public CragScore createScoreEntity() {
-        int[] finalScores = scores.getValue();
-        if (finalScores == null || totalScore.getValue() == null)
+        YahtzeeGameData humanData = data(PLAYER_HUMAN);
+        int[] finalScores = humanData.scores.getValue();
+        Integer totalScore = humanData.score.getValue();
+        if (finalScores == null || totalScore == null)
             return null;
-        return new CragScore(LocalDate.now().toString(), totalScore.getValue(),
+        return new CragScore(LocalDate.now().toString(), totalScore,
                 finalScores[Category.CRAG.ordinal()] > 0);
     }
 
