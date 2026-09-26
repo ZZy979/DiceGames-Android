@@ -37,7 +37,9 @@ public interface YahtzeeScoreDao {
 
     @Query(
             "SELECT COUNT(*) AS count, MAX(score) AS maxScore, MIN(score) AS minScore, " +
-            "    AVG(score) AS avgScore, SUM(has_bonus) AS numBonus, SUM(has_yahtzee) AS numYahtzee " +
+            "    AVG(score) AS avgScore, SUM(has_bonus) AS numBonus, SUM(has_yahtzee) AS numYahtzee, " +
+            "    SUM(num_players > 1) AS numMultiplayer, " +
+            "    SUM(num_players > 1 AND score > computer_score) AS winCount " +
             "FROM yahtzee_score"
     )
     LiveData<YahtzeeStatistics> statistics();

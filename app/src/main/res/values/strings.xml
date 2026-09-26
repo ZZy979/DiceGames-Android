@@ -159,6 +159,7 @@
     <string name="averagePoints">Average points</string>
     <string name="gotBonus">Got bonus</string>
     <string name="gotYahtzee">Got Yahtzee</string>
+    <string name="winRateVsComputer">Win rate vs computer</string>
     <string name="gotYatzy">Got Yatzy</string>
     <string name="gotMaxiYatzy">Got Maxi Yatzy</string>
     <string name="gotBalut">Got Balut</string>

@@ -211,7 +211,7 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         // 所有骰子都要保留时再掷骰子没有意义，直接选择得分项
         if (hasRemainingRolls() && !ArrayUtil.all(keep, true) && computerShouldRollAgain(target)) {
             setDiceLocked(keep);
-            rollDiceWithAnimation();
+            postComputerAction(this::rollDiceWithAnimation);
         }
         else {
             doSelect(target);

@@ -159,6 +159,7 @@
     <string name="averagePoints">平均点数</string>
     <string name="gotBonus">得到奖励分</string>
     <string name="gotYahtzee">得到Yahtzee</string>
+    <string name="winRateVsComputer">对计算机胜率</string>
     <string name="gotYatzy">得到Yatzy</string>
     <string name="gotMaxiYatzy">得到Maxi Yatzy</string>
     <string name="gotBalut">得到Balut</string>

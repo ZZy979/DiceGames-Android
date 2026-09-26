@@ -202,7 +202,7 @@ public class BaseYahtzeeGameViewModelTest {
 
    @Test
    public void testGameOver() {
-      var score = new YahtzeeScore("2025-01-01", 300, true, false);
+      var score = new YahtzeeScore("2025-01-01", 300, 1, 0, true, false);
       doReturn(score).when(spyViewModel).createScoreEntity();
       doReturn(8).when(spyViewModel).saveScoreToDatabase(any());
       Consumer<Object[]> gameOverAction = mock(Consumer.class);

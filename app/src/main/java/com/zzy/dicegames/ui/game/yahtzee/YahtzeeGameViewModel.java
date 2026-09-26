@@ -103,7 +103,9 @@ public class YahtzeeGameViewModel extends BaseYahtzeeGameViewModel {
         Integer bonusScore = humanData.bonusScore.getValue();
         if (finalScores == null || totalScore == null || bonusScore == null)
             return null;
+        int computerScore = isMultiplayer() ? getPlayerScoreValue(PLAYER_COMPUTER) : 0;
         return new YahtzeeScore(LocalDate.now().toString(), totalScore,
+                getNumPlayersValue(), computerScore,
                 bonusScore > 0, finalScores[finalScores.length - 1] > 0);
     }
 

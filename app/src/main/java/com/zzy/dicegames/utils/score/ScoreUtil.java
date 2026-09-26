@@ -69,7 +69,8 @@ public class ScoreUtil {
     }
 
     private static boolean isEqual(BaseScore a, BaseScore b) {
-        return a.date.equals(b.date) && a.score == b.score;
+        return a.date.equals(b.date) && a.score == b.score
+                && a.numPlayers == b.numPlayers && a.computerScore == b.computerScore;
     }
 
     public static boolean isEqual(YahtzeeScore a, YahtzeeScore b) {
@@ -89,16 +90,15 @@ public class ScoreUtil {
     }
 
     public static boolean isEqual(LiarsDiceScore a, LiarsDiceScore b) {
-        return isEqual((BaseScore) a, b) && a.numPlayers == b.numPlayers
-                && a.wins == b.wins && a.losses == b.losses;
+        return isEqual((BaseScore) a, b) && a.wins == b.wins && a.losses == b.losses;
     }
 
     public static boolean isEqual(FarkleScore a, FarkleScore b) {
-        return isEqual((BaseScore) a, b) && a.computerScore == b.computerScore;
+        return isEqual((BaseScore) a, b);
     }
 
     public static boolean isEqual(PigScore a, PigScore b) {
-        return isEqual((BaseScore) a, b) && a.computerScore == b.computerScore;
+        return isEqual((BaseScore) a, b);
     }
 
     public static boolean isEqual(CragScore a, CragScore b) {

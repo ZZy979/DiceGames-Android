@@ -27,6 +27,9 @@ public class YahtzeeStatsFragment extends BaseStatsFragment {
     /** 得到Yahtzee次数标签 */
     private TextView mGotYahtzeeTextView;
 
+    /** 对计算机胜率标签 */
+    private TextView mWinRateTextView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_yahtzee_stats, container, false);
@@ -37,6 +40,7 @@ public class YahtzeeStatsFragment extends BaseStatsFragment {
         super.initViews(view);
         mGotBonusTextView = view.findViewById(R.id.tvGotBonus);
         mGotYahtzeeTextView = view.findViewById(R.id.tvGotYahtzee);
+        mWinRateTextView = view.findViewById(R.id.tvWinRate);
     }
 
     @Override
@@ -55,5 +59,6 @@ public class YahtzeeStatsFragment extends BaseStatsFragment {
         var s = (YahtzeeStatistics) stats;
         mGotBonusTextView.setText(formatPercent(s.numBonus, s.count));
         mGotYahtzeeTextView.setText(formatPercent(s.numYahtzee, s.count));
+        mWinRateTextView.setText(formatPercent(s.winCount, s.numMultiplayer));
     }
 }

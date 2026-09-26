@@ -49,6 +49,8 @@ public class ScoreSerializer {
             serializer.startTag(null, "YahtzeeScore")
                     .attribute(null, "date", score.date)
                     .attribute(null, "score", Integer.toString(score.score))
+                    .attribute(null, "num_players", Integer.toString(score.numPlayers))
+                    .attribute(null, "computer_score", Integer.toString(score.computerScore))
                     .attribute(null, "has_bonus", Boolean.toString(score.hasBonus))
                     .attribute(null, "has_yahtzee", Boolean.toString(score.hasYahtzee))
                     .endTag(null, "YahtzeeScore");

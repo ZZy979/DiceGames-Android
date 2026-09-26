@@ -32,18 +32,18 @@ public class YahtzeeScoreDaoTest {
     private YahtzeeScoreDao dao;
 
     private List<YahtzeeScore> testScores = List.of(
-            new YahtzeeScore("2025-01-01", 300, true, true),
-            new YahtzeeScore("2025-01-02", 370, true, true),
-            new YahtzeeScore("2025-01-03", 270, false, false),
-            new YahtzeeScore("2025-01-04", 350, true, true),
-            new YahtzeeScore("2025-01-05", 290, true, false),
-            new YahtzeeScore("2025-01-06", 160, false, false),
-            new YahtzeeScore("2025-01-07", 240, false, false),
-            new YahtzeeScore("2025-01-08", 260, false, true),
-            new YahtzeeScore("2025-01-09", 230, false, false),
-            new YahtzeeScore("2025-01-10", 320, true, true),
-            new YahtzeeScore("2025-01-11", 280, true, false),
-            new YahtzeeScore("2025-01-12", 200, false, false)
+            new YahtzeeScore("2025-01-01", 300, 1, 0, true, true),
+            new YahtzeeScore("2025-01-02", 370, 1, 0, true, true),
+            new YahtzeeScore("2025-01-03", 270, 1, 0, false, false),
+            new YahtzeeScore("2025-01-04", 350, 1, 0, true, true),
+            new YahtzeeScore("2025-01-05", 290, 1, 0, true, false),
+            new YahtzeeScore("2025-01-06", 160, 1, 0, false, false),
+            new YahtzeeScore("2025-01-07", 240, 1, 0, false, false),
+            new YahtzeeScore("2025-01-08", 260, 1, 0, false, true),
+            new YahtzeeScore("2025-01-09", 230, 1, 0, false, false),
+            new YahtzeeScore("2025-01-10", 320, 1, 0, true, true),
+            new YahtzeeScore("2025-01-11", 280, 1, 0, true, false),
+            new YahtzeeScore("2025-01-12", 200, 1, 0, false, false)
     );
 
     @Before
@@ -133,8 +133,22 @@ public class YahtzeeScoreDaoTest {
     }
 
     @Test
+    public void testStatisticsOfMultiplayerGames() {
+        // 4局双人游戏：2胜1负1平局，平局计入分母但不计入胜局
+        dao.insert(new YahtzeeScore("2025-02-01", 300, 2, 250, true, false));
+        dao.insert(new YahtzeeScore("2025-02-02", 280, 2, 240, false, false));
+        dao.insert(new YahtzeeScore("2025-02-03", 200, 2, 260, false, false));
+        dao.insert(new YahtzeeScore("2025-02-04", 240, 2, 240, false, false));
+        dao.statistics().observeForever(stats -> {
+            assertEquals(16, stats.count);
+            assertEquals(4, stats.numMultiplayer);
+            assertEquals(2, stats.winCount);
+        });
+    }
+
+    @Test
     public void testStatisticsObserver() {
-        dao.insert(new YahtzeeScore("2025-01-13", 375, true, true));
+        dao.insert(new YahtzeeScore("2025-01-13", 375, 1, 0, true, true));
         dao.statistics().observeForever(stats -> {
             assertEquals(13, stats.count);
             assertEquals(375, stats.maxScore);
@@ -147,7 +161,7 @@ public class YahtzeeScoreDaoTest {
 
     @Test
     public void testInsert() {
-        var score = new YahtzeeScore("2025-01-13", 255, true, false);
+        var score = new YahtzeeScore("2025-01-13", 255, 1, 0, true, false);
         dao.insert(score);
         assertEquals(13, dao.count());
         var actual = dao.findById(13);
@@ -157,7 +171,7 @@ public class YahtzeeScoreDaoTest {
 
     @Test
     public void testInsertAlreadyExist() {
-        var score = new YahtzeeScore("2025-01-07", 245, false, false);
+        var score = new YahtzeeScore("2025-01-07", 245, 1, 0, false, false);
         score.id = 7;
         dao.insert(score);
         assertEquals(12, dao.count());
@@ -169,7 +183,7 @@ public class YahtzeeScoreDaoTest {
         int[] idsToDelete = {2, 5, 10, 999};
         List<YahtzeeScore> scores = new ArrayList<>();
         for (int id : idsToDelete) {
-            var s = new YahtzeeScore("", 0, false, false);
+            var s = new YahtzeeScore("", 0, 1, 0, false, false);
             s.id = id;
             scores.add(s);
         }

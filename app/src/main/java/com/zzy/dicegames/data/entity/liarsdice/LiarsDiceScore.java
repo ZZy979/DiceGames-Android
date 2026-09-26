@@ -13,10 +13,6 @@ import androidx.room.Entity;
  */
 @Entity(tableName = "liars_dice_score")
 public class LiarsDiceScore extends BaseScore {
-    /** 游戏人数 */
-    @ColumnInfo(name = "num_players")
-    public int numPlayers;
-
     /** 胜局数 */
     @ColumnInfo(name = "wins")
     public int wins;
@@ -26,8 +22,7 @@ public class LiarsDiceScore extends BaseScore {
     public int losses;
 
     public LiarsDiceScore(@NonNull String date, int numPlayers, int wins, int losses) {
-        super(date, 0);
-        this.numPlayers = numPlayers;
+        super(date, 0, numPlayers, 0);
         this.wins = wins;
         this.losses = losses;
     }

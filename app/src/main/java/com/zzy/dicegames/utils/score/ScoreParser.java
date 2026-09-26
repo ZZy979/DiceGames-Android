@@ -60,9 +60,17 @@ public class ScoreParser {
     private void parseYahtzeeScores() {
         String date = parser.getAttributeValue(null, "date");
         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
+        int numPlayers = parseInt(parser.getAttributeValue(null, "num_players"), 1);
+        int computerScore = parseInt(parser.getAttributeValue(null, "computer_score"), 0);
         boolean hasBonus = Boolean.parseBoolean(parser.getAttributeValue(null, "has_bonus"));
         boolean hasYahtzee = Boolean.parseBoolean(parser.getAttributeValue(null, "has_yahtzee"));
-        scoresDTO.yahtzeeScores.add(new YahtzeeScore(date, score, hasBonus, hasYahtzee));
+        scoresDTO.yahtzeeScores.add(
+                new YahtzeeScore(date, score, numPlayers, computerScore, hasBonus, hasYahtzee));
+    }
+
+    /** 解析整数属性，属性不存在时返回默认值 */
+    private static int parseInt(String value, int defaultValue) {
+        return value == null ? defaultValue : Integer.parseInt(value);
     }
 
     private void parseYatzyScores() {

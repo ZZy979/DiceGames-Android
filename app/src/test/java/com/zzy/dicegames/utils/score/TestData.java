@@ -20,8 +20,8 @@ class TestData {
 
     static {
         var yahtzeeScores = List.of(
-                new YahtzeeScore("2026-01-01", 370, true, true),
-                new YahtzeeScore("2026-01-02", 270, false, false)
+                new YahtzeeScore("2026-01-01", 370, 1, 0, true, true),
+                new YahtzeeScore("2026-01-02", 270, 1, 0, false, false)
         );
         var yatzyScores = List.of(new YatzyScore("2026-01-15", 300, true, true));
         var maxiYatzyScores = List.of(new MaxiYatzyScore("2026-02-01", 470, false, true));
@@ -36,8 +36,8 @@ class TestData {
         xmlString = """
                 <?xml version='1.0' encoding='utf-8' standalone='yes' ?>
                 <scores><YahtzeeScores>
-                <YahtzeeScore date="2026-01-01" score="370" has_bonus="true" has_yahtzee="true" />
-                <YahtzeeScore date="2026-01-02" score="270" has_bonus="false" has_yahtzee="false" />
+                <YahtzeeScore date="2026-01-01" score="370" num_players="1" computer_score="0" has_bonus="true" has_yahtzee="true" />
+                <YahtzeeScore date="2026-01-02" score="270" num_players="1" computer_score="0" has_bonus="false" has_yahtzee="false" />
                 </YahtzeeScores><YatzyScores>
                 <YatzyScore date="2026-01-15" score="300" has_bonus="true" has_yatzy="true" />
                 </YatzyScores><MaxiYatzyScores>
