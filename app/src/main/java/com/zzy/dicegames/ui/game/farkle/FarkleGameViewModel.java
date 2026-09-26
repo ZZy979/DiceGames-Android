@@ -19,12 +19,8 @@ public class FarkleGameViewModel extends BaseGameViewModel {
     /** 骰子个数 */
     public static final int NUM_DICE = 6;
 
-    /** 玩家数量 */
+    /** 玩家数量：玩家和计算机各一位 */
     public static final int NUM_PLAYERS = 2;
-
-    // 玩家编号
-    public static final int PLAYER_HUMAN = 0;
-    public static final int PLAYER_COMPUTER = 1;
 
     /** 胜利得分 */
     public static final int WINNING_SCORE = 10000;
@@ -40,12 +36,6 @@ public class FarkleGameViewModel extends BaseGameViewModel {
 
     /** 本次所掷且锁定的骰子(kept=false, locked=true)点数，其他骰子用0表示 */
     private final int[] lockedRolledDiceNumbers = new int[NUM_DICE];
-
-    /** 当前玩家 */
-    private final MutableLiveData<Integer> currentPlayer = new MutableLiveData<>(PLAYER_HUMAN);
-
-    /** 玩家得分 */
-    private final MutableLiveData<int[]> playerScores = new MutableLiveData<>(new int[NUM_PLAYERS]);
 
     /** 本轮已保留的得分的骰子个数 */
     private int numKeptScoringDice = 0;
@@ -71,14 +61,6 @@ public class FarkleGameViewModel extends BaseGameViewModel {
         addGameBeginsLog();
     }
 
-    public LiveData<Integer> getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public LiveData<int[]> getPlayerScores() {
-        return playerScores;
-    }
-
     public LiveData<Integer> getEstimatedTurnScore() {
         return estimatedTurnScore;
     }
@@ -93,32 +75,6 @@ public class FarkleGameViewModel extends BaseGameViewModel {
 
     public LiveData<List<Pair<Integer, Object[]>>> getGameLog() {
         return gameLog;
-    }
-
-    public boolean isHumanTurn() {
-        return currentPlayer.getValue() != null && currentPlayer.getValue() == PLAYER_HUMAN;
-    }
-
-    public boolean isComputerTurn() {
-        return currentPlayer.getValue() != null && currentPlayer.getValue() == PLAYER_COMPUTER;
-    }
-
-    public int getCurrentPlayerScore() {
-        int[] scores = playerScores.getValue();
-        Integer player = currentPlayer.getValue();
-        if (scores == null || player == null)
-            return 0;
-        return scores[player];
-    }
-
-    protected void addCurrentPlayerScore(int score) {
-        int[] scores = playerScores.getValue();
-        Integer player = currentPlayer.getValue();
-        if (scores == null || player == null)
-            return;
-
-        scores[player] += score;
-        playerScores.setValue(scores);
     }
 
     public int numLockedDice() {
@@ -386,12 +342,9 @@ public class FarkleGameViewModel extends BaseGameViewModel {
     }
 
     /** 结束本轮，切换玩家 */
+    @Override
     protected void nextPlayer() {
-        Integer player = currentPlayer.getValue();
-        if (player == null)
-            return;
-
-        currentPlayer.setValue((player + 1) % NUM_PLAYERS);
+        super.nextPlayer();
         accumulatedTurnScore = 0;
         estimatedTurnScore.setValue(0);
         resetDiceWindow();
@@ -416,10 +369,8 @@ public class FarkleGameViewModel extends BaseGameViewModel {
 
     /** 创建得分实体 */
     public FarkleScore createScoreEntity() {
-        int[] scores = playerScores.getValue();
-        if (scores == null)
-            return null;
-        return new FarkleScore(LocalDate.now().toString(), scores[PLAYER_HUMAN], scores[PLAYER_COMPUTER]);
+        return new FarkleScore(LocalDate.now().toString(),
+                getPlayerScoreValue(PLAYER_HUMAN), getPlayerScoreValue(PLAYER_COMPUTER));
     }
 
     /** 将得分保存到数据库 */
@@ -453,9 +404,7 @@ public class FarkleGameViewModel extends BaseGameViewModel {
 
     @Override
     public void reset() {
-        currentPlayer.setValue(PLAYER_HUMAN);
         super.reset();
-        playerScores.setValue(new int[NUM_PLAYERS]);
         accumulatedTurnScore = 0;
         estimatedTurnScore.setValue(0);
         newGameButtonVisible.setValue(false);

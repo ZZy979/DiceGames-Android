@@ -16,24 +16,14 @@ public class PigGameViewModel extends BaseGameViewModel {
     /** 骰子个数 */
     public static final int NUM_DICE = 1;
 
-    /** 玩家数量 */
+    /** 玩家数量：玩家和计算机各一位 */
     public static final int NUM_PLAYERS = 2;
-
-    // 玩家编号
-    public static final int PLAYER_HUMAN = 0;
-    public static final int PLAYER_COMPUTER = 1;
 
     /** 胜利得分 */
     public static final int WINNING_SCORE = 100;
 
     /** 计算机玩家操作的延迟(ms) */
     private static final int DELAY = 500;
-
-    /** 当前玩家 */
-    private final MutableLiveData<Integer> currentPlayer = new MutableLiveData<>(PLAYER_HUMAN);
-
-    /** 玩家得分 */
-    private final MutableLiveData<int[]> playerScores = new MutableLiveData<>(new int[NUM_PLAYERS]);
 
     /** 本轮得分 */
     private final MutableLiveData<Integer> turnScore = new MutableLiveData<>(0);
@@ -48,14 +38,6 @@ public class PigGameViewModel extends BaseGameViewModel {
         super(NUM_DICE, UNLIMITED_ROLLS, NUM_PLAYERS, NUM_PLAYERS);
     }
 
-    public LiveData<Integer> getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public LiveData<int[]> getPlayerScores() {
-        return playerScores;
-    }
-
     public LiveData<Integer> getTurnScore() {
         return turnScore;
     }
@@ -66,32 +48,6 @@ public class PigGameViewModel extends BaseGameViewModel {
 
     public MutableLiveData<Boolean> getNewGameButtonVisible() {
         return newGameButtonVisible;
-    }
-
-    public boolean isHumanTurn() {
-        return currentPlayer.getValue() != null && currentPlayer.getValue() == PLAYER_HUMAN;
-    }
-
-    public boolean isComputerTurn() {
-        return currentPlayer.getValue() != null && currentPlayer.getValue() == PLAYER_COMPUTER;
-    }
-
-    public int getCurrentPlayerScore() {
-        int[] scores = playerScores.getValue();
-        Integer player = currentPlayer.getValue();
-        if (scores == null || player == null)
-            return 0;
-        return scores[player];
-    }
-
-    protected void addCurrentPlayerScore(int score) {
-        int[] scores = playerScores.getValue();
-        Integer player = currentPlayer.getValue();
-        if (scores == null || player == null)
-            return;
-
-        scores[player] += score;
-        playerScores.setValue(scores);
     }
 
     @Override
@@ -129,11 +85,8 @@ public class PigGameViewModel extends BaseGameViewModel {
 
     /** 电脑玩家回合，决定保存得分还是继续掷骰子 */
     protected void computerTurn() {
-        int[] scores = playerScores.getValue();
-        if (scores == null)
-            return;
         int turnTotal = Optional.ofNullable(turnScore.getValue()).orElse(0);
-        if (computerShouldRoll(scores[PLAYER_HUMAN], scores[PLAYER_COMPUTER], turnTotal))
+        if (computerShouldRoll(getPlayerScoreValue(PLAYER_HUMAN), getPlayerScoreValue(PLAYER_COMPUTER), turnTotal))
             handler.postDelayed(this::rollDiceWithAnimation, DELAY);
         else
             handler.postDelayed(this::hold, DELAY);
@@ -158,12 +111,9 @@ public class PigGameViewModel extends BaseGameViewModel {
     }
 
     /** 结束本轮，切换玩家 */
+    @Override
     protected void nextPlayer() {
-        Integer player = currentPlayer.getValue();
-        if (player == null)
-            return;
-
-        currentPlayer.setValue((player + 1) % NUM_PLAYERS);
+        super.nextPlayer();
         turnScore.setValue(0);
         resetDiceWindow();
 
@@ -182,10 +132,8 @@ public class PigGameViewModel extends BaseGameViewModel {
 
     /** 创建得分实体 */
     public PigScore createScoreEntity() {
-        int[] scores = playerScores.getValue();
-        if (scores == null)
-            return null;
-        return new PigScore(LocalDate.now().toString(), scores[PLAYER_HUMAN], scores[PLAYER_COMPUTER]);
+        return new PigScore(LocalDate.now().toString(),
+                getPlayerScoreValue(PLAYER_HUMAN), getPlayerScoreValue(PLAYER_COMPUTER));
     }
 
     /** 将得分保存到数据库 */
@@ -203,9 +151,7 @@ public class PigGameViewModel extends BaseGameViewModel {
 
     @Override
     public void reset() {
-        currentPlayer.setValue(PLAYER_HUMAN);
         super.reset();
-        playerScores.setValue(new int[NUM_PLAYERS]);
         turnScore.setValue(0);
         newGameButtonVisible.setValue(false);
     }

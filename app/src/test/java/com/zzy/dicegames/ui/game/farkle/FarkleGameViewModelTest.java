@@ -19,6 +19,8 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_COMPUTER;
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_HUMAN;
 import static com.zzy.dicegames.ui.game.farkle.FarkleGameViewModel.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -61,8 +63,9 @@ public class FarkleGameViewModelTest {
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
         assertFalse(viewModel.getNewGameButtonVisible().getValue());
-        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
-        assertArrayEquals(new int[NUM_PLAYERS], viewModel.getPlayerScores().getValue());
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
+        for (int p = 0; p < NUM_PLAYERS; p++)
+            assertEquals(0, viewModel.getPlayerScoreValue(p));
         assertEquals(0, viewModel.getEstimatedTurnScore().getValue().intValue());
         var gameLog = viewModel.getGameLog().getValue();
         assertEquals(3, gameLog.size());
@@ -346,7 +349,7 @@ public class FarkleGameViewModelTest {
     @Test
     public void testNextPlayer_Human() {
         viewModel.nextPlayer();
-        assertEquals(PLAYER_COMPUTER, viewModel.getCurrentPlayer().getValue().intValue());
+        assertEquals(PLAYER_COMPUTER, viewModel.getCurrentPlayerValue());
         assertEquals(0, viewModel.getEstimatedTurnScore().getValue().intValue());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
         assertTrue(ArrayUtil.all(viewModel.getDiceLocked().getValue(), false));
@@ -363,7 +366,7 @@ public class FarkleGameViewModelTest {
     public void testNextPlayer_Computer() {
         viewModel.nextPlayer();
         viewModel.nextPlayer();
-        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         var gameLog = viewModel.getGameLog().getValue();
         assertGameLogEquals(gameLog.get(gameLog.size() - 2), R.string.logYourTurn);
@@ -407,13 +410,14 @@ public class FarkleGameViewModelTest {
     @Test
     public void testReset() {
         viewModel.reset();
-        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
         assertTrue(ArrayUtil.all(viewModel.getDiceLocked().getValue(), false));
         assertTrue(ArrayUtil.all(viewModel.getDiceEnabled().getValue(), false));
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         assertFalse(viewModel.getBankButtonEnabled().getValue());
         assertFalse(viewModel.getNewGameButtonVisible().getValue());
-        assertArrayEquals(new int[NUM_PLAYERS], viewModel.getPlayerScores().getValue());
+        for (int p = 0; p < NUM_PLAYERS; p++)
+            assertEquals(0, viewModel.getPlayerScoreValue(p));
         assertEquals(0, viewModel.getEstimatedTurnScore().getValue().intValue());
         var gameLog = viewModel.getGameLog().getValue();
         assertEquals(3, gameLog.size());

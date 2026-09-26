@@ -95,7 +95,10 @@ public class FarkleGameFragment extends BaseGameFragment<FarkleGameViewModel> {
     protected void setupObservers(LifecycleOwner owner) {
         super.setupObservers(owner);
         mViewModel.getCurrentPlayer().observe(owner, this::onCurrentPlayerChanged);
-        mViewModel.getPlayerScores().observe(owner, this::onPlayerScoresChanged);
+        for (int p = 0; p < NUM_PLAYERS; p++) {
+            final int player = p;
+            mViewModel.getPlayerScore(p).observe(owner, score -> onPlayerScoreChanged(player, score));
+        }
         mViewModel.getEstimatedTurnScore().observe(owner, this::onEstimatedTurnScoreChanged);
         mViewModel.getBankButtonEnabled().observe(owner, this::onBankButtonEnabledChanged);
         mViewModel.getNewGameButtonVisible().observe(owner, this::onNewGameButtonVisibleChanged);
@@ -109,9 +112,8 @@ public class FarkleGameFragment extends BaseGameFragment<FarkleGameViewModel> {
     }
 
     /** 玩家得分更新时的回调 */
-    private void onPlayerScoresChanged(int[] playerScores) {
-        for (int i = 0; i < playerScores.length; i++)
-            mPlayerScoreTextViews[i].setText(Integer.toString(playerScores[i]));
+    private void onPlayerScoreChanged(int player, int score) {
+        mPlayerScoreTextViews[player].setText(Integer.toString(score));
     }
 
     /** 本轮得分更新时的回调 */

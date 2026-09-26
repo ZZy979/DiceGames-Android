@@ -31,6 +31,9 @@ public class BaseGameViewModel extends ViewModel {
     /** 人类玩家编号 */
     public static final int PLAYER_HUMAN = 0;
 
+    /** 第一位计算机玩家编号 */
+    public static final int PLAYER_COMPUTER = 1;
+
     /** 玩家数量最小值 */
     public static final int MIN_PLAYERS = 1;
 
@@ -277,13 +280,18 @@ public class BaseGameViewModel extends ViewModel {
         return gameData[player].score;
     }
 
+    /** 返回指定玩家的总得分值 */
+    public int getPlayerScoreValue(int player) {
+        return Optional.ofNullable(gameData[player].score.getValue()).orElse(0);
+    }
+
     /** 当前玩家的总得分 */
     public int getCurrentPlayerScore() {
-        return Optional.ofNullable(getCurrentPlayerGameData().score.getValue()).orElse(0);
+        return getPlayerScoreValue(getCurrentPlayerValue());
     }
 
     /** 增加当前玩家的总得分 */
-    protected void addCurrentPlayerScore(int score) {
+    public void addCurrentPlayerScore(int score) {
         BaseGameData data = getCurrentPlayerGameData();
         data.score.setValue((data.score.getValue() == null ? 0 : data.score.getValue()) + score);
     }
@@ -486,6 +494,7 @@ public class BaseGameViewModel extends ViewModel {
 
     /** 重置游戏状态 */
     public void reset() {
+        currentPlayer.setValue(PLAYER_HUMAN);
         resetGameData();
         resetDiceWindow();
     }

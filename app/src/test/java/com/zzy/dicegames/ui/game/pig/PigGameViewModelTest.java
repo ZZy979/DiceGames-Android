@@ -15,6 +15,8 @@ import org.mockito.junit.MockitoRule;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_COMPUTER;
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_HUMAN;
 import static com.zzy.dicegames.ui.game.pig.PigGameViewModel.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -46,8 +48,9 @@ public class PigGameViewModelTest {
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         assertFalse(viewModel.getHoldButtonEnabled().getValue());
         assertFalse(viewModel.getNewGameButtonVisible().getValue());
-        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
-        assertArrayEquals(new int[NUM_PLAYERS], viewModel.getPlayerScores().getValue());
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
+        for (int p = 0; p < NUM_PLAYERS; p++)
+            assertEquals(0, viewModel.getPlayerScoreValue(p));
         assertEquals(0, viewModel.getTurnScore().getValue().intValue());
     }
 
@@ -108,7 +111,7 @@ public class PigGameViewModelTest {
 
         spyViewModel.rollDice(5);
         verify(spyViewModel).win();
-        assertEquals(104, spyViewModel.getPlayerScores().getValue()[PLAYER_HUMAN]
+        assertEquals(104, spyViewModel.getPlayerScoreValue(PLAYER_HUMAN)
                 + spyViewModel.getTurnScore().getValue());
 
     }
@@ -163,8 +166,8 @@ public class PigGameViewModelTest {
         verify(mockHandler, atLeast(1)).postDelayed(captor.capture(), anyLong());
         // 执行 computerTurn 调度的动作：应继续掷骰子，不会改变得分和当前玩家
         captor.getValue().run();
-        assertEquals(0, viewModel.getPlayerScores().getValue()[PLAYER_COMPUTER]);
-        assertEquals(PLAYER_COMPUTER, viewModel.getCurrentPlayer().getValue().intValue());
+        assertEquals(0, viewModel.getPlayerScoreValue(PLAYER_COMPUTER));
+        assertEquals(PLAYER_COMPUTER, viewModel.getCurrentPlayerValue());
     }
 
     @Test
@@ -179,8 +182,8 @@ public class PigGameViewModelTest {
         verify(mockHandler, atLeast(1)).postDelayed(captor.capture(), anyLong());
         // 执行 computerTurn 调度的动作：应保存本轮得分并切换到人类玩家
         captor.getValue().run();
-        assertEquals(25, viewModel.getPlayerScores().getValue()[PLAYER_COMPUTER]);
-        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
+        assertEquals(25, viewModel.getPlayerScoreValue(PLAYER_COMPUTER));
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
     }
 
     @Test
@@ -195,7 +198,7 @@ public class PigGameViewModelTest {
     @Test
     public void testNextPlayer_Human() {
         viewModel.nextPlayer();
-        assertEquals(PLAYER_COMPUTER, viewModel.getCurrentPlayer().getValue().intValue());
+        assertEquals(PLAYER_COMPUTER, viewModel.getCurrentPlayerValue());
         assertEquals(0, viewModel.getTurnScore().getValue().intValue());
         assertFalse(viewModel.getHoldButtonEnabled().getValue());
         assertFalse(viewModel.getRollButtonEnabled().getValue());
@@ -206,7 +209,7 @@ public class PigGameViewModelTest {
     public void testNextPlayer_Computer() {
         viewModel.nextPlayer();
         viewModel.nextPlayer();
-        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         verify(mockHandler).postDelayed(any(), anyLong());
     }
@@ -238,11 +241,12 @@ public class PigGameViewModelTest {
     @Test
     public void testReset() {
         viewModel.reset();
-        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayer().getValue().intValue());
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
         assertTrue(viewModel.getRollButtonEnabled().getValue());
         assertFalse(viewModel.getHoldButtonEnabled().getValue());
         assertFalse(viewModel.getNewGameButtonVisible().getValue());
-        assertArrayEquals(new int[NUM_PLAYERS], viewModel.getPlayerScores().getValue());
+        for (int p = 0; p < NUM_PLAYERS; p++)
+            assertEquals(0, viewModel.getPlayerScoreValue(p));
         assertEquals(0, viewModel.getTurnScore().getValue().intValue());
     }
 }
