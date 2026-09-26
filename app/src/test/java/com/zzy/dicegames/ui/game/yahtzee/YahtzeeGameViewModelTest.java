@@ -16,6 +16,7 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_COMPUTER;
 import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_HUMAN;
 import static com.zzy.dicegames.ui.game.yahtzee.YahtzeeGameViewModel.Category.*;
 import static org.junit.Assert.*;
@@ -187,5 +188,135 @@ public class YahtzeeGameViewModelTest {
         assertEquals(150, score.score);
         assertFalse(score.hasBonus);
         assertTrue(score.hasYahtzee);
+    }
+
+    @Test
+    public void testPlayerCount() {
+        assertTrue(viewModel.supportsPlayerCountSelection());
+        assertEquals(List.of(1, 2), viewModel.getSupportedPlayerCounts());
+        assertThrows(IllegalArgumentException.class, () -> viewModel.setNumPlayers(3));
+    }
+
+    @Test
+    public void testTwoPlayersTurnFlow() {
+        viewModel.setNumPlayers(2);
+        assertEquals(2, viewModel.getNumPlayersValue());
+        assertTrue(viewModel.isMultiplayer());
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
+
+        viewModel.updateDiceNumbers(5, 5, 5, 5, 5);
+        viewModel.select(YAHTZEE.ordinal());
+        assertEquals(50, viewModel.getPlayerScoreValue(PLAYER_HUMAN));
+        assertEquals(PLAYER_COMPUTER, viewModel.getCurrentPlayerValue());
+
+        // 计算机回合时人类不能替计算机选择得分项
+        viewModel.select(ONES.ordinal());
+        assertFalse(viewModel.data(PLAYER_COMPUTER).selected.getValue()[ONES.ordinal()]);
+    }
+
+    @Test
+    public void testComputerChooseCategory() {
+        // 能得Yahtzee时优先选择Yahtzee
+        viewModel.updateDiceNumbers(5, 5, 5, 5, 5);
+        assertEquals(YAHTZEE.ordinal(), viewModel.computerChooseCategory());
+
+        // 得分相同时选择优先级更高的得分项
+        viewModel.updateDiceNumbers(3, 3, 3, 3, 5);
+        assertEquals(FOUR_OF_A_KIND.ordinal(), viewModel.computerChooseCategory());
+
+        // 只有CHANCE能得分时选择CHANCE
+        viewModel.updateDiceNumbers(1, 1, 2, 3, 6);
+        assertEquals(CHANCE.ordinal(), viewModel.computerChooseCategory());
+    }
+
+    @Test
+    public void testComputerChooseCategory_NoScore() {
+        // 上区和CHANCE已选完且其余项都不得分时，放弃优先级最低的THREE_OF_A_KIND
+        for (int c = 0; c <= SIXES.ordinal(); c++)
+            viewModel.select(c);
+        viewModel.select(CHANCE.ordinal());
+
+        viewModel.updateDiceNumbers(2, 2, 3, 4, 6);
+        assertEquals(THREE_OF_A_KIND.ordinal(), viewModel.computerChooseCategory());
+    }
+
+    @Test
+    public void testComputerChooseKeep() {
+        viewModel.updateDiceNumbers(3, 1, 3, 5, 2);
+        assertArrayEquals(new boolean[] {true, false, true, false, false},
+                viewModel.computerChooseKeep(THREES.ordinal()));
+
+        viewModel.updateDiceNumbers(3, 3, 5, 1, 3);
+        assertArrayEquals(new boolean[] {true, true, false, false, true},
+                viewModel.computerChooseKeep(THREE_OF_A_KIND.ordinal()));
+
+        viewModel.updateDiceNumbers(1, 2, 3, 4, 6);
+        assertArrayEquals(new boolean[] {true, true, true, true, false},
+                viewModel.computerChooseKeep(SMALL_STRAIGHT.ordinal()));
+
+        // 连顺中重复的点数只保留一颗，其余重掷（保留2、3、4、5，重掷重复的2）
+        viewModel.updateDiceNumbers(2, 3, 4, 5, 2);
+        assertArrayEquals(new boolean[] {true, true, true, true, false},
+                viewModel.computerChooseKeep(SMALL_STRAIGHT.ordinal()));
+
+        viewModel.updateDiceNumbers(1, 5, 6, 2, 6);
+        assertArrayEquals(new boolean[] {false, true, true, false, true},
+                viewModel.computerChooseKeep(CHANCE.ordinal()));
+    }
+
+    @Test
+    public void testComputerShouldRollAgain() {
+        // 上区：未集满5个时继续掷骰子（掷出3个3点也不应浪费剩下的掷骰子机会）
+        viewModel.updateDiceNumbers(3, 3, 4, 5, 6);
+        assertTrue(viewModel.computerShouldRollAgain(THREES.ordinal()));
+        viewModel.updateDiceNumbers(3, 3, 3, 5, 6);
+        assertTrue(viewModel.computerShouldRollAgain(THREES.ordinal()));
+        viewModel.updateDiceNumbers(3, 3, 3, 3, 3);
+        assertFalse(viewModel.computerShouldRollAgain(THREES.ordinal()));
+
+        // 连顺：小顺已得分但保留的骰子是4连顺时继续掷骰子，争取大顺
+        viewModel.updateDiceNumbers(1, 2, 3, 5, 6);
+        assertTrue(viewModel.computerShouldRollAgain(SMALL_STRAIGHT.ordinal()));
+        viewModel.updateDiceNumbers(1, 2, 3, 4, 6);
+        assertTrue(viewModel.computerShouldRollAgain(SMALL_STRAIGHT.ordinal()));
+        assertTrue(viewModel.computerShouldRollAgain(LARGE_STRAIGHT.ordinal()));
+        viewModel.updateDiceNumbers(1, 2, 3, 4, 5);
+        assertFalse(viewModel.computerShouldRollAgain(LARGE_STRAIGHT.ordinal()));
+
+        // 葫芦：已成葫芦时不再掷骰子
+        viewModel.updateDiceNumbers(4, 4, 5, 5, 6);
+        assertTrue(viewModel.computerShouldRollAgain(FULL_HOUSE.ordinal()));
+        viewModel.updateDiceNumbers(4, 4, 5, 5, 5);
+        assertFalse(viewModel.computerShouldRollAgain(FULL_HOUSE.ordinal()));
+
+        // 四条：已有4个同点时继续掷骰子，争取Yahtzee
+        viewModel.updateDiceNumbers(6, 6, 6, 6, 5);
+        assertTrue(viewModel.computerShouldRollAgain(FOUR_OF_A_KIND.ordinal()));
+        viewModel.updateDiceNumbers(6, 6, 6, 6, 6);
+        assertFalse(viewModel.computerShouldRollAgain(YAHTZEE.ordinal()));
+    }
+
+    @Test
+    public void testComputerKeepsRollingForBetterScore() {
+        // 3个6点：不直接选6，而是保留3个6点继续掷骰子
+        viewModel.updateDiceNumbers(6, 6, 6, 2, 3);
+        assertEquals(THREE_OF_A_KIND.ordinal(), viewModel.computerChooseCategory());
+        assertTrue(viewModel.computerShouldRollAgain(THREE_OF_A_KIND.ordinal()));
+        assertArrayEquals(new boolean[] {true, true, true, false, false},
+                viewModel.computerChooseKeep(THREE_OF_A_KIND.ordinal()));
+
+        // 2、3、4、5：保留4连顺并重掷多余的一颗，争取大顺而非直接选小顺
+        viewModel.updateDiceNumbers(2, 3, 4, 5, 2);
+        assertEquals(SMALL_STRAIGHT.ordinal(), viewModel.computerChooseCategory());
+        assertTrue(viewModel.computerShouldRollAgain(SMALL_STRAIGHT.ordinal()));
+        assertArrayEquals(new boolean[] {true, true, true, true, false},
+                viewModel.computerChooseKeep(SMALL_STRAIGHT.ordinal()));
+
+        // 4个6点：保留4个6点继续掷骰子，争取Yahtzee
+        viewModel.updateDiceNumbers(6, 6, 6, 6, 3);
+        assertEquals(FOUR_OF_A_KIND.ordinal(), viewModel.computerChooseCategory());
+        assertTrue(viewModel.computerShouldRollAgain(FOUR_OF_A_KIND.ordinal()));
+        assertArrayEquals(new boolean[] {true, true, true, true, false},
+                viewModel.computerChooseKeep(FOUR_OF_A_KIND.ordinal()));
     }
 }

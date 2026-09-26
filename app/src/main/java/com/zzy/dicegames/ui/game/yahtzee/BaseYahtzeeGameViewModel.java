@@ -105,6 +105,8 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
     public void updateDiceNumbers(int... numbers) {
         super.updateDiceNumbers(numbers);
         updateScores();
+        if (isComputerTurn() && !diceRolling)
+            postComputerAction(this::computerTurn);
     }
 
     /** 根据骰子点数更新当前玩家的预估得分 */
@@ -175,7 +177,78 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
             return;
         }
         nextPlayer();
+        startTurn();
+    }
+
+    /** 开始当前玩家的回合 */
+    protected void startTurn() {
         resetDiceWindow();
+        if (isComputerTurn())
+            postComputerAction(this::computerTurn);
+    }
+
+    /**
+     * 计算机玩家回合：第一次先掷骰子，之后根据策略决定继续掷骰子（并锁定要保留的骰子）或选择得分项<br>
+     * 掷骰子动画结束后由{@link #updateDiceNumbers(int...)}调度下一次决策
+     */
+    protected void computerTurn() {
+        if (!isComputerTurn() || diceRolling)
+            return;
+
+        // 第一次掷骰子，无需锁定
+        if (!hasRolled()) {
+            rollDiceWithAnimation();
+            return;
+        }
+
+        // 每次掷骰子后重新选择目标得分项，以便把握新出现的更好的得分项
+        int target = computerChooseCategory();
+        // 没有可选择的得分项时结束本回合（正常流程下所有玩家选完即已结束，此处仅作保护）
+        if (target < 0)
+            return;
+
+        boolean[] keep = computerChooseKeep(target);
+        // 所有骰子都要保留时再掷骰子没有意义，直接选择得分项
+        if (hasRemainingRolls() && !ArrayUtil.all(keep, true) && computerShouldRollAgain(target)) {
+            setDiceLocked(keep);
+            rollDiceWithAnimation();
+        }
+        else {
+            doSelect(target);
+        }
+    }
+
+    /** 计算机玩家选择一个未选择的得分项（默认选择当前得分最高的项） */
+    protected int computerChooseCategory() {
+        boolean[] isSelected = data(getCurrentPlayerValue()).selected.getValue();
+        int bestCategory = -1, bestScore = -1;
+        for (int c = 0; c < numCategories; c++) {
+            if (isSelected != null && isSelected[c])
+                continue;
+
+            int score = calculateScore(c);
+            if (score > bestScore) {
+                bestScore = score;
+                bestCategory = c;
+            }
+        }
+        return bestCategory;
+    }
+
+    /** 计算机玩家选择要保留的骰子（默认保留上区对应点数的骰子） */
+    protected boolean[] computerChooseKeep(int category) {
+        boolean[] keep = new boolean[numDice];
+        if (category < NUM_UPPER_CATEGORIES) {
+            int[] numbers = diceNumbers.getValue();
+            for (int i = 0; i < numDice; i++)
+                keep[i] = numbers != null && numbers[i] == category + 1;
+        }
+        return keep;
+    }
+
+    /** 计算机玩家是否应继续掷骰子（默认目标得分项还没有得分时继续掷骰子） */
+    protected boolean computerShouldRollAgain(int category) {
+        return calculateScore(category) == 0;
     }
 
     /** 是否所有玩家都已选完得分项 */
@@ -232,5 +305,6 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
     public void reset() {
         clickable.setValue(false);
         super.reset();
+        startTurn();
     }
 }

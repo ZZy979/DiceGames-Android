@@ -79,6 +79,10 @@
     <string name="gameOver">Game Over</string>
     <string name="newHighScore">New high score</string>
     <string name="rankN">#%d</string>
+    <string name="youWin">You win!</string>
+    <string name="youLose">You lose</string>
+    <string name="draw">Draw</string>
+    <string name="multiplayerScoreFormat">%s %d : %d %s</string>
 
     <!-- Player labels -->
     <string name="playerYou">You</string>

@@ -79,6 +79,10 @@
     <string name="gameOver">游戏结束</string>
     <string name="newHighScore">新最高分</string>
     <string name="rankN">第%d名</string>
+    <string name="youWin">你赢了！</string>
+    <string name="youLose">你输了</string>
+    <string name="draw">平局</string>
+    <string name="multiplayerScoreFormat">%s %d : %d %s</string>
 
     <!-- 玩家标签 -->
     <string name="playerYou">你</string>
