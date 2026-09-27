@@ -163,6 +163,10 @@ public class BaseGameViewModel extends ViewModel {
         return remainingRolls;
     }
 
+    public int getRemainingRollsValue() {
+        return Optional.ofNullable(remainingRolls.getValue()).orElse(0);
+    }
+
     public LiveData<int[]> getDiceNumbers() {
         return diceNumbers;
     }
