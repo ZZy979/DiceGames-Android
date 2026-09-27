@@ -38,6 +38,9 @@ public class BalutStatsFragment extends BaseStatsFragment {
     /** 得到Balut次数标签 */
     private TextView mGotBalutTextView;
 
+    /** 对计算机胜率标签 */
+    private TextView mWinRateTextView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_balut_stats, container, false);
@@ -50,6 +53,7 @@ public class BalutStatsFragment extends BaseStatsFragment {
         mLowestPointsTextView = view.findViewById(R.id.tvLowestPoints);
         mAveragePointsTextView = view.findViewById(R.id.tvAveragePoints);
         mGotBalutTextView = view.findViewById(R.id.tvGotBalut);
+        mWinRateTextView = view.findViewById(R.id.tvWinRate);
     }
 
     @Override
@@ -70,6 +74,7 @@ public class BalutStatsFragment extends BaseStatsFragment {
         mLowestPointsTextView.setText(Integer.toString(s.minPoints));
         mAveragePointsTextView.setText(String.format("%.2f", s.avgPoints));
         mGotBalutTextView.setText(formatPercent(s.numBalut, s.count * 4));
+        mWinRateTextView.setText(formatPercent(s.winCount, s.numMultiplayer));
     }
 
     @Override

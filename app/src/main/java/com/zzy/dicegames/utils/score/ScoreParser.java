@@ -98,9 +98,13 @@ public class ScoreParser {
     private void parseBalutScores() {
         String date = parser.getAttributeValue(null, "date");
         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
+        int numPlayers = parseInt(parser.getAttributeValue(null, "num_players"), 1);
+        int computerScore = parseInt(parser.getAttributeValue(null, "computer_score"), 0);
         int points = Integer.parseInt(parser.getAttributeValue(null, "points"));
+        int computerPoints = parseInt(parser.getAttributeValue(null, "computer_points"), 0);
         int numBalut = Integer.parseInt(parser.getAttributeValue(null, "num_balut"));
-        scoresDTO.balutScores.add(new BalutScore(date, score, points, numBalut));
+        scoresDTO.balutScores.add(new BalutScore(
+                date, score, numPlayers, computerScore, points, computerPoints, numBalut));
     }
 
     private void parseLiarsDiceScores() {

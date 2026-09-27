@@ -40,7 +40,10 @@ public interface BalutScoreDao {
             "SELECT COUNT(*) AS count, " +
             "    MAX(score) AS maxScore, MIN(score) AS minScore, AVG(score) AS avgScore, " +
             "    MAX(points) AS maxPoints, MIN(points) AS minPoints, AVG(points) AS avgPoints, " +
-            "    SUM(num_balut) AS numBalut " +
+            "    SUM(num_balut) AS numBalut, " +
+            "    SUM(num_players > 1) AS numMultiplayer, " +
+            "    SUM(num_players > 1 AND (points > computer_points " +
+            "        OR (points = computer_points AND score > computer_score))) AS winCount " +
             "FROM balut_score"
     )
     LiveData<BalutStatistics> statistics();

@@ -25,7 +25,7 @@ class TestData {
         );
         var yatzyScores = List.of(new YatzyScore("2026-01-15", 300, 1, 0, true, true));
         var maxiYatzyScores = List.of(new MaxiYatzyScore("2026-02-01", 470, 1, 0, false, true));
-        var balutScores = List.of(new BalutScore("2026-03-01", 400, 10, 1));
+        var balutScores = List.of(new BalutScore("2026-03-01", 400, 1, 0, 10, 0, 1));
         var liarsDiceScores = List.of(new LiarsDiceScore("2026-05-01", 2, 5, 5));
         var farkleScores = List.of(new FarkleScore("2026-04-01", 10000, 9000));
         var pigScores = List.of(new PigScore("2026-06-01", 100, 85));
@@ -43,7 +43,7 @@ class TestData {
                 </YatzyScores><MaxiYatzyScores>
                 <MaxiYatzyScore date="2026-02-01" score="470" num_players="1" computer_score="0" has_bonus="false" has_yatzy="true" />
                 </MaxiYatzyScores><BalutScores>
-                <BalutScore date="2026-03-01" score="400" points="10" num_balut="1" />
+                <BalutScore date="2026-03-01" score="400" num_players="1" computer_score="0" points="10" computer_points="0" num_balut="1" />
                 </BalutScores><LiarsDiceScores>
                 <LiarsDiceScore date="2026-05-01" score="0" num_players="2" wins="5" losses="5" />
                 </LiarsDiceScores><FarkleScores>

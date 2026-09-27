@@ -86,7 +86,8 @@ public class ScoreUtil {
     }
 
     public static boolean isEqual(BalutScore a, BalutScore b) {
-        return isEqual((BaseScore) a, b) && a.points == b.points && a.numBalut == b.numBalut;
+        return isEqual((BaseScore) a, b) && a.points == b.points
+                && a.computerPoints == b.computerPoints && a.numBalut == b.numBalut;
     }
 
     public static boolean isEqual(LiarsDiceScore a, LiarsDiceScore b) {

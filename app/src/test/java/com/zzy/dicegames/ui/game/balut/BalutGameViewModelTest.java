@@ -328,8 +328,93 @@ public class BalutGameViewModelTest {
     }
 
     @Test
+    public void testSupportedPlayerCounts() {
+        assertEquals(List.of(1, 2), viewModel.getSupportedPlayerCounts());
+        assertTrue(viewModel.supportsPlayerCountSelection());
+        assertFalse(viewModel.isMultiplayer());
+        assertEquals(1, viewModel.getNumPlayersValue());
+
+        viewModel.setNumPlayers(2);
+        assertEquals(2, viewModel.getNumPlayersValue());
+        assertTrue(viewModel.isMultiplayer());
+        assertNotSame(viewModel.data(PLAYER_HUMAN), viewModel.data(PLAYER_COMPUTER));
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
+        assertArrayEquals(new int[NUM_CATEGORIES], viewModel.getSelectCount().getValue());
+    }
+
+    /** 人类玩家选择一个得分项后轮到计算机玩家 */
+    private void passToComputer(BalutGameViewModel vm) {
+        vm.select(FOURS.ordinal());
+    }
+
+    @Test
+    public void testTurnSwitchToComputer() {
+        spyViewModel.setNumPlayers(2);
+        passToComputer(spyViewModel);
+
+        // 每位玩家只选择一个得分项就轮到对方
+        assertEquals(PLAYER_COMPUTER, spyViewModel.getCurrentPlayerValue());
+        assertFalse(spyViewModel.isHumanTurn());
+        assertFalse(spyViewModel.isClickable());
+        // 人类玩家的回合已结束，计算机玩家的回合由Handler延迟执行
+        assertFalse(spyViewModel.getRollButtonEnabled().getValue());
+        assertTrue(ArrayUtil.all(spyViewModel.getDiceEnabled().getValue(), false));
+        verify(mockHandler).postDelayed(any(Runnable.class), anyLong());
+
+        // 人类玩家不能再选择得分项
+        spyViewModel.select(FOURS.ordinal());
+        assertEquals(1, spyViewModel.data(PLAYER_HUMAN).selectCount.getValue()[FOURS.ordinal()]);
+        // 当前玩家是计算机玩家，其数据仍为空
+        assertArrayEquals(new int[NUM_CATEGORIES], spyViewModel.getSelectCount().getValue());
+    }
+
+    @Test
+    public void testAnalyzeDiceToKeep() {
+        spyViewModel.setNumPlayers(2);
+        passToComputer(spyViewModel);
+
+        spyViewModel.rollDice(6, 6, 6, 2, 3);
+        spyViewModel.analyzeDiceToKeep();
+
+        // 上区得分项优先级最高，保留3颗6点
+        assertArrayEquals(new boolean[] {true, true, true, false, false},
+                spyViewModel.getDiceLocked().getValue());
+        verify(mockHandler, atLeastOnce()).postDelayed(any(Runnable.class), anyLong());
+    }
+
+    @Test
+    public void testAnalyzeDiceToKeepForBalut() {
+        spyViewModel.setNumPlayers(2);
+        passToComputer(spyViewModel);
+
+        // 5颗骰子点数相同时可直接得到Balut，无需再掷骰子
+        spyViewModel.rollDice(6, 6, 6, 6, 6);
+        spyViewModel.analyzeDiceToKeep();
+
+        var computerData = spyViewModel.data(PLAYER_COMPUTER);
+        assertEquals(1, computerData.selectCount.getValue()[BALUT.ordinal()]);
+        assertEquals(50, computerData.score.getValue().intValue());
+        // 计算机玩家选择后轮到人类玩家
+        assertEquals(PLAYER_HUMAN, spyViewModel.getCurrentPlayerValue());
+        assertTrue(spyViewModel.getRollButtonEnabled().getValue());
+    }
+
+    @Test
+    public void testComputerChooseCategory() {
+        spyViewModel.setNumPlayers(2);
+        passToComputer(spyViewModel);
+
+        spyViewModel.rollDice(6, 6, 6, 1, 2);
+        assertEquals(SIXES.ordinal(), spyViewModel.computerChooseCategory());
+
+        // 能立即得到高价值得分项时优先选择该得分项
+        spyViewModel.rollDice(2, 3, 4, 5, 6);
+        assertEquals(STRAIGHT.ordinal(), spyViewModel.computerChooseCategory());
+    }
+
+    @Test
     public void testGameOver() {
-        var score = new BalutScore("2025-01-01", 400, 10, 2);
+        var score = new BalutScore("2025-01-01", 400, 1, 0, 10, 0, 2);
         doReturn(score).when(spyViewModel).createScoreEntity();
         doReturn(6).when(spyViewModel).saveScoreToDatabase(any());
         Consumer<Object[]> gameOverAction = mock(Consumer.class);
@@ -357,6 +442,30 @@ public class BalutGameViewModelTest {
         assertEquals(440, score.score);
         assertEquals(13, score.points);
         assertEquals(4, score.numBalut);
+        assertEquals(1, score.numPlayers);
+        assertEquals(0, score.computerScore);
+    }
+
+    @Test
+    public void testCreateScoreEntityMultiplayer() {
+        spyViewModel.setNumPlayers(2);
+        doNothing().when(spyViewModel).gameOver();
+
+        // 人类玩家和计算机玩家交替掷骰子、选择得分项，直到双方都选完所有格子
+        for (int i = 0; i < NUM_CATEGORIES * MAX_SELECTIONS; i++) {
+            spyViewModel.rollDice(6, 6, 6, 6, 6);
+            spyViewModel.select(i % NUM_CATEGORIES);
+            spyViewModel.rollDice(6, 6, 6, 6, 6);
+            spyViewModel.doSelect(i % NUM_CATEGORIES);
+        }
+
+        var score = spyViewModel.createScoreEntity();
+        assertEquals(2, score.numPlayers);
+        assertEquals(440, score.score);
+        assertEquals(13, score.points);
+        assertEquals(4, score.numBalut);
+        assertEquals(440, score.computerScore);
+        assertEquals(13, score.computerPoints);
     }
 
     @Test

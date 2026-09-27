@@ -32,17 +32,17 @@ public class BalutScoreDaoTest {
     private BalutScoreDao dao;
 
     private List<BalutScore> testScores = List.of(
-            new BalutScore("2025-03-01", 400, 14, 1),
-            new BalutScore("2025-03-02", 330, 6, 0),
-            new BalutScore("2025-03-03", 380, 10, 0),
-            new BalutScore("2025-03-04", 550, 23, 3),
-            new BalutScore("2025-03-05", 420, 14, 1),
-            new BalutScore("2025-03-06", 290, 3, 0),
-            new BalutScore("2025-03-07", 600, 25, 4),
-            new BalutScore("2025-03-08", 500, 20, 2),
-            new BalutScore("2025-03-09", 280, 2, 0),
-            new BalutScore("2025-03-10", 470, 18, 2),
-            new BalutScore("2025-03-11", 350, 8, 1)
+            new BalutScore("2025-03-01", 400, 1, 0, 14, 0, 1),
+            new BalutScore("2025-03-02", 330, 1, 0, 6, 0, 0),
+            new BalutScore("2025-03-03", 380, 1, 0, 10, 0, 0),
+            new BalutScore("2025-03-04", 550, 1, 0, 23, 0, 3),
+            new BalutScore("2025-03-05", 420, 1, 0, 14, 0, 1),
+            new BalutScore("2025-03-06", 290, 1, 0, 3, 0, 0),
+            new BalutScore("2025-03-07", 600, 1, 0, 25, 0, 4),
+            new BalutScore("2025-03-08", 500, 1, 0, 20, 0, 2),
+            new BalutScore("2025-03-09", 280, 1, 0, 2, 0, 0),
+            new BalutScore("2025-03-10", 470, 1, 0, 18, 0, 2),
+            new BalutScore("2025-03-11", 350, 1, 0, 8, 0, 1)
     );
 
     @Before
@@ -116,6 +116,8 @@ public class BalutScoreDaoTest {
             assertEquals(2, stats.minPoints);
             assertEquals(13.0, stats.avgPoints, 1e-6);
             assertEquals(14, stats.numBalut);
+            assertEquals(0, stats.numMultiplayer);
+            assertEquals(0, stats.winCount);
         });
     }
 
@@ -138,7 +140,7 @@ public class BalutScoreDaoTest {
 
     @Test
     public void testStatisticsObserver() {
-        dao.insert(new BalutScore("2025-03-12", 450, 15, 2));
+        dao.insert(new BalutScore("2025-03-12", 450, 1, 0, 15, 0, 2));
         dao.statistics().observeForever(stats -> {
             assertEquals(12, stats.count);
             assertEquals(600, stats.maxScore);
@@ -152,8 +154,28 @@ public class BalutScoreDaoTest {
     }
 
     @Test
+    public void testStatisticsOfMultiplayerGames() {
+        // 5局双人游戏：3胜1负1平局，平局计入分母但不计入胜局；先比较点数，点数相同时再比较得分
+        dao.insert(new BalutScore("2025-03-12", 300, 2, 250, 12, 10, 0));
+        dao.insert(new BalutScore("2025-03-13", 280, 2, 240, 10, 8, 0));
+        dao.insert(new BalutScore("2025-03-14", 200, 2, 260, 6, 15, 0));
+        dao.insert(new BalutScore("2025-03-15", 240, 2, 240, 10, 10, 0));
+        dao.insert(new BalutScore("2025-03-16", 260, 2, 240, 10, 10, 0));
+        dao.statistics().observeForever(stats -> {
+            assertEquals(16, stats.count);
+            assertEquals(5, stats.numMultiplayer);
+            assertEquals(3, stats.winCount);
+        });
+
+        var first = dao.findById(12);
+        assertEquals(12, first.points);
+        assertEquals(10, first.computerPoints);
+        assertEquals(250, first.computerScore);
+    }
+
+    @Test
     public void testInsert() {
-        var score = new BalutScore("2025-03-12", 460, 15, 2);
+        var score = new BalutScore("2025-03-12", 460, 1, 0, 15, 0, 2);
         dao.insert(score);
         assertEquals(12, dao.count());
         var actual = dao.findById(12);
@@ -164,7 +186,7 @@ public class BalutScoreDaoTest {
 
     @Test
     public void testInsertAlreadyExist() {
-        var score = new BalutScore("2025-03-03", 385, 11, 1);
+        var score = new BalutScore("2025-03-03", 385, 1, 0, 11, 0, 1);
         score.id = 3;
         dao.insert(score);
         assertEquals(11, dao.count());
@@ -178,7 +200,7 @@ public class BalutScoreDaoTest {
         int[] idsToDelete = {0, 3, 7, 10, 999};
         List<BalutScore> scores = new ArrayList<>();
         for (int id : idsToDelete) {
-            var s = new BalutScore("", 0, 0, 0);
+            var s = new BalutScore("", 0, 1, 0, 0, 0, 0);
             s.id = id;
             scores.add(s);
         }

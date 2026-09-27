@@ -228,7 +228,7 @@ public class MaxiYatzyGameViewModel extends BaseYahtzeeGameViewModel {
             // 上区按平均得分（即该点数的颗数）加权
             case ONES, TWOS, THREES, FOURS, FIVES, SIXES ->
                     target >= 4 && diceCounts[target] >= 4 ? 6 * diceCounts[target] + 20 : 6 * diceCounts[target];
-            case CHANCE -> score - 10;
+            case CHANCE -> score - 15;
             case FOUR_OF_A_KIND -> score + 1;
             case FIVE_OF_A_KIND -> score + 2;
             default -> score;
