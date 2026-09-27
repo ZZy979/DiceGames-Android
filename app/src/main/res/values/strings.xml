@@ -20,6 +20,7 @@
     <string name="highScores">High Scores</string>
     <string name="importScores">Import Scores</string>
     <string name="exportScores">Export Scores</string>
+    <string name="about">About</string>
 
     <!-- Prompt messages -->
     <string name="ok">OK</string>
@@ -171,5 +172,8 @@
     <string name="liarsDiceStatsFormat">%d-player game: %d Wins/%d Losses, win rate %.2f%%</string>
     <string name="liarsDiceTotalStatsFormat">Total: %d Wins/%d Losses, win rate %.2f%%</string>
 
+    <!-- Author -->
     <string name="zzy">Zhao Zhengyang</string>
+    <string name="author">Author</string>
+    <string name="email">Email</string>
 </resources>

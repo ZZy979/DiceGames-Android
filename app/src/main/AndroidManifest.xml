@@ -19,6 +19,7 @@
         </activity>
         <activity android:name=".ui.help.HelpActivity" />
         <activity android:name=".ui.stats.StatisticsActivity" />
+        <activity android:name=".ui.about.AboutActivity" />
     </application>
 
 </manifest>

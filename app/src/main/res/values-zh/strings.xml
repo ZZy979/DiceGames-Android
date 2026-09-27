@@ -20,6 +20,7 @@
     <string name="highScores">最高分</string>
     <string name="importScores">导入得分</string>
     <string name="exportScores">导出得分</string>
+    <string name="about">关于</string>
 
     <!-- 提示消息 -->
     <string name="ok">确定</string>
@@ -170,5 +171,8 @@
     <string name="liarsDiceStatsFormat">%d人游戏：%d胜/%d负，胜率%.2f%%</string>
     <string name="liarsDiceTotalStatsFormat">总计：%d胜/%d负，胜率%.2f%%</string>
 
+    <!-- 作者 -->
     <string name="zzy">赵正阳</string>
+    <string name="author">作者</string>
+    <string name="email">邮箱</string>
 </resources>

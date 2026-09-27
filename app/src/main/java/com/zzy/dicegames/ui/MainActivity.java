@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.zzy.dicegames.R;
 import com.zzy.dicegames.common.GameType;
+import com.zzy.dicegames.ui.about.AboutActivity;
 import com.zzy.dicegames.ui.help.HelpActivity;
 import com.zzy.dicegames.ui.stats.StatisticsActivity;
 import com.zzy.dicegames.data.ScoreDatabase;
@@ -101,6 +102,9 @@ public class MainActivity extends AppCompatActivity {
         }
         else if (itemId == R.id.menuExportScores) {
             exportScores();
+        }
+        else if (itemId == R.id.menuAbout) {
+            startActivity(new Intent(this, AboutActivity.class));
         }
         return true;
     }
