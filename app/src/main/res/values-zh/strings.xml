@@ -94,9 +94,10 @@
 
     <!-- 大话骰 -->
     <string name="players">人数</string>
-    <string name="playersFormat">人数：%d</string>
     <string name="selectNumPlayers">选择玩家数量</string>
-    <string name="numPlayersFormat">%d人</string>
+    <plurals name="numPlayers">
+        <item quantity="other">%d人</item>
+    </plurals>
     <string name="currentBidFormat">当前叫数：%s</string>
     <string name="noBid">等待开叫</string>
     <string name="call">叫骰</string>

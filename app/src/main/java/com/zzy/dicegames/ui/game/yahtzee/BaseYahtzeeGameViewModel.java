@@ -104,13 +104,13 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
     @Override
     public void updateDiceNumbers(int... numbers) {
         super.updateDiceNumbers(numbers);
-        updateScores();
+        updatePreviewScores();
         if (isComputerTurn() && !diceRolling)
             postComputerAction(this::computerTurn);
     }
 
     /** 根据骰子点数更新当前玩家的预估得分 */
-    protected void updateScores() {
+    protected void updatePreviewScores() {
         YahtzeeGameData currentData = data(getCurrentPlayerValue());
         boolean[] isSelected = currentData.selected.getValue();
         int[] currentScores = currentData.scores.getValue();
@@ -169,8 +169,7 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         currentData.selected.setValue(currentSelected);
         currentData.numSelected++;
 
-        // 掷骰子后已计算过预估得分，此处无需更新scores
-        updateBonusAndTotalScore(currentData);
+        updateScores(currentData, category);
 
         if (isAllPlayersFinished()) {
             gameOver();
@@ -260,12 +259,17 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         return true;
     }
 
-    /** 更新指定玩家的上区总分、奖励分和游戏总分 */
-    private void updateBonusAndTotalScore(YahtzeeGameData playerData) {
+    /** 更新指定玩家刚选择的得分项的得分、上区总分、奖励分和游戏总分 */
+    private void updateScores(YahtzeeGameData playerData, int category) {
         int[] currentScores = playerData.scores.getValue();
         boolean[] isSelected = playerData.selected.getValue();
         if (currentScores == null || isSelected == null)
             return;
+
+        // 总是重新计算刚选择的得分项：掷骰子后计算的只是预估得分，
+        // 且计算机玩家在界面上不显示预估得分，需在此时更新scores以显示该得分项的得分
+        currentScores[category] = calculateScore(category);
+        playerData.scores.setValue(currentScores);
 
         int upperTotal = 0;
         for (int i = 0; i < NUM_UPPER_CATEGORIES; i++) {

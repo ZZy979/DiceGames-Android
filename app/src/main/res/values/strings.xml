@@ -94,9 +94,11 @@
 
     <!-- Liar's Dice -->
     <string name="players">Players</string>
-    <string name="playersFormat">Players: %d</string>
     <string name="selectNumPlayers">Select number of players</string>
-    <string name="numPlayersFormat">%d players</string>
+    <plurals name="numPlayers">
+        <item quantity="one">%d player</item>
+        <item quantity="other">%d players</item>
+    </plurals>
     <string name="currentBidFormat">Current bid: %s</string>
     <string name="noBid">No bid yet</string>
     <string name="call">Call</string>

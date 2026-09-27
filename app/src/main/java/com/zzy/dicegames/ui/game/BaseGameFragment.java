@@ -167,8 +167,10 @@ public abstract class BaseGameFragment<V extends BaseGameViewModel> extends Frag
 
         List<Integer> playerCounts = mViewModel.getSupportedPlayerCounts();
         String[] options = new String[playerCounts.size()];
-        for (int i = 0; i < options.length; i++)
-            options[i] = getString(R.string.numPlayersFormat, playerCounts.get(i));
+        for (int i = 0; i < options.length; i++) {
+            int numPlayers = playerCounts.get(i);
+            options[i] = getResources().getQuantityString(R.plurals.numPlayers, numPlayers, numPlayers);
+        }
 
         new AlertDialog.Builder(getContext())
                 .setTitle(R.string.selectNumPlayers)
