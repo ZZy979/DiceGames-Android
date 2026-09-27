@@ -14,6 +14,8 @@ import java.util.List;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.core.util.Pair;
 
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_COMPUTER;
+import static com.zzy.dicegames.ui.game.BaseGameViewModel.PLAYER_HUMAN;
 import static com.zzy.dicegames.ui.game.crag.CragGameViewModel.Category.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -137,5 +139,109 @@ public class CragGameViewModelTest {
         var score = spyViewModel.createScoreEntity();
         assertEquals(89, score.score);
         assertTrue(score.hasCrag);
+    }
+
+    @Test
+    public void testPlayerCount() {
+        assertTrue(viewModel.supportsPlayerCountSelection());
+        assertEquals(List.of(1, 2), viewModel.getSupportedPlayerCounts());
+        assertEquals(1, viewModel.getNumPlayersValue());
+        assertFalse(viewModel.isMultiplayer());
+
+        viewModel.setNumPlayers(2);
+        assertEquals(2, viewModel.getNumPlayersValue());
+        assertTrue(viewModel.isMultiplayer());
+        assertEquals(PLAYER_HUMAN, viewModel.getCurrentPlayerValue());
+        assertThrows(IllegalArgumentException.class, () -> viewModel.setNumPlayers(3));
+    }
+
+    @Test
+    public void testTwoPlayersTurnFlow() {
+        viewModel.setNumPlayers(2);
+
+        viewModel.updateDiceNumbers(4, 5, 4);
+        viewModel.select(CRAG.ordinal());
+        assertEquals(50, viewModel.getPlayerScoreValue(PLAYER_HUMAN));
+        assertEquals(PLAYER_COMPUTER, viewModel.getCurrentPlayerValue());
+
+        // 计算机回合时人类不能替计算机选择得分项
+        viewModel.select(ONES.ordinal());
+        assertFalse(viewModel.data(PLAYER_COMPUTER).selected.getValue()[ONES.ordinal()]);
+    }
+
+    @Test
+    public void testCreateScoreEntity_Multiplayer() {
+        // 单人局：不记录计算机得分
+        assertEquals(1, viewModel.createScoreEntity().numPlayers);
+        assertEquals(0, viewModel.createScoreEntity().computerScore);
+
+        // 双人局：记录玩家数量和计算机得分
+        viewModel.setNumPlayers(2);
+        viewModel.updateDiceNumbers(6, 6, 6);
+        viewModel.select(THREE_OF_A_KIND.ordinal());
+        viewModel.data(PLAYER_COMPUTER).score.setValue(100);
+
+        var score = viewModel.createScoreEntity();
+        assertEquals(2, score.numPlayers);
+        assertEquals(25, score.score);
+        assertEquals(100, score.computerScore);
+    }
+
+    @Test
+    public void testComputerChooseCategory() {
+        // 能得分的高价值得分项优先选择，不再掷骰子
+        viewModel.updateDiceNumbers(6, 6, 6);
+        assertEquals(THREE_OF_A_KIND.ordinal(), viewModel.computerChooseCategory());
+
+        viewModel.updateDiceNumbers(1, 2, 3);
+        assertEquals(LOW_STRAIGHT.ordinal(), viewModel.computerChooseCategory());
+
+        viewModel.updateDiceNumbers(1, 3, 5);
+        assertEquals(ODD_STRAIGHT.ordinal(), viewModel.computerChooseCategory());
+
+        viewModel.updateDiceNumbers(2, 4, 6);
+        assertEquals(EVEN_STRAIGHT.ordinal(), viewModel.computerChooseCategory());
+
+        viewModel.updateDiceNumbers(4, 5, 6);
+        assertEquals(HIGH_STRAIGHT.ordinal(), viewModel.computerChooseCategory());
+
+        // 都不得分时选择优先级最高的上区得分项
+        viewModel.updateDiceNumbers(4, 4, 6);
+        assertEquals(FOURS.ordinal(), viewModel.computerChooseCategory());
+    }
+
+    @Test
+    public void testChooseDiceToKeep() {
+        // 1、2：只差一颗就能得到小顺，保留1、2
+        viewModel.updateDiceNumbers(1, 2, 4);
+        assertArrayEquals(new boolean[] {true, true, false}, viewModel.chooseDiceToKeep(1));
+
+        // 3、3、5：只差一颗就能得到奇顺，保留一颗3和5
+        viewModel.updateDiceNumbers(3, 3, 5);
+        assertArrayEquals(new boolean[] {true, false, true}, viewModel.chooseDiceToKeep(1));
+
+        // 1、1、4：两颗骰子凑不出9点，改为保留点数最大的4点去凑13
+        viewModel.updateDiceNumbers(1, 1, 4);
+        assertArrayEquals(new boolean[] {false, false, true}, viewModel.chooseDiceToKeep(1));
+    }
+
+    @Test
+    public void testAnalyzeDiceToKeep_ChooseCategory() {
+        // 能直接得到偶顺时选择偶顺，不再保留骰子
+        viewModel.rollDice(2, 4, 6);
+        viewModel.analyzeDiceToKeep();
+
+        assertTrue(viewModel.data(PLAYER_HUMAN).selected.getValue()[EVEN_STRAIGHT.ordinal()]);
+    }
+
+    @Test
+    public void testAnalyzeDiceToKeep_KeepDice() {
+        // 不能直接得分时锁定要保留的骰子并继续掷骰子
+        viewModel.rollDice(1, 2, 4);
+        viewModel.analyzeDiceToKeep();
+
+        assertArrayEquals(new boolean[] {true, true, false},
+                viewModel.getDiceLocked().getValue());
+        verify(mockHandler).postDelayed(any(Runnable.class), anyLong());
     }
 }

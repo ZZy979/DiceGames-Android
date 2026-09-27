@@ -125,7 +125,9 @@ public class ScoreParser {
     private void parseCragScores() {
         String date = parser.getAttributeValue(null, "date");
         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
+        int numPlayers = parseInt(parser.getAttributeValue(null, "num_players"), 1);
+        int computerScore = parseInt(parser.getAttributeValue(null, "computer_score"), 0);
         boolean hasCrag = Boolean.parseBoolean(parser.getAttributeValue(null, "has_crag"));
-        scoresDTO.cragScores.add(new CragScore(date, score, hasCrag));
+        scoresDTO.cragScores.add(new CragScore(date, score, numPlayers, computerScore, hasCrag));
     }
 }

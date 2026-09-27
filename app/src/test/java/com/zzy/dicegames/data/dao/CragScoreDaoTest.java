@@ -32,19 +32,19 @@ public class CragScoreDaoTest {
     private CragScoreDao dao;
 
     private List<CragScore> testScores = List.of(
-            new CragScore("2025-02-01", 100, false),
-            new CragScore("2025-02-02", 120, false),
-            new CragScore("2025-02-03", 140, false),
-            new CragScore("2025-02-04", 160, false),
-            new CragScore("2025-02-05", 180, true),
-            new CragScore("2025-02-06", 200, true),
-            new CragScore("2025-02-07", 220, false),
-            new CragScore("2025-02-08", 240, true),
-            new CragScore("2025-02-09", 260, true),
-            new CragScore("2025-02-10", 280, false),
-            new CragScore("2025-02-11", 300, true),
-            new CragScore("2025-02-12", 320, true),
-            new CragScore("2025-02-13", 340, true)
+            new CragScore("2025-02-01", 100, 1, 0, false),
+            new CragScore("2025-02-02", 120, 1, 0, false),
+            new CragScore("2025-02-03", 140, 1, 0, false),
+            new CragScore("2025-02-04", 160, 1, 0, false),
+            new CragScore("2025-02-05", 180, 1, 0, true),
+            new CragScore("2025-02-06", 200, 1, 0, true),
+            new CragScore("2025-02-07", 220, 1, 0, false),
+            new CragScore("2025-02-08", 240, 1, 0, true),
+            new CragScore("2025-02-09", 260, 1, 0, true),
+            new CragScore("2025-02-10", 280, 1, 0, false),
+            new CragScore("2025-02-11", 300, 1, 0, true),
+            new CragScore("2025-02-12", 320, 1, 0, true),
+            new CragScore("2025-02-13", 340, 1, 0, true)
     );
 
     @Before
@@ -130,8 +130,22 @@ public class CragScoreDaoTest {
     }
 
     @Test
+    public void testStatisticsOfMultiplayerGames() {
+        // 4局双人游戏：2胜1负1平局，平局计入分母但不计入胜局
+        dao.insert(new CragScore("2025-03-01", 300, 2, 250, true));
+        dao.insert(new CragScore("2025-03-02", 280, 2, 240, false));
+        dao.insert(new CragScore("2025-03-03", 200, 2, 260, false));
+        dao.insert(new CragScore("2025-03-04", 240, 2, 240, false));
+        dao.statistics().observeForever(stats -> {
+            assertEquals(17, stats.count);
+            assertEquals(4, stats.numMultiplayer);
+            assertEquals(2, stats.winCount);
+        });
+    }
+
+    @Test
     public void testStatisticsObserver() {
-        dao.insert(new CragScore("2025-02-14", 220, true));
+        dao.insert(new CragScore("2025-02-14", 220, 1, 0, true));
         dao.statistics().observeForever(stats -> {
             assertEquals(14, stats.count);
             assertEquals(340, stats.maxScore);
@@ -143,7 +157,7 @@ public class CragScoreDaoTest {
 
     @Test
     public void testInsert() {
-        var score = new CragScore("2025-02-14", 425, true);
+        var score = new CragScore("2025-02-14", 425, 1, 0, true);
         dao.insert(score);
         assertEquals(14, dao.count());
         var actual = dao.findById(14);
@@ -153,7 +167,7 @@ public class CragScoreDaoTest {
 
     @Test
     public void testInsertAlreadyExist() {
-        var score = new CragScore("2025-02-10", 565, true);
+        var score = new CragScore("2025-02-10", 565, 1, 0, true);
         score.id = 10;
         dao.insert(score);
         assertEquals(13, dao.count());
@@ -165,7 +179,7 @@ public class CragScoreDaoTest {
         int[] idsToDelete = {-1, 4, 9, 12, 999};
         List<CragScore> scores = new ArrayList<>();
         for (int id : idsToDelete) {
-            var s = new CragScore("", 0, false);
+            var s = new CragScore("", 0, 1, 0, false);
             s.id = id;
             scores.add(s);
         }

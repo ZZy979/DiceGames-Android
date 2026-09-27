@@ -22,6 +22,9 @@ public class CragStatsFragment extends BaseStatsFragment {
     /** 得到Crag次数标签 */
     private TextView mGotCragTextView;
 
+    /** 对计算机胜率标签 */
+    private TextView mWinRateTextView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_crag_stats, container, false);
@@ -31,6 +34,7 @@ public class CragStatsFragment extends BaseStatsFragment {
     protected void initViews(View view) {
         super.initViews(view);
         mGotCragTextView = view.findViewById(R.id.tvGotCrag);
+        mWinRateTextView = view.findViewById(R.id.tvWinRate);
     }
 
     @Override
@@ -48,5 +52,6 @@ public class CragStatsFragment extends BaseStatsFragment {
         super.onStatisticsChanged(stats);
         var s = (CragStatistics) stats;
         mGotCragTextView.setText(formatPercent(s.numCrag, s.count));
+        mWinRateTextView.setText(formatPercent(s.winCount, s.numMultiplayer));
     }
 }

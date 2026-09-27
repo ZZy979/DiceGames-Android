@@ -137,6 +137,8 @@ public class ScoreSerializer {
             serializer.startTag(null, "CragScore")
                     .attribute(null, "date", score.date)
                     .attribute(null, "score", Integer.toString(score.score))
+                    .attribute(null, "num_players", Integer.toString(score.numPlayers))
+                    .attribute(null, "computer_score", Integer.toString(score.computerScore))
                     .attribute(null, "has_crag", Boolean.toString(score.hasCrag))
                     .endTag(null, "CragScore");
         serializer.endTag(null, "CragScores");

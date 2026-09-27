@@ -409,6 +409,23 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         return new KeepPlan(bestKeep, rankByMissing(weight, throwsLeft, length - bestCount, bonus));
     }
 
+    /**
+     * 计算顺子的保留方案：保留各点数中的一颗骰子（点数不连续时同样适用）<br>
+     * 与{@link #planForStraight(int[], int[], int, int, int, int)}的区别是后者遇到缺失的点数即停止
+     *
+     * @param faces 顺子包含的点数
+     * @param weight 优先级权重
+     * @param bonus 还差1颗时的额外优先级
+     */
+    protected KeepPlan planForFacesStraight(int[] numbers, int[] faces, int weight, int bonus, int throwsLeft) {
+        boolean[] keep = new boolean[numDice];
+        for (int face : faces)
+            markFace(numbers, keep, face, 1);
+
+        int missing = numDice - ArrayUtil.count(keep, true);
+        return new KeepPlan(keep, rankByMissing(weight, throwsLeft, missing, missing == 1 ? bonus : 0));
+    }
+
     /** 各点数按（出现次数降序，点数降序）排序后的结果 */
     protected List<Integer> sortedFaces() {
         List<Integer> faces = new ArrayList<>(List.of(1, 2, 3, 4, 5, 6));

@@ -15,8 +15,9 @@ public class CragScore extends BaseScore {
     @ColumnInfo(name = "has_crag")
     public boolean hasCrag;
 
-    public CragScore(@NonNull String date, int score, boolean hasCrag) {
-        super(date, score);
+    public CragScore(
+            @NonNull String date, int score, int numPlayers, int computerScore, boolean hasCrag) {
+        super(date, score, numPlayers, computerScore);
         this.hasCrag = hasCrag;
     }
 }
