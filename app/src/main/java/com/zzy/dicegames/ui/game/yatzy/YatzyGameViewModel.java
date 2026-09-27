@@ -162,7 +162,7 @@ public class YatzyGameViewModel extends BaseYahtzeeGameViewModel {
         int score = calculateScore(category);
         int target = category + 1;
         return switch (Category.values()[category]) {
-            // 上区按平均得分（即该点数的颗数）加权，4~6点上区有3颗以上时额外奖励
+            // 上区按平均得分（即该点数的颗数）加权
             case ONES, TWOS, THREES, FOURS, FIVES, SIXES ->
                     target >= 4 && diceCounts[target] >= 3 ? 6 * diceCounts[target] + 20 : 6 * diceCounts[target];
             case CHANCE -> score - 10;
@@ -177,10 +177,8 @@ public class YatzyGameViewModel extends BaseYahtzeeGameViewModel {
         return switch (Category.values()[category]) {
             case ONES, TWOS, THREES, FOURS, FIVES, SIXES ->
                     planForUpperCategory(numbers, category);
-            case ONE_PAIR ->
-                    planForOnePair(numbers);
-            case TWO_PAIRS ->
-                    planForTwoPairs(numbers, throwsLeft);
+            case ONE_PAIR, TWO_PAIRS ->
+                    planForPairs(numbers, category - Category.ONE_PAIR.ordinal() + 1, throwsLeft);
             case THREE_OF_A_KIND, FOUR_OF_A_KIND ->
                     planForSameKind(numbers, throwsLeft);
             case FULL_HOUSE ->
@@ -201,31 +199,5 @@ public class YatzyGameViewModel extends BaseYahtzeeGameViewModel {
                         rankByMissing(9, throwsLeft, numDice - ArrayUtil.count(keep, true), 0));
             }
         };
-    }
-
-    /** 计算一对的保留方案：保留出现次数最多的5、6点的骰子 */
-    private KeepPlan planForOnePair(int[] numbers) {
-        int face = mostFrequentFace();
-        if (face < 5)
-            return new KeepPlan(new boolean[numDice], 2);
-
-        return new KeepPlan(keepFace(numbers, face), face * 2 + 1);
-    }
-
-    /** 计算两对的保留方案：保留点数最小的两对 */
-    private KeepPlan planForTwoPairs(int[] numbers, int throwsLeft) {
-        // 出现次数最多的点数也只有1颗时，骰子互不相同
-        if (maxCount() == 1)
-            return new KeepPlan(new boolean[numDice], 1);
-
-        boolean[] keep = new boolean[numDice];
-        int pairs = 0;
-        for (int face = 1; face <= 6 && pairs < 2; face++) {
-            if (diceCounts[face] >= 2) {
-                pairs++;
-                markFace(numbers, keep, face, 2);
-            }
-        }
-        return new KeepPlan(keep, rankByMissing(6, throwsLeft, numDice - ArrayUtil.count(keep, true), 0));
     }
 }

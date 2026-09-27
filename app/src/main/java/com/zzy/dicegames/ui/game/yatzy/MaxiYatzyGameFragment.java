@@ -41,7 +41,7 @@ public class MaxiYatzyGameFragment extends BaseYahtzeeGameFragment {
                 R.id.tvThreeOfAKind, R.id.tvFourOfAKind, R.id.tvFiveOfAKind,
                 R.id.tvSmallStraight, R.id.tvLargeStraight, R.id.tvFullStraight,
                 R.id.tvFullHouse, R.id.tvCastle, R.id.tvTower,
-                R.id.tvChance, R.id.tvYatzy
+                R.id.tvChance, R.id.tvMaxiYatzy
         };
     }
 

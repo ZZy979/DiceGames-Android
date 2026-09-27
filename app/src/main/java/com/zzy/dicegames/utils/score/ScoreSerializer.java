@@ -78,6 +78,8 @@ public class ScoreSerializer {
             serializer.startTag(null, "MaxiYatzyScore")
                     .attribute(null, "date", score.date)
                     .attribute(null, "score", Integer.toString(score.score))
+                    .attribute(null, "num_players", Integer.toString(score.numPlayers))
+                    .attribute(null, "computer_score", Integer.toString(score.computerScore))
                     .attribute(null, "has_bonus", Boolean.toString(score.hasBonus))
                     .attribute(null, "has_yatzy", Boolean.toString(score.hasYatzy))
                     .endTag(null, "MaxiYatzyScore");

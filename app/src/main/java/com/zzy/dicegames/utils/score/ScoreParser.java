@@ -87,9 +87,12 @@ public class ScoreParser {
     private void parseMaxiYatzyScores() {
         String date = parser.getAttributeValue(null, "date");
         int score = Integer.parseInt(parser.getAttributeValue(null, "score"));
+        int numPlayers = parseInt(parser.getAttributeValue(null, "num_players"), 1);
+        int computerScore = parseInt(parser.getAttributeValue(null, "computer_score"), 0);
         boolean hasBonus = Boolean.parseBoolean(parser.getAttributeValue(null, "has_bonus"));
         boolean hasYatzy = Boolean.parseBoolean(parser.getAttributeValue(null, "has_yatzy"));
-        scoresDTO.maxiYatzyScores.add(new MaxiYatzyScore(date, score, hasBonus, hasYatzy));
+        scoresDTO.maxiYatzyScores.add(
+                new MaxiYatzyScore(date, score, numPlayers, computerScore, hasBonus, hasYatzy));
     }
 
     private void parseBalutScores() {

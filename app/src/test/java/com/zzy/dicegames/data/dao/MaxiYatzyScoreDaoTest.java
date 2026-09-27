@@ -32,19 +32,19 @@ public class MaxiYatzyScoreDaoTest {
     private MaxiYatzyScoreDao dao;
 
     private List<MaxiYatzyScore> testScores = List.of(
-            new MaxiYatzyScore("2025-02-01", 340, false, false),
-            new MaxiYatzyScore("2025-02-02", 470, true, false),
-            new MaxiYatzyScore("2025-02-03", 530, true, true),
-            new MaxiYatzyScore("2025-02-04", 230, false, false),
-            new MaxiYatzyScore("2025-02-05", 400, true, false),
-            new MaxiYatzyScore("2025-02-06", 190, false, false),
-            new MaxiYatzyScore("2025-02-07", 380, true, false),
-            new MaxiYatzyScore("2025-02-08", 310, false, false),
-            new MaxiYatzyScore("2025-02-09", 440, false, true),
-            new MaxiYatzyScore("2025-02-10", 560, true, true),
-            new MaxiYatzyScore("2025-02-11", 270, false, false),
-            new MaxiYatzyScore("2025-02-12", 450, true, false),
-            new MaxiYatzyScore("2025-02-13", 500, true, true)
+            new MaxiYatzyScore("2025-02-01", 340, 1, 0, false, false),
+            new MaxiYatzyScore("2025-02-02", 470, 1, 0, true, false),
+            new MaxiYatzyScore("2025-02-03", 530, 1, 0, true, true),
+            new MaxiYatzyScore("2025-02-04", 230, 1, 0, false, false),
+            new MaxiYatzyScore("2025-02-05", 400, 1, 0, true, false),
+            new MaxiYatzyScore("2025-02-06", 190, 1, 0, false, false),
+            new MaxiYatzyScore("2025-02-07", 380, 1, 0, true, false),
+            new MaxiYatzyScore("2025-02-08", 310, 1, 0, false, false),
+            new MaxiYatzyScore("2025-02-09", 440, 1, 0, false, true),
+            new MaxiYatzyScore("2025-02-10", 560, 1, 0, true, true),
+            new MaxiYatzyScore("2025-02-11", 270, 1, 0, false, false),
+            new MaxiYatzyScore("2025-02-12", 450, 1, 0, true, false),
+            new MaxiYatzyScore("2025-02-13", 500, 1, 0, true, true)
     );
 
     @Before
@@ -133,8 +133,22 @@ public class MaxiYatzyScoreDaoTest {
     }
 
     @Test
+    public void testStatisticsOfMultiplayerGames() {
+        // 4局双人游戏：2胜1负1平局，平局计入分母但不计入胜局
+        dao.insert(new MaxiYatzyScore("2025-03-01", 500, 2, 450, true, false));
+        dao.insert(new MaxiYatzyScore("2025-03-02", 480, 2, 440, false, false));
+        dao.insert(new MaxiYatzyScore("2025-03-03", 400, 2, 460, false, false));
+        dao.insert(new MaxiYatzyScore("2025-03-04", 440, 2, 440, false, false));
+        dao.statistics().observeForever(stats -> {
+            assertEquals(17, stats.count);
+            assertEquals(4, stats.numMultiplayer);
+            assertEquals(2, stats.winCount);
+        });
+    }
+
+    @Test
     public void testStatisticsObserver() {
-        dao.insert(new MaxiYatzyScore("2025-02-14", 565, true, true));
+        dao.insert(new MaxiYatzyScore("2025-02-14", 565, 1, 0, true, true));
         dao.statistics().observeForever(stats -> {
             assertEquals(14, stats.count);
             assertEquals(565, stats.maxScore);
@@ -147,7 +161,7 @@ public class MaxiYatzyScoreDaoTest {
 
     @Test
     public void testInsert() {
-        var score = new MaxiYatzyScore("2025-02-14", 425, true, false);
+        var score = new MaxiYatzyScore("2025-02-14", 425, 1, 0, true, false);
         dao.insert(score);
         assertEquals(14, dao.count());
         var actual = dao.findById(14);
@@ -157,7 +171,7 @@ public class MaxiYatzyScoreDaoTest {
 
     @Test
     public void testInsertAlreadyExist() {
-        var score = new MaxiYatzyScore("2025-02-10", 565, true, true);
+        var score = new MaxiYatzyScore("2025-02-10", 565, 1, 0, true, true);
         score.id = 10;
         dao.insert(score);
         assertEquals(13, dao.count());
@@ -169,7 +183,7 @@ public class MaxiYatzyScoreDaoTest {
         int[] idsToDelete = {-1, 4, 9, 12, 999};
         List<MaxiYatzyScore> scores = new ArrayList<>();
         for (int id : idsToDelete) {
-            var s = new MaxiYatzyScore("", 0, false, false);
+            var s = new MaxiYatzyScore("", 0, 1, 0, false, false);
             s.id = id;
             scores.add(s);
         }

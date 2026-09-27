@@ -226,7 +226,15 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
             return;
         }
 
-        keepDiceAndRoll(chooseDiceToKeep(throwsLeft));
+        boolean[] keep = chooseDiceToKeep(throwsLeft);
+        // 所有骰子都要保留时再掷骰子没有意义，直接选择得分项
+        if (ArrayUtil.all(keep, true)) {
+            category = computerChooseCategory();
+            if (category >= 0)
+                doSelect(category);
+            return;
+        }
+        keepDiceAndRoll(keep);
     }
 
     /** 锁定要保留的骰子并掷骰子 */
@@ -384,6 +392,19 @@ public abstract class BaseYahtzeeGameViewModel extends BaseGameViewModel {
         markFace(numbers, keep, faces.get(0), 3);
         markFace(numbers, keep, faces.get(1), 2);
         return new KeepPlan(keep, rankByMissing(8, throwsLeft, numDice - ArrayUtil.count(keep, true), 0));
+    }
+
+    /** 计算n对的保留方案：保留点数最大的n对（不足n对时保留已凑齐的对） */
+    protected KeepPlan planForPairs(int[] numbers, int n, int throwsLeft) {
+        boolean[] keep = new boolean[numDice];
+        int pairs = 0;
+        for (int face = 6; face >= 1 && pairs < n; face--) {
+            if (diceCounts[face] >= 2) {
+                pairs++;
+                markFace(numbers, keep, face, 2);
+            }
+        }
+        return new KeepPlan(keep, rankByMissing(6, throwsLeft, numDice - ArrayUtil.count(keep, true), 0));
     }
 
     /**
