@@ -25,6 +25,9 @@ public class YatzyStatsFragment extends BaseStatsFragment {
     /** 得到Yatzy次数标签 */
     private TextView mGotYatzyTextView;
 
+    /** 对计算机胜率标签 */
+    private TextView mWinRateTextView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_yatzy_stats, container, false);
@@ -35,6 +38,7 @@ public class YatzyStatsFragment extends BaseStatsFragment {
         super.initViews(view);
         mGotBonusTextView = view.findViewById(R.id.tvGotBonus);
         mGotYatzyTextView = view.findViewById(R.id.tvGotYatzy);
+        mWinRateTextView = view.findViewById(R.id.tvWinRate);
     }
 
     @Override
@@ -53,5 +57,6 @@ public class YatzyStatsFragment extends BaseStatsFragment {
         var s = (YatzyStatistics) stats;
         mGotBonusTextView.setText(formatPercent(s.numBonus, s.count));
         mGotYatzyTextView.setText(formatPercent(s.numYatzy, s.count));
+        mWinRateTextView.setText(formatPercent(s.winCount, s.numMultiplayer));
     }
 }

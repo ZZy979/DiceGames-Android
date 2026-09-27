@@ -23,7 +23,7 @@ class TestData {
                 new YahtzeeScore("2026-01-01", 370, 1, 0, true, true),
                 new YahtzeeScore("2026-01-02", 270, 1, 0, false, false)
         );
-        var yatzyScores = List.of(new YatzyScore("2026-01-15", 300, true, true));
+        var yatzyScores = List.of(new YatzyScore("2026-01-15", 300, 1, 0, true, true));
         var maxiYatzyScores = List.of(new MaxiYatzyScore("2026-02-01", 470, false, true));
         var balutScores = List.of(new BalutScore("2026-03-01", 400, 10, 1));
         var liarsDiceScores = List.of(new LiarsDiceScore("2026-05-01", 2, 5, 5));
@@ -39,7 +39,7 @@ class TestData {
                 <YahtzeeScore date="2026-01-01" score="370" num_players="1" computer_score="0" has_bonus="true" has_yahtzee="true" />
                 <YahtzeeScore date="2026-01-02" score="270" num_players="1" computer_score="0" has_bonus="false" has_yahtzee="false" />
                 </YahtzeeScores><YatzyScores>
-                <YatzyScore date="2026-01-15" score="300" has_bonus="true" has_yatzy="true" />
+                <YatzyScore date="2026-01-15" score="300" num_players="1" computer_score="0" has_bonus="true" has_yatzy="true" />
                 </YatzyScores><MaxiYatzyScores>
                 <MaxiYatzyScore date="2026-02-01" score="470" has_bonus="false" has_yatzy="true" />
                 </MaxiYatzyScores><BalutScores>

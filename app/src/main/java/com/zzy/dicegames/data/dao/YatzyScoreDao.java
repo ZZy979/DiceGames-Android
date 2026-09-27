@@ -35,7 +35,9 @@ public interface YatzyScoreDao {
 
     @Query(
             "SELECT COUNT(*) AS count, MAX(score) AS maxScore, MIN(score) AS minScore, " +
-            "    AVG(score) AS avgScore, SUM(has_bonus) AS numBonus, SUM(has_yatzy) AS numYatzy " +
+            "    AVG(score) AS avgScore, SUM(has_bonus) AS numBonus, SUM(has_yatzy) AS numYatzy, " +
+            "    SUM(num_players > 1) AS numMultiplayer, " +
+            "    SUM(num_players > 1 AND score > computer_score) AS winCount " +
             "FROM yatzy_score"
     )
     LiveData<YatzyStatistics> statistics();

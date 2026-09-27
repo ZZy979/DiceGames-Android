@@ -136,4 +136,8 @@ public class MaxiYatzyGameViewModel extends BaseYahtzeeGameViewModel {
         dao.insert((MaxiYatzyScore) score);
         return dao.rank(score.score);
     }
+
+    // ---------- 计算机玩家AI ----------
+
+    // MaxiYatzy暂时只支持单人游戏，未实现planForCategory()，将重掷全部骰子
 }

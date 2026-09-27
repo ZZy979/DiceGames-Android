@@ -19,8 +19,10 @@ public class YatzyScore extends BaseScore {
     @ColumnInfo(name = "has_yatzy")
     public boolean hasYatzy;
 
-    public YatzyScore(@NonNull String date, int score, boolean hasBonus, boolean hasYatzy) {
-        super(date, score);
+    public YatzyScore(
+            @NonNull String date, int score, int numPlayers, int computerScore,
+            boolean hasBonus, boolean hasYatzy) {
+        super(date, score, numPlayers, computerScore);
         this.hasBonus = hasBonus;
         this.hasYatzy = hasYatzy;
     }

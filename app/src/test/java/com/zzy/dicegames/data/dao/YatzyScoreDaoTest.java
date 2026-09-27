@@ -32,18 +32,18 @@ public class YatzyScoreDaoTest {
     private YatzyScoreDao dao;
 
     private List<YatzyScore> testScores = List.of(
-            new YatzyScore("2025-03-01", 260, true, true),
-            new YatzyScore("2025-03-02", 320, true, true),
-            new YatzyScore("2025-03-03", 230, false, false),
-            new YatzyScore("2025-03-04", 300, true, true),
-            new YatzyScore("2025-03-05", 250, true, false),
-            new YatzyScore("2025-03-06", 140, false, false),
-            new YatzyScore("2025-03-07", 210, false, false),
-            new YatzyScore("2025-03-08", 220, false, true),
-            new YatzyScore("2025-03-09", 200, false, false),
-            new YatzyScore("2025-03-10", 280, true, true),
-            new YatzyScore("2025-03-11", 240, true, false),
-            new YatzyScore("2025-03-12", 230, false, false)
+            new YatzyScore("2025-03-01", 260, 1, 0, true, true),
+            new YatzyScore("2025-03-02", 320, 1, 0, true, true),
+            new YatzyScore("2025-03-03", 230, 1, 0, false, false),
+            new YatzyScore("2025-03-04", 300, 1, 0, true, true),
+            new YatzyScore("2025-03-05", 250, 1, 0, true, false),
+            new YatzyScore("2025-03-06", 140, 1, 0, false, false),
+            new YatzyScore("2025-03-07", 210, 1, 0, false, false),
+            new YatzyScore("2025-03-08", 220, 1, 0, false, true),
+            new YatzyScore("2025-03-09", 200, 1, 0, false, false),
+            new YatzyScore("2025-03-10", 280, 1, 0, true, true),
+            new YatzyScore("2025-03-11", 240, 1, 0, true, false),
+            new YatzyScore("2025-03-12", 230, 1, 0, false, false)
     );
 
     @Before
@@ -132,8 +132,22 @@ public class YatzyScoreDaoTest {
     }
 
     @Test
+    public void testStatisticsOfMultiplayerGames() {
+        // 4局双人游戏：2胜1负1平局，平局计入分母但不计入胜局
+        dao.insert(new YatzyScore("2025-04-01", 300, 2, 250, true, false));
+        dao.insert(new YatzyScore("2025-04-02", 280, 2, 240, false, false));
+        dao.insert(new YatzyScore("2025-04-03", 200, 2, 260, false, false));
+        dao.insert(new YatzyScore("2025-04-04", 240, 2, 240, false, false));
+        dao.statistics().observeForever(stats -> {
+            assertEquals(16, stats.count);
+            assertEquals(4, stats.numMultiplayer);
+            assertEquals(2, stats.winCount);
+        });
+    }
+
+    @Test
     public void testStatisticsObserver() {
-        dao.insert(new YatzyScore("2025-03-13", 240, true, false));
+        dao.insert(new YatzyScore("2025-03-13", 240, 1, 0, true, false));
         dao.statistics().observeForever(stats -> {
             assertEquals(13, stats.count);
             assertEquals(320, stats.maxScore);
@@ -146,7 +160,7 @@ public class YatzyScoreDaoTest {
 
     @Test
     public void testInsert() {
-        var score = new YatzyScore("2025-03-13", 275, true, false);
+        var score = new YatzyScore("2025-03-13", 275, 1, 0, true, false);
         dao.insert(score);
         assertEquals(13, dao.count());
         var actual = dao.findById(13);
@@ -156,7 +170,7 @@ public class YatzyScoreDaoTest {
 
     @Test
     public void testInsertAlreadyExist() {
-        var score = new YatzyScore("2025-03-04", 310, true, true);
+        var score = new YatzyScore("2025-03-04", 310, 1, 0, true, true);
         score.id = 4;
         dao.insert(score);
         assertEquals(12, dao.count());
@@ -168,7 +182,7 @@ public class YatzyScoreDaoTest {
         int[] idsToDelete = {-1, 4, 9, 12, 999};
         List<YatzyScore> scores = new ArrayList<>();
         for (int id : idsToDelete) {
-            var s = new YatzyScore("", 0, false, false);
+            var s = new YatzyScore("", 0, 1, 0, false, false);
             s.id = id;
             scores.add(s);
         }
