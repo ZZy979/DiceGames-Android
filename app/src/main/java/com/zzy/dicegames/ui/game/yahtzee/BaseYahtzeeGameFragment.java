@@ -1,6 +1,7 @@
 package com.zzy.dicegames.ui.game.yahtzee;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +104,7 @@ public abstract class BaseYahtzeeGameFragment extends BaseGameFragment<BaseYahtz
                 continue;
             header.setText(!multiplayer ? R.string.score
                     : p == BaseGameViewModel.PLAYER_HUMAN ? R.string.playerYou : R.string.playerComputer);
+            header.setTypeface(null, Typeface.BOLD);
         }
     }
 
